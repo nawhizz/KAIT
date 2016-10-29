@@ -1,0 +1,56 @@
+# Server Pro*C makefile
+
+ORALIBDIR = ${ORACLE_HOME}/lib64
+ORALIB = -lclntsh `cat /oracle/app/oracle8/product/817/lib64/sysliblist` -ldl -lm
+
+TARGET	= $(COMP_TARGET)
+APOBJS	= $(TARGET).o
+SDLFILE = demo.s
+
+# Using Shared Library
+# LIBS = -lsvr -lsharedb
+# LIBDIR  = $(TMAXDIR)/lib/shared
+LIBS	= -lsvr -loras -lsocket -lnsl
+OBJS    = $(APOBJS) $(SDLOBJ) $(SVCTOBJ)
+SDLOBJ = $(TMAXDIR)/lib64/sdl.o
+#SDLOBJ  = ${SDLFILE:.s=_sdl.o}
+SDLC    = ${SDLFILE:.s=_sdl.c}
+SVCTOBJ = $(TARGET)_svctab.o
+
+CFLAGS  = -xarch=v9 -O -I$(TMAXDIR)
+
+APPDIR  = $(TMAXDIR)/appbin
+SVCTDIR = $(TMAXDIR)/svct
+LIBDIR  = $(TMAXDIR)/lib
+ 
+#
+.SUFFIXES : .c
+
+.c.o: 
+	$(CC) $(CFLAGS) -c $<
+
+#
+# server compile
+#
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -L$(LIBDIR) -o $(TARGET) -L$(ORALIBDIR) $(ORALIB) $(OBJS) $(LIBS)
+	cp $(TARGET) $(APPDIR)/.
+	rm -f $(APOBJS)
+
+$(APOBJS): $(TARGET).pc
+	proc iname=$(TARGET) include=$(TMAXDIR)
+	$(CC) $(CFLAGS) -c $(TARGET).c
+
+$(SVCTOBJ):
+	touch $(SVCTDIR)/$(TARGET)_svctab.c
+	$(CC) $(CFLAGS) -c $(SVCTDIR)/$(TARGET)_svctab.c
+
+$(SDLOBJ):
+	$(TMAXDIR)/bin/sdlc -i ../sdl/$(SDLFILE)
+	$(CC) $(CFLAGS) -c ../sdl/$(SDLC)
+
+#
+clean:
+	-rm -f *.o core $(TARGET) $(TARGET).lis

@@ -1,0 +1,43 @@
+netis04:/tmax41/sample/client> ps -ef|grep fdltest
+  tmax41 29837 29666  0 10:26:54 pts/50   0:00 vi fdltest.pc
+  tmax41 12644  7631  0 11:50:11 ?        0:00 fdltest -s fdltest -g 18 -o $(SVR).out -e $(SVR).err
+  tmax41 12643  7631  0 11:50:11 ?        0:00 fdltest -s fdltest -g 18 -o $(SVR).out -e $(SVR).err
+  tmax41 12641  7631  0 11:50:07 ?        0:00 fdltest -s fdltest -g 18 -o $(SVR).out -e $(SVR).err
+  tmax41 12701  8157  0 11:51:43 pts/23   0:00 grep fdltest
+  tmax41 12655  7631  0 11:50:38 ?        0:00 fdltest -s fdltest -g 18 -o $(SVR).out -e $(SVR).err
+netis04:/tmax41/sample/client> truss -p 12644
+poll(0xFFFFFFFF7FFFF0D0, 2, 300000) (sleeping...)
+netis04:/tmax41/sample/client> truss -p 12641
+poll(0xFFFFFFFF7FFFF0D0, 2, 300000) (sleeping...)
+
+^Cnetis04:/tmax41/sample/client> tmadmin
+--- Welcome to Tmax Admin (Type "quit" to leave) ---
+
+$$1 netis04 (tmadm): st -p fdltest
+
+CLH 0:
+   ------------------------------------------------------------------
+   svr_name     svgname    spr_no    status     count     avg    svc
+   ------------------------------------------------------------------
+   fdltest      svg_gimje1    750       RUN       10     13.06     FDLAAA
+   fdltest      svg_gimje1    751       RUN        8     14.98     FDLAAA
+   fdltest      svg_gimje1    752       RUN        5     15.63     FDLAAA
+   fdltest      svg_gimje1    753       RDY        8     11.97     -1
+
+$$2 netis04 (tmadm): q
+ADM quit for node (netis04)
+netis04:/tmax41/sample/client> tmdown -S fdltest -i
+
+TMDOWN for node(netis04) is starting:
+        TMDOWN: SERVER(fdltest:753) downed: Mon Aug 05 11:52:08 2002
+(E) CLI0209 internal error: unknown message type :2115 [CSC1829]
+Can't send request to service [12]
+        TMDOWN: SERVER(fdltest:752) downed: Mon Aug 05 11:52:08 2002
+        TMDOWN: SERVER(fdltest:751) downed: Mon Aug 05 11:52:08 2002
+        TMDOWN: SERVER(fdltest:750) downed: Mon Aug 05 11:52:08 2002
+(E) CLI0209 internal error: unknown message type :3101 [CSC1829]
+Can't send request to service [12]
+(E) CLI0209 internal error: unknown message type :2001 [CSC1829]
+Can't send request to service [12]
+
+netis04:/tmax41/sample/client>

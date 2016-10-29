@@ -1,0 +1,8 @@
+component/installcomponent메뉴선택해서
+c:program filesdelphi5sourcegifimagegifinmage.pas지정
+하고 
+패키지이름지정 - dclusr50.dpk 패키지이용권장
+패키지설치
+이라이브러리는 일반컴포넌트가 아니어서 컴포넌트형태가 없습니다 ,
+대신 addition컴포넌트팔레트 에서 image컴포넌트를 폼에 배치하여 load picture 에서 gif타입이 포함되어 
+있으면 성공적으로 설치가 된것입니다

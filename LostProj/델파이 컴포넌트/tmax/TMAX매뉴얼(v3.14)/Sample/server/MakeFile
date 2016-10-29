@@ -1,0 +1,34 @@
+# Server Pro*C makefile
+
+ORALIBDIR = ${ORACLE_HOME}/lib64
+ORALIB = -lclntsh `cat /oracle/app/oracle8/product/817/lib64/sysliblist` -ldl -lm
+
+TARGET	= msg_broad
+APOBJS	= $(TARGET).o
+LIBS	= -lsvrucs -lsocket -lnsl
+OBJS    = $(APOBJS) 
+
+CFLAGS  = -xarch=v9 -O -I$(TMAXDIR)
+
+#
+.SUFFIXES : .c
+
+.c.o: 
+	$(CC) $(CFLAGS) -c $<
+
+#
+# server compile
+#
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) -L$(ORALIBDIR) $(ORALIB) $(OBJS) $(LIBS)
+	rm -f $(OBJS)
+
+$(APOBJS): $(TARGET).pc
+	proc iname=$(TARGET) 
+	$(CC) $(CFLAGS) -c $(TARGET).c
+
+#
+clean:
+	-rm -f *.o core $(TARGET) $(TARGET).lis

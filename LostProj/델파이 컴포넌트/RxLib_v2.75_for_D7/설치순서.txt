@@ -1,0 +1,9 @@
+1) Compile만
+    rxctl7.dpk -> rxdb7.dpk -> rxbde7.dpk
+
+2) "C:\Program Files\Borland\Delphi7\Projects\Bpl"에 
+   생성된 rxctl7.bpl, rxbde7.bpl, rxdb7.bpl 파일을
+   "C:\WINDOWS\system32" 로 COPY한다.
+
+3) Compile 후 Install
+    dclrx7.dpk -> dclrxdb7.dpk -> dclrxbd7.dpk
