@@ -1,0 +1,33 @@
+;-----------------------------------
+; CmReg module definition file
+;-----------------------------------
+
+LIBRARY 	CMREG
+DESCRIPTION	'CmReg 1998/11/21'
+EXPORTS
+		CmRegOpen	@1
+		CmRegClose	@2
+		CmRegCommit	@3
+		CmRegRollback	@4
+		CmRegLusr	@5
+		CmRegUser	@6
+		CmRegUsid	@7
+		CmRegAscl	@8
+		CmRegEvct	@9
+		CmRegFmid	@10
+		CmRegTxid	@11
+
+		OCMREGOPEN	@21
+		OCMREGCLOSE	@22
+		OCMREGCOMMIT	@23
+		OCMREGROLLBACK	@24
+		OCMREGLUSR	@25
+		OCMREGUSER	@26
+		OCMREGUSID	@27
+		OCMREGASCL	@28
+		OCMREGEVCT	@29
+		OCMREGFMID	@30
+		OCMREGTXID	@31
+;2000.7.7
+		CmRegClnt	@32
+		OCMREGCLNT	@33

@@ -1,0 +1,36 @@
+!INCLUDE	$(SVRHOME)\makent.env
+
+FNAME	= cmregtst
+
+CFLAGS	= \
+	/D "_WINDOWS" \
+	/D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\cmreg.h \
+ 	$(COMMON)\include\stpapi.h
+
+DLIBS = \
+	$(RUNNT)\lib\cmreg.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(RUNNT)\lib\stpapi.lib
+
+LIBS = \
+	$(DLIBS)
+
+OBJS =  \
+	$(INTDIR)\$(FNAME).obj
+
+all	: echo $(RUNNT)\cops\run\$(FNAME).exe
+
+echo	:
+	@echo	COMMON/TESTSRC/CMREGTST
+
+$(RUNNT)\cops\run\$(FNAME).exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:windows $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\$(FNAME).obj	: $(FNAME).c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c $(FNAME).c

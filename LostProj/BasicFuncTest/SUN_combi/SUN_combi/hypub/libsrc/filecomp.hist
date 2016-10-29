@@ -1,0 +1,79 @@
+================================================================================
+ history start
+================================================================================
+size is wrong            wfm/makefile
+size is wrong            wfm/makefile.nt
+size is wrong            wfm/wfm.def
+size is wrong            wfm/wfm.dsp
+same                     wfm/wfm.dsw
+same                     wfm/wfm_dbgfun.c
+same                     wfm/wfm_extvar.c
+same                     wfm/wfm_freeblkinfo.c
+same                     wfm/wfm_freeseginfo.c
+size is wrong            wfm/wfm_fun.h
+size is wrong            wfm/wfm_savefile.c
+size is wrong            wfm/wfm_saveseginfo.c
+same                     wfm/WFmAllClose.c
+size is wrong            wfm/WFmClose.c
+size is wrong            wfm/WFmFillData.c
+size is wrong            wfm/WFmFillHead.c
+size is wrong            wfm/WFmFillTail.c
+size is wrong            wfm/WFmOpen.c
+same                     wfm/OWFM_ALLCLOSE.c
+same                     wfm/OWFM_CLOSE.c
+same                     wfm/OWFM_FILLDATA.c
+same                     wfm/OWFM_FILLHEAD.c
+same                     wfm/OWFM_FILLTAIL.c
+same                     wfm/OWFM_OPEN.c
+same                     wfm/l_wfmsethyerrno.c
+no exist [2]             wfm.ksh/wfm.ncb
+no exist [2]             wfm.ksh/wfm.opt
+no exist [2]             wfm.ksh/wfm.plg
+same                     wfm/wfm_errset.c
+same                     wfm/wfm_str2strarr.c
+no exist [2]             wfm.ksh/vssver.scc
+same                     wfm/dynamic/WFmAllClose.o
+same                     wfm/dynamic/WFmClose.o
+same                     wfm/dynamic/WFmOpen.o
+same                     wfm/dynamic/WFmFillData.o
+same                     wfm/dynamic/WFmFillHead.o
+same                     wfm/dynamic/WFmFillTail.o
+same                     wfm/dynamic/wfm_extvar.o
+same                     wfm/dynamic/wfm_savefile.o
+same                     wfm/dynamic/wfm_saveseginfo.o
+same                     wfm/dynamic/wfm_freeseginfo.o
+same                     wfm/dynamic/wfm_freeblkinfo.o
+same                     wfm/dynamic/wfm_dbgfun.o
+same                     wfm/dynamic/OWFM_ALLCLOSE.o
+same                     wfm/dynamic/OWFM_CLOSE.o
+same                     wfm/dynamic/OWFM_OPEN.o
+same                     wfm/dynamic/OWFM_FILLDATA.o
+same                     wfm/dynamic/OWFM_FILLHEAD.o
+same                     wfm/dynamic/OWFM_FILLTAIL.o
+same                     wfm/dynamic/wfm_str2strarr.o
+same                     wfm/dynamic/wfm_errset.o
+same                     wfm/dynamic/l_wfmsethyerrno.o
+same                     wfm/static/WFmAllClose.o
+same                     wfm/static/WFmClose.o
+same                     wfm/static/WFmOpen.o
+same                     wfm/static/WFmFillData.o
+same                     wfm/static/WFmFillHead.o
+same                     wfm/static/WFmFillTail.o
+same                     wfm/static/wfm_extvar.o
+same                     wfm/static/wfm_savefile.o
+same                     wfm/static/wfm_saveseginfo.o
+same                     wfm/static/wfm_freeseginfo.o
+same                     wfm/static/wfm_freeblkinfo.o
+same                     wfm/static/wfm_dbgfun.o
+same                     wfm/static/OWFM_ALLCLOSE.o
+same                     wfm/static/OWFM_CLOSE.o
+same                     wfm/static/OWFM_OPEN.o
+same                     wfm/static/OWFM_FILLDATA.o
+same                     wfm/static/OWFM_FILLHEAD.o
+same                     wfm/static/OWFM_FILLTAIL.o
+same                     wfm/static/wfm_str2strarr.o
+same                     wfm/static/wfm_errset.o
+same                     wfm/static/l_wfmsethyerrno.o
+================================================================================
+ history end
+================================================================================

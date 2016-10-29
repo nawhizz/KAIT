@@ -1,0 +1,78 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\ipcwrap.h \
+	$(COMMON)\include\gps.h
+
+DLIBS = \
+	$(RUNNT)\lib\ipcwrap.lib \
+	$(RUNNT)\lib\gps.lib
+
+LIBS = \
+	$(RUNNT)\lib\ipcwrap.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\cfg.obj	$(INTDIR)\cobol.obj \
+	$(INTDIR)\dataman.obj	$(INTDIR)\dateman.obj \
+	$(INTDIR)\etc.obj	$(INTDIR)\fifo.obj \
+	$(INTDIR)\fileio.obj	$(INTDIR)\keyio.obj \
+	$(INTDIR)\main.obj	$(INTDIR)\network.obj \
+	$(INTDIR)\process.obj	$(INTDIR)\ring.obj \
+	$(INTDIR)\shm.obj	
+
+all	: echo $(INTDIR)\gpstest.exe
+
+echo	:
+	@echo	HYPUB/TESTSRC/GPSTEST
+
+$(INTDIR)\gpstest.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\cfg.obj	: cfg.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c cfg.c
+
+$(INTDIR)\cobol.obj	: cobol.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c cobol.c
+
+$(INTDIR)\dataman.obj	: dataman.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c dataman.c
+
+$(INTDIR)\dateman.obj	: dateman.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c dateman.c
+
+$(INTDIR)\etc.obj	: etc.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c etc.c
+
+$(INTDIR)\fifo.obj	: fifo.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fifo.c
+
+$(INTDIR)\fileio.obj	: fileio.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fileio.c
+
+$(INTDIR)\keyio.obj	: keyio.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c keyio.c
+
+$(INTDIR)\main.obj	: main.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c main.c
+
+$(INTDIR)\network.obj	: network.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c network.c
+
+$(INTDIR)\process.obj	: process.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c process.c
+
+$(INTDIR)\ring.obj	: ring.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ring.c
+
+$(INTDIR)\shm.obj	: shm.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c shm.c
+
+

@@ -1,0 +1,437 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_WINDOWS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\iswrap.h
+
+DLIBS = \
+	$(RUNNT)\lib\disam32.lib \
+	$(RUNNT)\lib\gps.lib
+
+LIBS = \
+	$(RUNNT)\lib\disam32.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\OPI_ADDIT.obj		$(INTDIR)\OPI_ALLCLOSE.obj \
+	$(INTDIR)\OPI_BUILD.obj		$(INTDIR)\OPI_CHMOD.obj \
+	$(INTDIR)\OPI_CHOWN.obj		$(INTDIR)\OPI_CLOSE.obj \
+	$(INTDIR)\OPI_COMMIT.obj	$(INTDIR)\OPI_CRLOCKOPEN.obj \
+	$(INTDIR)\OPI_CROPEN.obj	$(INTDIR)\OPI_DELET.obj \
+	$(INTDIR)\OPI_DROP.obj		$(INTDIR)\OPI_EBUILD.obj \
+	$(INTDIR)\OPI_ECRLOCKOPEN.obj	$(INTDIR)\OPI_ECROPEN.obj \
+	$(INTDIR)\OPI_EDROP.obj		$(INTDIR)\OPI_ELOCKOPEN.obj \
+	$(INTDIR)\OPI_ENDTRAN.obj	$(INTDIR)\OPI_EOPEN.obj \
+	$(INTDIR)\OPI_ETRBUILD.obj	$(INTDIR)\OPI_ETRCROPEN.obj \
+	$(INTDIR)\OPI_ETROPEN.obj	$(INTDIR)\OPI_EUOPEN.obj \
+	$(INTDIR)\OPI_ISTRAN.obj	$(INTDIR)\OPI_LOCKOPEN.obj \
+	$(INTDIR)\OPI_OPEN.obj		$(INTDIR)\OPI_RDUEQ.obj \
+	$(INTDIR)\OPI_RDUGE.obj		$(INTDIR)\OPI_RECNO.obj \
+	$(INTDIR)\OPI_RECSIZE.obj	$(INTDIR)\OPI_REDEQ.obj \
+	$(INTDIR)\OPI_REDFIRST.obj	$(INTDIR)\OPI_REDGE.obj \
+	$(INTDIR)\OPI_REDGT.obj		$(INTDIR)\OPI_REDLAST.obj \
+	$(INTDIR)\OPI_REDLE.obj		$(INTDIR)\OPI_REDLT.obj \
+	$(INTDIR)\OPI_REDNX.obj		$(INTDIR)\OPI_REDPR.obj \
+	$(INTDIR)\OPI_ROLLBACK.obj	$(INTDIR)\OPI_SETKEY.obj \
+	$(INTDIR)\OPI_START.obj		$(INTDIR)\OPI_TRAN.obj \
+	$(INTDIR)\OPI_TRBEGIN.obj	$(INTDIR)\OPI_TRBUILD.obj \
+	$(INTDIR)\OPI_TRCROPEN.obj	$(INTDIR)\OPI_TRLOGCLOSE.obj \
+	$(INTDIR)\OPI_TRLOGOPEN.obj	$(INTDIR)\OPI_TROPEN.obj \
+	$(INTDIR)\OPI_UOPEN.obj		$(INTDIR)\OPI_UPDAT.obj \
+	$(INTDIR)\OPI_UPTCUR.obj	$(INTDIR)\OPI_RECLENGTH.obj \
+	$(INTDIR)\OPI_KEYLENGTH.obj \
+	$(INTDIR)\PI_ADDIT.obj \
+	$(INTDIR)\PI_ALLCLOSE.obj	$(INTDIR)\PI_BUILD.obj \
+	$(INTDIR)\PI_CHMOD.obj		$(INTDIR)\PI_CHOWN.obj \
+	$(INTDIR)\PI_CLOSE.obj		$(INTDIR)\PI_COMMIT.obj \
+	$(INTDIR)\PI_CRLOCKOPEN.obj	$(INTDIR)\PI_CROPEN.obj \
+	$(INTDIR)\PI_DELET.obj		$(INTDIR)\PI_DROP.obj \
+	$(INTDIR)\PI_EBUILD.obj		$(INTDIR)\PI_ECRLOCKOPEN.obj \
+	$(INTDIR)\PI_ECROPEN.obj	$(INTDIR)\PI_EDROP.obj \
+	$(INTDIR)\PI_ELOCKOPEN.obj	$(INTDIR)\PI_ENDTRAN.obj \
+	$(INTDIR)\PI_EOPEN.obj		$(INTDIR)\PI_ETRBUILD.obj \
+	$(INTDIR)\PI_ETRCROPEN.obj	$(INTDIR)\PI_ETROPEN.obj \
+	$(INTDIR)\PI_EUOPEN.obj		$(INTDIR)\PI_INFPATH.obj \
+	$(INTDIR)\PI_ISTRAN.obj		$(INTDIR)\PI_LOCKOPEN.obj \
+	$(INTDIR)\PI_OPEN.obj		$(INTDIR)\PI_RDUEQ.obj \
+	$(INTDIR)\PI_RDUGE.obj		$(INTDIR)\PI_RECNO.obj \
+	$(INTDIR)\PI_RECSIZE.obj	$(INTDIR)\PI_REDEQ.obj \
+	$(INTDIR)\PI_REDFIRST.obj	$(INTDIR)\PI_REDGE.obj \
+	$(INTDIR)\PI_REDGT.obj		$(INTDIR)\PI_REDLAST.obj \
+	$(INTDIR)\PI_REDLE.obj		$(INTDIR)\PI_REDLT.obj \
+	$(INTDIR)\PI_REDNX.obj		$(INTDIR)\PI_REDPR.obj \
+	$(INTDIR)\PI_ROLLBACK.obj	$(INTDIR)\PI_SETKEY.obj \
+	$(INTDIR)\PI_START.obj		$(INTDIR)\PI_TRAN.obj \
+	$(INTDIR)\PI_TRBEGIN.obj	$(INTDIR)\PI_TRBUILD.obj \
+	$(INTDIR)\PI_TRCROPEN.obj	$(INTDIR)\PI_TRLOGCLOSE.obj \
+	$(INTDIR)\PI_TRLOGOPEN.obj	$(INTDIR)\PI_TROPEN.obj \
+	$(INTDIR)\PI_UOPEN.obj		$(INTDIR)\PI_UPDAT.obj \
+	$(INTDIR)\PI_UPTCUR.obj		$(INTDIR)\PI_RECLENGTH.obj \
+	$(INTDIR)\PI_KEYLENGTH.obj \
+	$(INTDIR)\l_pisamsethyerrno.obj \
+	$(INTDIR)\pi_erasefile.obj	$(INTDIR)\pi_errset.obj \
+	$(INTDIR)\pi_filegen.obj	$(INTDIR)\pi_getinfpath.obj \
+	$(INTDIR)\pi_savefile.obj	$(INTDIR)\pi_setkeymode.obj \
+	$(INTDIR)\pisamext.obj	
+
+all	: echo $(RUNNT)\bin\pisam.dll
+
+echo	:
+	@echo	HYPUB/LIBSRC/PISAM
+
+$(RUNNT)\bin\pisam.dll	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /dll /def:"pisam.def" /subsystem:windows \
+	/implib:"$(RUNNT)\lib\pisam.lib" $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\OPI_ADDIT.obj	: OPI_ADDIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ADDIT.c
+
+$(INTDIR)\OPI_ALLCLOSE.obj	: OPI_ALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ALLCLOSE.c
+
+$(INTDIR)\OPI_BUILD.obj	: OPI_BUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_BUILD.c
+
+$(INTDIR)\OPI_CHMOD.obj	: OPI_CHMOD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_CHMOD.c
+
+$(INTDIR)\OPI_CHOWN.obj	: OPI_CHOWN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_CHOWN.c
+
+$(INTDIR)\OPI_CLOSE.obj	: OPI_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_CLOSE.c
+
+$(INTDIR)\OPI_COMMIT.obj	: OPI_COMMIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_COMMIT.c
+
+$(INTDIR)\OPI_CRLOCKOPEN.obj	: OPI_CRLOCKOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_CRLOCKOPEN.c
+
+$(INTDIR)\OPI_CROPEN.obj	: OPI_CROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_CROPEN.c
+
+$(INTDIR)\OPI_DELET.obj	: OPI_DELET.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DELET.c
+
+$(INTDIR)\OPI_DROP.obj	: OPI_DROP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DROP.c
+
+$(INTDIR)\OPI_EBUILD.obj	: OPI_EBUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_EBUILD.c
+
+$(INTDIR)\OPI_ECRLOCKOPEN.obj	: OPI_ECRLOCKOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ECRLOCKOPEN.c
+
+$(INTDIR)\OPI_ECROPEN.obj	: OPI_ECROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ECROPEN.c
+
+$(INTDIR)\OPI_EDROP.obj	: OPI_EDROP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_EDROP.c
+
+$(INTDIR)\OPI_ELOCKOPEN.obj	: OPI_ELOCKOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ELOCKOPEN.c
+
+$(INTDIR)\OPI_ENDTRAN.obj	: OPI_ENDTRAN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ENDTRAN.c
+
+$(INTDIR)\OPI_EOPEN.obj	: OPI_EOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_EOPEN.c
+
+$(INTDIR)\OPI_ETRBUILD.obj	: OPI_ETRBUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ETRBUILD.c
+
+$(INTDIR)\OPI_ETRCROPEN.obj	: OPI_ETRCROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ETRCROPEN.c
+
+$(INTDIR)\OPI_ETROPEN.obj	: OPI_ETROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ETROPEN.c
+
+$(INTDIR)\OPI_EUOPEN.obj	: OPI_EUOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_EUOPEN.c
+
+$(INTDIR)\OPI_ISTRAN.obj	: OPI_ISTRAN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ISTRAN.c
+
+$(INTDIR)\OPI_LOCKOPEN.obj	: OPI_LOCKOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_LOCKOPEN.c
+
+$(INTDIR)\OPI_OPEN.obj	: OPI_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_OPEN.c
+
+$(INTDIR)\OPI_RDUEQ.obj	: OPI_RDUEQ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_RDUEQ.c
+
+$(INTDIR)\OPI_RDUGE.obj	: OPI_RDUGE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_RDUGE.c
+
+$(INTDIR)\OPI_RECNO.obj	: OPI_RECNO.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_RECNO.c
+
+$(INTDIR)\OPI_RECSIZE.obj	: OPI_RECSIZE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_RECSIZE.c
+
+$(INTDIR)\OPI_REDEQ.obj	: OPI_REDEQ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDEQ.c
+
+$(INTDIR)\OPI_REDFIRST.obj	: OPI_REDFIRST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDFIRST.c
+
+$(INTDIR)\OPI_REDGE.obj	: OPI_REDGE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDGE.c
+
+$(INTDIR)\OPI_REDGT.obj	: OPI_REDGT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDGT.c
+
+$(INTDIR)\OPI_REDLAST.obj	: OPI_REDLAST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDLAST.c
+
+$(INTDIR)\OPI_REDLE.obj	: OPI_REDLE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDLE.c
+
+$(INTDIR)\OPI_REDLT.obj	: OPI_REDLT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDLT.c
+
+$(INTDIR)\OPI_REDNX.obj	: OPI_REDNX.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDNX.c
+
+$(INTDIR)\OPI_REDPR.obj	: OPI_REDPR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDPR.c
+
+$(INTDIR)\OPI_ROLLBACK.obj	: OPI_ROLLBACK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ROLLBACK.c
+
+$(INTDIR)\OPI_SETKEY.obj	: OPI_SETKEY.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_SETKEY.c
+
+$(INTDIR)\OPI_START.obj	: OPI_START.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_START.c
+
+$(INTDIR)\OPI_TRAN.obj	: OPI_TRAN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_TRAN.c
+
+$(INTDIR)\OPI_TRBEGIN.obj	: OPI_TRBEGIN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_TRBEGIN.c
+
+$(INTDIR)\OPI_TRBUILD.obj	: OPI_TRBUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_TRBUILD.c
+
+$(INTDIR)\OPI_TRCROPEN.obj	: OPI_TRCROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_TRCROPEN.c
+
+$(INTDIR)\OPI_TRLOGCLOSE.obj	: OPI_TRLOGCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_TRLOGCLOSE.c
+
+$(INTDIR)\OPI_TRLOGOPEN.obj	: OPI_TRLOGOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_TRLOGOPEN.c
+
+$(INTDIR)\OPI_TROPEN.obj	: OPI_TROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_TROPEN.c
+
+$(INTDIR)\OPI_UOPEN.obj	: OPI_UOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_UOPEN.c
+
+$(INTDIR)\OPI_UPDAT.obj	: OPI_UPDAT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_UPDAT.c
+
+$(INTDIR)\OPI_UPTCUR.obj	: OPI_UPTCUR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_UPTCUR.c
+
+$(INTDIR)\OPI_RECLENGTH.obj	: OPI_RECLENGTH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_RECLENGTH.c
+
+$(INTDIR)\OPI_KEYLENGTH.obj	: OPI_KEYLENGTH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_KEYLENGTH.c
+
+$(INTDIR)\PI_ADDIT.obj	: PI_ADDIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ADDIT.c
+
+$(INTDIR)\PI_ALLCLOSE.obj	: PI_ALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ALLCLOSE.c
+
+$(INTDIR)\PI_BUILD.obj	: PI_BUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_BUILD.c
+
+$(INTDIR)\PI_CHMOD.obj	: PI_CHMOD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_CHMOD.c
+
+$(INTDIR)\PI_CHOWN.obj	: PI_CHOWN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_CHOWN.c
+
+$(INTDIR)\PI_CLOSE.obj	: PI_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_CLOSE.c
+
+$(INTDIR)\PI_COMMIT.obj	: PI_COMMIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_COMMIT.c
+
+$(INTDIR)\PI_CRLOCKOPEN.obj	: PI_CRLOCKOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_CRLOCKOPEN.c
+
+$(INTDIR)\PI_CROPEN.obj	: PI_CROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_CROPEN.c
+
+$(INTDIR)\PI_DELET.obj	: PI_DELET.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DELET.c
+
+$(INTDIR)\PI_DROP.obj	: PI_DROP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DROP.c
+
+$(INTDIR)\PI_EBUILD.obj	: PI_EBUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_EBUILD.c
+
+$(INTDIR)\PI_ECRLOCKOPEN.obj	: PI_ECRLOCKOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ECRLOCKOPEN.c
+
+$(INTDIR)\PI_ECROPEN.obj	: PI_ECROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ECROPEN.c
+
+$(INTDIR)\PI_EDROP.obj	: PI_EDROP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_EDROP.c
+
+$(INTDIR)\PI_ELOCKOPEN.obj	: PI_ELOCKOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ELOCKOPEN.c
+
+$(INTDIR)\PI_ENDTRAN.obj	: PI_ENDTRAN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ENDTRAN.c
+
+$(INTDIR)\PI_EOPEN.obj	: PI_EOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_EOPEN.c
+
+$(INTDIR)\PI_ETRBUILD.obj	: PI_ETRBUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ETRBUILD.c
+
+$(INTDIR)\PI_ETRCROPEN.obj	: PI_ETRCROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ETRCROPEN.c
+
+$(INTDIR)\PI_ETROPEN.obj	: PI_ETROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ETROPEN.c
+
+$(INTDIR)\PI_EUOPEN.obj	: PI_EUOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_EUOPEN.c
+
+$(INTDIR)\PI_INFPATH.obj	: PI_INFPATH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_INFPATH.c
+
+$(INTDIR)\PI_ISTRAN.obj	: PI_ISTRAN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ISTRAN.c
+
+$(INTDIR)\PI_LOCKOPEN.obj	: PI_LOCKOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_LOCKOPEN.c
+
+$(INTDIR)\PI_OPEN.obj	: PI_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_OPEN.c
+
+$(INTDIR)\PI_RDUEQ.obj	: PI_RDUEQ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_RDUEQ.c
+
+$(INTDIR)\PI_RDUGE.obj	: PI_RDUGE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_RDUGE.c
+
+$(INTDIR)\PI_RECNO.obj	: PI_RECNO.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_RECNO.c
+
+$(INTDIR)\PI_RECSIZE.obj	: PI_RECSIZE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_RECSIZE.c
+
+$(INTDIR)\PI_REDEQ.obj	: PI_REDEQ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDEQ.c
+
+$(INTDIR)\PI_REDFIRST.obj	: PI_REDFIRST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDFIRST.c
+
+$(INTDIR)\PI_REDGE.obj	: PI_REDGE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDGE.c
+
+$(INTDIR)\PI_REDGT.obj	: PI_REDGT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDGT.c
+
+$(INTDIR)\PI_REDLAST.obj	: PI_REDLAST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDLAST.c
+
+$(INTDIR)\PI_REDLE.obj	: PI_REDLE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDLE.c
+
+$(INTDIR)\PI_REDLT.obj	: PI_REDLT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDLT.c
+
+$(INTDIR)\PI_REDNX.obj	: PI_REDNX.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDNX.c
+
+$(INTDIR)\PI_REDPR.obj	: PI_REDPR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDPR.c
+
+$(INTDIR)\PI_ROLLBACK.obj	: PI_ROLLBACK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ROLLBACK.c
+
+$(INTDIR)\PI_SETKEY.obj	: PI_SETKEY.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_SETKEY.c
+
+$(INTDIR)\PI_START.obj	: PI_START.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_START.c
+
+$(INTDIR)\PI_TRAN.obj	: PI_TRAN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_TRAN.c
+
+$(INTDIR)\PI_TRBEGIN.obj	: PI_TRBEGIN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_TRBEGIN.c
+
+$(INTDIR)\PI_TRBUILD.obj	: PI_TRBUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_TRBUILD.c
+
+$(INTDIR)\PI_TRCROPEN.obj	: PI_TRCROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_TRCROPEN.c
+
+$(INTDIR)\PI_TRLOGCLOSE.obj	: PI_TRLOGCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_TRLOGCLOSE.c
+
+$(INTDIR)\PI_TRLOGOPEN.obj	: PI_TRLOGOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_TRLOGOPEN.c
+
+$(INTDIR)\PI_TROPEN.obj	: PI_TROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_TROPEN.c
+
+$(INTDIR)\PI_UOPEN.obj	: PI_UOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_UOPEN.c
+
+$(INTDIR)\PI_UPDAT.obj	: PI_UPDAT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_UPDAT.c
+
+$(INTDIR)\PI_UPTCUR.obj	: PI_UPTCUR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_UPTCUR.c
+
+$(INTDIR)\PI_RECLENGTH.obj	: PI_RECLENGTH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_RECLENGTH.c
+
+$(INTDIR)\PI_KEYLENGTH.obj	: PI_KEYLENGTH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_KEYLENGTH.c
+
+$(INTDIR)\l_pisamsethyerrno.obj	: l_pisamsethyerrno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_pisamsethyerrno.c
+
+$(INTDIR)\pi_erasefile.obj	: pi_erasefile.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c pi_erasefile.c
+
+$(INTDIR)\pi_errset.obj	: pi_errset.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c pi_errset.c
+
+$(INTDIR)\pi_filegen.obj	: pi_filegen.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c pi_filegen.c
+
+$(INTDIR)\pi_getinfpath.obj	: pi_getinfpath.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c pi_getinfpath.c
+
+$(INTDIR)\pi_savefile.obj	: pi_savefile.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c pi_savefile.c
+
+$(INTDIR)\pi_setkeymode.obj	: pi_setkeymode.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c pi_setkeymode.c
+
+$(INTDIR)\pisamext.obj	: pisamext.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c pisamext.c
+
+

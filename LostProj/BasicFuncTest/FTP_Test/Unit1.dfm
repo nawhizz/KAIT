@@ -1,0 +1,65 @@
+object Form1: TForm1
+  Left = 458
+  Top = 290
+  Width = 476
+  Height = 275
+  Caption = 'Form1'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Button1: TButton
+    Left = 192
+    Top = 152
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 0
+  end
+  object SslFtpClient1: TSslFtpClient
+    Timeout = 15
+    MultiThreaded = False
+    Port = 'ftp'
+    CodePage = 0
+    DataPortRangeStart = 0
+    DataPortRangeEnd = 0
+    LocalAddr = '0.0.0.0'
+    DisplayFileFlag = False
+    Binary = True
+    ShareMode = ftpShareExclusive
+    Options = [ftpAcceptLF]
+    ConnectionType = ftpDirect
+    Language = 'EN'
+    BandwidthLimit = 10000
+    BandwidthSampling = 1000
+    SslType = sslTypeNone
+    ProtLevel = 'C'
+    PBSZSize = 0
+    Left = 80
+    Top = 48
+  end
+  object FtpClient1: TFtpClient
+    Timeout = 15
+    MultiThreaded = False
+    Port = 'ftp'
+    CodePage = 0
+    DataPortRangeStart = 0
+    DataPortRangeEnd = 0
+    LocalAddr = '0.0.0.0'
+    DisplayFileFlag = False
+    Binary = True
+    ShareMode = ftpShareExclusive
+    Options = [ftpAcceptLF]
+    ConnectionType = ftpDirect
+    Language = 'EN'
+    BandwidthLimit = 10000
+    BandwidthSampling = 1000
+    Left = 240
+    Top = 56
+  end
+end

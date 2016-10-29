@@ -1,0 +1,28 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = $(COMMON)\include\ipcwrap.h
+
+DLIBS = $(RUNNT)\lib\ipcwrap.lib 
+
+LIBS = $(RUNNT)\lib\ipcwrap.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\ipcs.obj	
+
+all	: echo $(RUNNT)\bin\ipcs.exe
+
+echo	:
+	@echo	HYPUB/UTILSRC/IPCS
+
+$(RUNNT)\bin\ipcs.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\ipcs.obj	: ipcs.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ipcs.c
+
+

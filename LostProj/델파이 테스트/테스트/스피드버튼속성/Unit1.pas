@@ -1,0 +1,40 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons;
+
+type
+  TForm1 = class(TForm)
+    btn1: TSpeedButton;
+    btn2: TBitBtn;
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    procedure btn2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.btn2Click(Sender: TObject);
+var
+  bit : TBitmap;
+begin
+  if FileExists('.\´Ý±â.bmp') then
+    bit.LoadFromFile('.\´Ý±â.bmp')
+  else ShowMessage('ÆÄÀÏ¾øÀ½');
+
+  btn1.Glyph := bit;
+end;
+
+end.

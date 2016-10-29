@@ -1,0 +1,33 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\iswrap.h
+
+DLIBS = \
+	$(RUNNT)\lib\disam32.lib
+
+LIBS = \
+	$(RUNNT)\lib\disam32.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\isutil.obj	
+
+all	: echo $(RUNNT)\bin\isutil.exe
+
+echo	:
+	@echo	HYPUB/UTILSRC/ISUTIL
+
+$(RUNNT)\bin\isutil.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\isutil.obj	: isutil.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c isutil.c
+
+

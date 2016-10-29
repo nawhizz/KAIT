@@ -1,0 +1,73 @@
+#!/bin/csh
+#
+#   Generate makefile for making base makefile.nt for NT
+#   ----------------------------------------------------------
+#                                  98.12.14.   by SJW
+#
+
+echo "***********************************"
+echo "***  makefile generation start ****"
+echo "***********************************"
+echo ""
+
+if ("$1" == "") then
+	echo "Enter Module base name..."
+	set MOD_NAME = $<
+    else
+	set MOD_NAME = $1
+endif
+
+echo "Select Module type..."
+echo " 1. DLL"
+echo " 2. EXE"
+@ EXT_TYPE = $<
+
+if( $EXT_TYPE == 1 ) then
+	set EXT_NAME = dll
+else
+	if( $EXT_TYPE == 2 ) then
+		set EXT_NAME = exe
+	else
+		echo "Invalid Module type..."
+		exit
+	endif
+endif
+
+echo \!INCLUDE\	\	\$\(IEAP\)\\makent.env > makefile.nt
+echo "" >> makefile.nt
+echo CFLAGS	= \\ >> makefile.nt
+echo \	\/I \$\(COMMON\)\\include \\ >> makefile.nt
+echo \	\$\(CFOPT\) >> makefile.nt
+echo "" >> makefile.nt
+echo HEADER	= \\ >> makefile.nt
+echo "" >> makefile.nt
+echo DLIBS	= \\ >> makefile.nt
+echo "" >> makefile.nt
+echo LIBS	= \\ >> makefile.nt
+echo \	\$\(LSYS\) >> makefile.nt
+echo "" >> makefile.nt
+
+/usr/bin/ls *.c | cut -d. -f1 | awk '{printf "$(INTDIR)\\%s.obj\n",$0}' | paste - - | awk 'BEGIN { printf "OBJS = " } { printf " \\\n\t%s",$0 } END { printf "\n" }' >> makefile.nt
+
+echo "" >> makefile.nt
+echo all\	: echo \$\(IEAPNT\)\\bin\\$MOD_NAME.$EXT_NAME >> makefile.nt
+echo "" >> makefile.nt
+echo echo\	: >> makefile.nt
+echo \	\@echo\	___________$MOD_NAME >> makefile.nt
+echo "" >> makefile.nt
+
+echo \$\(IEAPNT\)\\bin\\$MOD_NAME.$EXT_NAME\	: \$\(OBJS\) \$\(DLIBS\)>> makefile.nt
+if( $EXT_TYPE == 1 ) then
+	echo \	\$\(LINK\) \/out:\"\$\@\" \/dll \/def:\"$MOD_NAME.def\" \/subsystem:________ \\ >> makefile.nt
+	echo \	/implib:\"\$\(IEAPNT\)\\lib\\$MOD_NAME.lib\" \$\(LDOPT\) \$\(OBJS\) \$\(LIBS\) >> makefile.nt
+else
+	echo \	\$\(LINK\) \/out:\"\$\@\" \/subsystem:________ \$\(LDOPT\) \$\(OBJS\) \$\(LIBS\) >> makefile.nt
+endif
+echo "" >> makefile.nt
+
+/usr/bin/ls *.c | cut -d. -f1 | awk '{printf "$(INTDIR)\\%s.obj\t: %s.c $(HEADER)\n\t$(CC) /Fo\"$@\" $(CFLAGS) /c %s.c\n\n",$0,$0,$0}' >> makefile.nt
+echo "" >> makefile.nt
+
+echo \"makefile.nt\" generated successfully for \"$MOD_NAME\"
+echo Module will be created by "nmake -f makefile.nt"
+echo ""

@@ -1,0 +1,14 @@
+SUBDIR	= libsrc utilsrc testsrc
+
+all	: echo $(SUBDIR)
+
+echo	:
+	@echo HYPUB
+
+
+$(SUBDIR): a 
+        @cd $@
+        @nmake /nologo -f makefile.nt
+        @cd ..
+
+a :

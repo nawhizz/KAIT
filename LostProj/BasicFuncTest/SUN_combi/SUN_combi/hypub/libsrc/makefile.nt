@@ -1,0 +1,14 @@
+SUBDIR	= ipcwrap gps fio pisam dsml sockcomm wfm
+
+all	: echo $(SUBDIR)
+
+echo	:
+	@echo HYPUB/LIBSRC
+
+
+$(SUBDIR): a
+	@cd $@
+	@nmake /nologo -f makefile.nt
+	@cd ..
+
+a :

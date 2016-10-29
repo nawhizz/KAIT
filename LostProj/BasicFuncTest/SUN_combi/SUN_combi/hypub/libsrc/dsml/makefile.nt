@@ -1,0 +1,390 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_WINDOWS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\iswrap.h \
+	$(COMMON)\include\gps.h \
+	$(COMMON)\include\dsml.h \
+	$(COMMON)\include\pisam.h \
+	.\dsmldef.h
+
+DLIBS = \
+	$(RUNNT)\lib\disam32.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(RUNNT)\lib\pisam.lib
+
+LIBS = \
+	$(RUNNT)\lib\disam32.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(RUNNT)\lib\pisam.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\OPI_ADDDOC.obj	$(INTDIR)\OPI_DALLCLOSE.obj \
+	$(INTDIR)\OPI_DBUILD.obj	$(INTDIR)\OPI_DCLOSE.obj \
+	$(INTDIR)\OPI_DCONV.obj		$(INTDIR)\OPI_DCROPEN.obj \
+	$(INTDIR)\OPI_DDCHK.obj		$(INTDIR)\OPI_DELDOC.obj \
+	$(INTDIR)\OPI_DHCHK.obj		$(INTDIR)\OPI_DHREAD.obj \
+	$(INTDIR)\OPI_DICHK.obj		$(INTDIR)\OPI_DIFIRST.obj \
+	$(INTDIR)\OPI_DILAST.obj	$(INTDIR)\OPI_DINEXT.obj \
+	$(INTDIR)\OPI_DIPREV.obj	$(INTDIR)\OPI_DIREAD.obj \
+	$(INTDIR)\OPI_DOPEN.obj		$(INTDIR)\OPI_DUOPEN.obj \
+	$(INTDIR)\OPI_DVADD.obj		$(INTDIR)\OPI_DVCHK.obj \
+	$(INTDIR)\OPI_DVDEL.obj		$(INTDIR)\OPI_DVREAD.obj \
+	$(INTDIR)\OPI_DVREN.obj		$(INTDIR)\OPI_DVUPD.obj \
+	$(INTDIR)\OPI_REDDOC.obj	$(INTDIR)\OPI_UPDDOC.obj \
+	$(INTDIR)\OPI_DCOMMIT.obj	$(INTDIR)\OPI_DROLLBACK.obj \
+	$(INTDIR)\OPI_DBUILD2.obj	$(INTDIR)\OPI_ADDDIR.obj \
+	$(INTDIR)\OPI_UPDDIR.obj	$(INTDIR)\OPI_DELDIR.obj \
+	$(INTDIR)\OPI_UPDDIRINFO.obj	$(INTDIR)\OPI_DLMREAD.obj \
+	$(INTDIR)\OPI_DLVREAD.obj	$(INTDIR)\OPI_DLFREAD.obj \
+	$(INTDIR)\PI_ADDDOC.obj		$(INTDIR)\PI_DALLCLOSE.obj \
+	$(INTDIR)\PI_DBUILD.obj		$(INTDIR)\PI_DCLOSE.obj \
+	$(INTDIR)\PI_DCONV.obj		$(INTDIR)\PI_DCROPEN.obj \
+	$(INTDIR)\PI_DDCHK.obj		$(INTDIR)\PI_DELDOC.obj \
+	$(INTDIR)\PI_DHCHK.obj		$(INTDIR)\PI_DHREAD.obj \
+	$(INTDIR)\PI_DICHK.obj		$(INTDIR)\PI_DIFIRST.obj \
+	$(INTDIR)\PI_DILAST.obj		$(INTDIR)\PI_DINEXT.obj \
+	$(INTDIR)\PI_DIPREV.obj		$(INTDIR)\PI_DIREAD.obj \
+	$(INTDIR)\PI_DOPEN.obj		$(INTDIR)\PI_DUOPEN.obj \
+	$(INTDIR)\PI_DVADD.obj		$(INTDIR)\PI_DVCHK.obj \
+	$(INTDIR)\PI_DVDEL.obj		$(INTDIR)\PI_DVREAD.obj \
+	$(INTDIR)\PI_DVREN.obj		$(INTDIR)\PI_DVUPD.obj \
+	$(INTDIR)\PI_REDDOC.obj		$(INTDIR)\PI_UPDDOC.obj \
+	$(INTDIR)\PI_DCOMMIT.obj	$(INTDIR)\PI_DROLLBACK.obj \
+	$(INTDIR)\PI_DBUILD2.obj	$(INTDIR)\PI_ADDDIR.obj \
+	$(INTDIR)\PI_UPDDIR.obj		$(INTDIR)\PI_DELDIR.obj \
+	$(INTDIR)\PI_UPDDIRINFO.obj	$(INTDIR)\PI_DLMREAD.obj \
+	$(INTDIR)\PI_DLVREAD.obj	$(INTDIR)\PI_DLFREAD.obj \
+	$(INTDIR)\ds_chkbuildinf.obj	$(INTDIR)\ds_chkdocid.obj \
+	$(INTDIR)\ds_chkfsize.obj	$(INTDIR)\ds_chkvolinf.obj \
+	$(INTDIR)\ds_convert.obj	$(INTDIR)\ds_erase.obj \
+	$(INTDIR)\ds_errset.obj		$(INTDIR)\ds_filegen.obj \
+	$(INTDIR)\ds_fileopen.obj	$(INTDIR)\ds_fullpath.obj \
+	$(INTDIR)\ds_getver.obj		$(INTDIR)\ds_getvolno.obj \
+	$(INTDIR)\ds_getvolseq.obj	$(INTDIR)\ds_movedoc.obj \
+	$(INTDIR)\ds_newdocid.obj	$(INTDIR)\ds_newvolno.obj \
+	$(INTDIR)\ds_nextfd.obj		$(INTDIR)\ds_setver.obj \
+	$(INTDIR)\ds_splitvol.obj	$(INTDIR)\ds_usedblkcnt.obj \
+	$(INTDIR)\ds_volgen.obj		$(INTDIR)\ds_volopen.obj \
+	$(INTDIR)\l_dsmlsethyerrno.obj	$(INTDIR)\ds_chkfdavail.obj \
+	$(INTDIR)\ds_getdirseq.obj	$(INTDIR)\ds_getnewdir.obj \
+	$(INTDIR)\ds_log.obj		$(INTDIR)\ds_splitpath.obj \
+	$(INTDIR)\ds_dprintf.obj
+
+all	: echo $(RUNNT)\bin\dsml.dll
+
+echo	:
+	@echo	HYPUB/LIBSRC/DSML
+
+$(RUNNT)\bin\dsml.dll	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /dll /def:"dsml.def" /subsystem:windows \
+	/implib:"$(RUNNT)\lib\dsml.lib" $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\OPI_ADDDOC.obj	: OPI_ADDDOC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ADDDOC.c
+
+$(INTDIR)\OPI_DALLCLOSE.obj	: OPI_DALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DALLCLOSE.c
+
+$(INTDIR)\OPI_DBUILD.obj	: OPI_DBUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DBUILD.c
+
+$(INTDIR)\OPI_DCLOSE.obj	: OPI_DCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DCLOSE.c
+
+$(INTDIR)\OPI_DCONV.obj	: OPI_DCONV.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DCONV.c
+
+$(INTDIR)\OPI_DCROPEN.obj	: OPI_DCROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DCROPEN.c
+
+$(INTDIR)\OPI_DDCHK.obj	: OPI_DDCHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DDCHK.c
+
+$(INTDIR)\OPI_DELDOC.obj	: OPI_DELDOC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DELDOC.c
+
+$(INTDIR)\OPI_DHCHK.obj	: OPI_DHCHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DHCHK.c
+
+$(INTDIR)\OPI_DHREAD.obj	: OPI_DHREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DHREAD.c
+
+$(INTDIR)\OPI_DICHK.obj	: OPI_DICHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DICHK.c
+
+$(INTDIR)\OPI_DIFIRST.obj	: OPI_DIFIRST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DIFIRST.c
+
+$(INTDIR)\OPI_DILAST.obj	: OPI_DILAST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DILAST.c
+
+$(INTDIR)\OPI_DINEXT.obj	: OPI_DINEXT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DINEXT.c
+
+$(INTDIR)\OPI_DIPREV.obj	: OPI_DIPREV.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DIPREV.c
+
+$(INTDIR)\OPI_DIREAD.obj	: OPI_DIREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DIREAD.c
+
+$(INTDIR)\OPI_DOPEN.obj	: OPI_DOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DOPEN.c
+
+$(INTDIR)\OPI_DUOPEN.obj	: OPI_DUOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DUOPEN.c
+
+$(INTDIR)\OPI_DVADD.obj	: OPI_DVADD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DVADD.c
+
+$(INTDIR)\OPI_DVCHK.obj	: OPI_DVCHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DVCHK.c
+
+$(INTDIR)\OPI_DVDEL.obj	: OPI_DVDEL.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DVDEL.c
+
+$(INTDIR)\OPI_DVREAD.obj	: OPI_DVREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DVREAD.c
+
+$(INTDIR)\OPI_DVREN.obj	: OPI_DVREN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DVREN.c
+
+$(INTDIR)\OPI_DVUPD.obj	: OPI_DVUPD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DVUPD.c
+
+$(INTDIR)\OPI_REDDOC.obj	: OPI_REDDOC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_REDDOC.c
+
+$(INTDIR)\OPI_UPDDOC.obj	: OPI_UPDDOC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_UPDDOC.c
+
+$(INTDIR)\OPI_DCOMMIT.obj	: OPI_DCOMMIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DCOMMIT.c
+
+$(INTDIR)\OPI_DROLLBACK.obj	: OPI_DROLLBACK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DROLLBACK.c
+
+$(INTDIR)\OPI_DBUILD2.obj	: OPI_DBUILD2.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DBUILD2.c
+
+$(INTDIR)\OPI_ADDDIR.obj	: OPI_ADDDIR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_ADDDIR.c
+
+$(INTDIR)\OPI_UPDDIR.obj	: OPI_UPDDIR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_UPDDIR.c
+
+$(INTDIR)\OPI_DELDIR.obj	: OPI_DELDIR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DELDIR.c
+
+$(INTDIR)\OPI_UPDDIRINFO.obj	: OPI_UPDDIRINFO.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_UPDDIRINFO.c
+
+$(INTDIR)\OPI_DLMREAD.obj	: OPI_DLMREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DLMREAD.c
+
+$(INTDIR)\OPI_DLVREAD.obj	: OPI_DLVREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DLVREAD.c
+
+$(INTDIR)\OPI_DLFREAD.obj	: OPI_DLFREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OPI_DLFREAD.c
+
+$(INTDIR)\PI_ADDDOC.obj	: PI_ADDDOC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ADDDOC.c
+
+$(INTDIR)\PI_DALLCLOSE.obj	: PI_DALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DALLCLOSE.c
+
+$(INTDIR)\PI_DBUILD.obj	: PI_DBUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DBUILD.c
+
+$(INTDIR)\PI_DCLOSE.obj	: PI_DCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DCLOSE.c
+
+$(INTDIR)\PI_DCONV.obj	: PI_DCONV.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DCONV.c
+
+$(INTDIR)\PI_DCROPEN.obj	: PI_DCROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DCROPEN.c
+
+$(INTDIR)\PI_DDCHK.obj	: PI_DDCHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DDCHK.c
+
+$(INTDIR)\PI_DELDOC.obj	: PI_DELDOC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DELDOC.c
+
+$(INTDIR)\PI_DHCHK.obj	: PI_DHCHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DHCHK.c
+
+$(INTDIR)\PI_DHREAD.obj	: PI_DHREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DHREAD.c
+
+$(INTDIR)\PI_DICHK.obj	: PI_DICHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DICHK.c
+
+$(INTDIR)\PI_DIFIRST.obj	: PI_DIFIRST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DIFIRST.c
+
+$(INTDIR)\PI_DILAST.obj	: PI_DILAST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DILAST.c
+
+$(INTDIR)\PI_DINEXT.obj	: PI_DINEXT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DINEXT.c
+
+$(INTDIR)\PI_DIPREV.obj	: PI_DIPREV.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DIPREV.c
+
+$(INTDIR)\PI_DIREAD.obj	: PI_DIREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DIREAD.c
+
+$(INTDIR)\PI_DOPEN.obj	: PI_DOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DOPEN.c
+
+$(INTDIR)\PI_DUOPEN.obj	: PI_DUOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DUOPEN.c
+
+$(INTDIR)\PI_DVADD.obj	: PI_DVADD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DVADD.c
+
+$(INTDIR)\PI_DVCHK.obj	: PI_DVCHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DVCHK.c
+
+$(INTDIR)\PI_DVDEL.obj	: PI_DVDEL.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DVDEL.c
+
+$(INTDIR)\PI_DVREAD.obj	: PI_DVREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DVREAD.c
+
+$(INTDIR)\PI_DVREN.obj	: PI_DVREN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DVREN.c
+
+$(INTDIR)\PI_DVUPD.obj	: PI_DVUPD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DVUPD.c
+
+$(INTDIR)\PI_REDDOC.obj	: PI_REDDOC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_REDDOC.c
+
+$(INTDIR)\PI_UPDDOC.obj	: PI_UPDDOC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_UPDDOC.c
+
+$(INTDIR)\PI_DBUILD2.obj	: PI_DBUILD2.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DBUILD2.c
+
+$(INTDIR)\PI_DCOMMIT.obj	: PI_DCOMMIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DCOMMIT.c
+
+$(INTDIR)\PI_DROLLBACK.obj	: PI_DROLLBACK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DROLLBACK.c
+
+$(INTDIR)\PI_ADDDIR.obj	: PI_ADDDIR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_ADDDIR.c
+
+$(INTDIR)\PI_UPDDIR.obj	: PI_UPDDIR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_UPDDIR.c
+
+$(INTDIR)\PI_DELDIR.obj	: PI_DELDIR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DELDIR.c
+
+$(INTDIR)\PI_UPDDIRINFO.obj	: PI_UPDDIRINFO.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_UPDDIRINFO.c
+
+$(INTDIR)\PI_DLMREAD.obj	: PI_DLMREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DLMREAD.c
+
+$(INTDIR)\PI_DLVREAD.obj	: PI_DLVREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DLVREAD.c
+
+$(INTDIR)\PI_DLFREAD.obj	: PI_DLFREAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c PI_DLFREAD.c
+
+$(INTDIR)\ds_chkbuildinf.obj	: ds_chkbuildinf.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_chkbuildinf.c
+
+$(INTDIR)\ds_chkdocid.obj	: ds_chkdocid.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_chkdocid.c
+
+$(INTDIR)\ds_chkfsize.obj	: ds_chkfsize.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_chkfsize.c
+
+$(INTDIR)\ds_chkvolinf.obj	: ds_chkvolinf.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_chkvolinf.c
+
+$(INTDIR)\ds_convert.obj	: ds_convert.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_convert.c
+
+$(INTDIR)\ds_erase.obj	: ds_erase.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_erase.c
+
+$(INTDIR)\ds_errset.obj	: ds_errset.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_errset.c
+
+$(INTDIR)\ds_filegen.obj	: ds_filegen.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_filegen.c
+
+$(INTDIR)\ds_fileopen.obj	: ds_fileopen.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_fileopen.c
+
+$(INTDIR)\ds_fullpath.obj	: ds_fullpath.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_fullpath.c
+
+$(INTDIR)\ds_getver.obj	: ds_getver.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_getver.c
+
+$(INTDIR)\ds_getvolno.obj	: ds_getvolno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_getvolno.c
+
+$(INTDIR)\ds_getvolseq.obj	: ds_getvolseq.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_getvolseq.c
+
+$(INTDIR)\ds_movedoc.obj	: ds_movedoc.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_movedoc.c
+
+$(INTDIR)\ds_newdocid.obj	: ds_newdocid.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_newdocid.c
+
+$(INTDIR)\ds_newvolno.obj	: ds_newvolno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_newvolno.c
+
+$(INTDIR)\ds_nextfd.obj	: ds_nextfd.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_nextfd.c
+
+$(INTDIR)\ds_setver.obj	: ds_setver.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_setver.c
+
+$(INTDIR)\ds_splitvol.obj	: ds_splitvol.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_splitvol.c
+
+$(INTDIR)\ds_usedblkcnt.obj	: ds_usedblkcnt.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_usedblkcnt.c
+
+$(INTDIR)\ds_volgen.obj	: ds_volgen.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_volgen.c
+
+$(INTDIR)\ds_volopen.obj	: ds_volopen.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_volopen.c
+
+$(INTDIR)\l_dsmlsethyerrno.obj	: l_dsmlsethyerrno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_dsmlsethyerrno.c
+
+$(INTDIR)\ds_chkfdavail.obj	: ds_chkfdavail.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_chkfdavail.c
+
+$(INTDIR)\ds_getdirseq.obj	: ds_getdirseq.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_getdirseq.c
+
+$(INTDIR)\ds_getnewdir.obj	: ds_getnewdir.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_getnewdir.c
+
+$(INTDIR)\ds_log.obj	: ds_log.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_log.c
+
+$(INTDIR)\ds_splitpath.obj	: ds_splitpath.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_splitpath.c
+
+$(INTDIR)\ds_dprintf.obj	: ds_dprintf.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ds_dprintf.c

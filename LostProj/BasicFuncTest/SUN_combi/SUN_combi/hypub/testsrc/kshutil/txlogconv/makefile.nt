@@ -1,0 +1,37 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+FNAME	= txlogconv
+
+CFLAGS	= \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	/I $(DLTP)\dblay \
+	$(CFOPT)
+
+HEADER	= \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\gps.h \
+	$(COMMON)\include\pisam.h \
+	$(DLTP)\dblay\usid.h
+
+DLIBS	= \
+	$(RUNNT)\lib\disam32.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(RUNNT)\lib\pisam.lib
+
+LIBS	= \
+	$(DLIBS)
+
+OBJS	=  \
+	$(INTDIR)\$(FNAME).obj	
+
+all	: echo $(RUNNT)\test\$(FNAME).exe
+
+echo	:
+	@echo	KSHUTIL/TXLOGCONV
+
+$(RUNNT)\test\$(FNAME).exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\$(FNAME).obj		: $(FNAME).c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c $(FNAME).c

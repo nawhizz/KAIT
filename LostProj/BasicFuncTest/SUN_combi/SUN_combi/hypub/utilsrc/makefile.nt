@@ -1,0 +1,15 @@
+SUBDIR	= dsmladm showsem showshm socktst isinfo isutil dgrep sgrep \
+	  fsep fcom fstr fchk dwc ipcs ipcrm
+
+all	: echo $(SUBDIR)
+
+echo	:
+	@echo HYPUB/UTILSRC
+
+
+$(SUBDIR): a
+	@cd $@
+	@nmake /nologo -f makefile.nt
+	@cd ..
+
+a :

@@ -1,0 +1,24 @@
+;-----------------------------------
+; IPCWRAP.DLL module definition file
+;-----------------------------------
+
+LIBRARY 	IPCWRAP
+
+DESCRIPTION	'DLL for IPC, 1998, 05'
+EXPORTS
+		semctl		@1
+		semget		@2
+		semop		@3
+		shmat		@4
+		shmctl		@5
+		shmdt		@6
+		shmget		@7
+		ftok		@8
+;
+;		sembuf		@9
+;		semt		@10
+;		shmt		@11
+; internal
+		getshmid	@12
+		semopx		@13
+		getsemid	@14

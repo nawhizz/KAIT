@@ -1,0 +1,33 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\ipcwrap.h
+
+DLIBS = \
+	$(RUNNT)\lib\ipcwrap.lib
+
+LIBS = \
+	$(RUNNT)\lib\ipcwrap.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\showsem.obj	
+
+all	: echo $(RUNNT)\bin\showsem.exe
+
+echo	:
+	@echo	HYPUB/UTILSRC/SHOWSEM
+
+$(RUNNT)\bin\showsem.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\showsem.obj	: showsem.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c showsem.c
+
+

@@ -1,0 +1,701 @@
+include	$(SVRHOME)/makefile.env
+
+CFLAGS	= \
+	-I$(COMMON)/include \
+	$(CFOPT) $(CFOPTL)
+
+HEADER	= \
+	$(COMMON)/include/fio.h 	$(COMMON)/include/gps.h \
+	fm_fun.h 	fs_fun.h 	sm_fun.h
+
+STATIC_OBJS	= \
+	$(SDOBJ)/FM_ALLCLOSE.o	$(SDOBJ)/FM_CLOSE.o	$(SDOBJ)/FM_FILLFRM.o \
+	$(SDOBJ)/FM_FILLSEG.o	$(SDOBJ)/FM_GETPATH.o	$(SDOBJ)/FM_GETSIZE.o \
+	$(SDOBJ)/FM_OPEN.o	$(SDOBJ)/FS_ALLCLOSE.o	$(SDOBJ)/FS_APPEND.o \
+	$(SDOBJ)/FS_BUILD.o	$(SDOBJ)/FS_CLOSE.o	$(SDOBJ)/FS_CROPEN.o \
+	$(SDOBJ)/FS_DROP.o	$(SDOBJ)/FS_GETPATH.o	$(SDOBJ)/FS_OPEN.o \
+	$(SDOBJ)/FS_READ.o	$(SDOBJ)/FS_RECNUM.o	$(SDOBJ)/FS_REDFIRST.o \
+	$(SDOBJ)/FS_REDLAST.o	$(SDOBJ)/FS_REDLN.o	$(SDOBJ)/FS_REDNX.o \
+	$(SDOBJ)/FS_REDPR.o	$(SDOBJ)/FS_UPDAT.o	$(SDOBJ)/FS_UPDATCUR.o \
+	$(SDOBJ)/FS_WRITE.o	$(SDOBJ)/OBP_PRTDATA.o	$(SDOBJ)/OBP_PRTFF.o \
+	$(SDOBJ)/OBP_PRTFORM.o	$(SDOBJ)/OBP_PRTLF.o	$(SDOBJ)/OBP_PRTLINE.o \
+	$(SDOBJ)/OBP_PRTSEG.o	$(SDOBJ)/OBP_PRTSEGF.o	$(SDOBJ)/OFM_ALLCLOSE.o \
+	$(SDOBJ)/OFM_CLOSE.o	$(SDOBJ)/OFM_FILLFRM.o	$(SDOBJ)/OFM_FILLSEG.o \
+	$(SDOBJ)/OFM_GETPATH.o	$(SDOBJ)/OFM_GETSIZE.o	$(SDOBJ)/OFM_OPEN.o \
+	$(SDOBJ)/OFS_ALLCLOSE.o	$(SDOBJ)/OFS_APPEND.o	$(SDOBJ)/OFS_BUILD.o \
+	$(SDOBJ)/OFS_CLOSE.o	$(SDOBJ)/OFS_CROPEN.o	$(SDOBJ)/OFS_DROP.o \
+	$(SDOBJ)/OFS_GETPATH.o	$(SDOBJ)/OFS_OPEN.o	$(SDOBJ)/OFS_READ.o \
+	$(SDOBJ)/OFS_REDFIRST.o	$(SDOBJ)/OFS_REDLN.o	$(SDOBJ)/OFS_REDNX.o \
+	$(SDOBJ)/OFS_REDPR.o	$(SDOBJ)/OFS_UPDAT.o	$(SDOBJ)/OFS_UPDATCUR.o \
+	$(SDOBJ)/OFS_WRITE.o	$(SDOBJ)/OSM_APPEND.o	$(SDOBJ)/OSM_BUILD.o \
+	$(SDOBJ)/OSM_CLOSE.o	$(SDOBJ)/OSM_CROPEN.o	$(SDOBJ)/OSM_DROP.o \
+	$(SDOBJ)/OSM_OPEN.o	$(SDOBJ)/OSM_READ.o	$(SDOBJ)/OSM_REDFIRST.o \
+	$(SDOBJ)/OSM_REDLAST.o	$(SDOBJ)/OSM_REDLN.o	$(SDOBJ)/OSM_REDNX.o \
+	$(SDOBJ)/OSM_REDPR.o	$(SDOBJ)/OSM_UPDAT.o	$(SDOBJ)/OSM_UPDATCUR.o \
+	$(SDOBJ)/OSM_WRITE.o	$(SDOBJ)/SM_APPEND.o	$(SDOBJ)/SM_BUILD.o \
+	$(SDOBJ)/SM_CLOSE.o	$(SDOBJ)/SM_CROPEN.o	$(SDOBJ)/SM_DROP.o \
+	$(SDOBJ)/SM_OPEN.o	$(SDOBJ)/SM_READ.o	$(SDOBJ)/SM_REDFIRST.o \
+	$(SDOBJ)/SM_REDLAST.o	$(SDOBJ)/SM_REDLN.o	$(SDOBJ)/SM_REDNX.o \
+	$(SDOBJ)/SM_REDPR.o	$(SDOBJ)/SM_UPDAT.o	$(SDOBJ)/SM_UPDATCUR.o \
+	$(SDOBJ)/SM_WRITE.o	$(SDOBJ)/bp_prtdata.o	$(SDOBJ)/bp_prtff.o \
+	$(SDOBJ)/bp_prtform.o	$(SDOBJ)/bp_prtlf.o	$(SDOBJ)/bp_prtline.o \
+	$(SDOBJ)/bp_prtseg.o	$(SDOBJ)/bp_prtsegf.o	$(SDOBJ)/fioext.o \
+	$(SDOBJ)/fm_errset.o	$(SDOBJ)/fm_getfpath.o	$(SDOBJ)/fm_getline.o \
+	$(SDOBJ)/fm_savefile.o	$(SDOBJ)/fs_errset.o	$(SDOBJ)/fs_savefile.o \
+	$(SDOBJ)/sm_errset.o	$(SDOBJ)/l_fiosethyerrno.o
+
+DYNAMIC_OBJS	= \
+	$(DDOBJ)/FM_ALLCLOSE.o	$(DDOBJ)/FM_CLOSE.o	$(DDOBJ)/FM_FILLFRM.o \
+	$(DDOBJ)/FM_FILLSEG.o	$(DDOBJ)/FM_GETPATH.o	$(DDOBJ)/FM_GETSIZE.o \
+	$(DDOBJ)/FM_OPEN.o	$(DDOBJ)/FS_ALLCLOSE.o	$(DDOBJ)/FS_APPEND.o \
+	$(DDOBJ)/FS_BUILD.o	$(DDOBJ)/FS_CLOSE.o	$(DDOBJ)/FS_CROPEN.o \
+	$(DDOBJ)/FS_DROP.o	$(DDOBJ)/FS_GETPATH.o	$(DDOBJ)/FS_OPEN.o \
+	$(DDOBJ)/FS_READ.o	$(DDOBJ)/FS_RECNUM.o	$(DDOBJ)/FS_REDFIRST.o \
+	$(DDOBJ)/FS_REDLAST.o	$(DDOBJ)/FS_REDLN.o	$(DDOBJ)/FS_REDNX.o \
+	$(DDOBJ)/FS_REDPR.o	$(DDOBJ)/FS_UPDAT.o	$(DDOBJ)/FS_UPDATCUR.o \
+	$(DDOBJ)/FS_WRITE.o	$(DDOBJ)/OBP_PRTDATA.o	$(DDOBJ)/OBP_PRTFF.o \
+	$(DDOBJ)/OBP_PRTFORM.o	$(DDOBJ)/OBP_PRTLF.o	$(DDOBJ)/OBP_PRTLINE.o \
+	$(DDOBJ)/OBP_PRTSEG.o	$(DDOBJ)/OBP_PRTSEGF.o	$(DDOBJ)/OFM_ALLCLOSE.o \
+	$(DDOBJ)/OFM_CLOSE.o	$(DDOBJ)/OFM_FILLFRM.o	$(DDOBJ)/OFM_FILLSEG.o \
+	$(DDOBJ)/OFM_GETPATH.o	$(DDOBJ)/OFM_GETSIZE.o	$(DDOBJ)/OFM_OPEN.o \
+	$(DDOBJ)/OFS_ALLCLOSE.o	$(DDOBJ)/OFS_APPEND.o	$(DDOBJ)/OFS_BUILD.o \
+	$(DDOBJ)/OFS_CLOSE.o	$(DDOBJ)/OFS_CROPEN.o	$(DDOBJ)/OFS_DROP.o \
+	$(DDOBJ)/OFS_GETPATH.o	$(DDOBJ)/OFS_OPEN.o	$(DDOBJ)/OFS_READ.o \
+	$(DDOBJ)/OFS_REDFIRST.o	$(DDOBJ)/OFS_REDLN.o	$(DDOBJ)/OFS_REDNX.o \
+	$(DDOBJ)/OFS_REDPR.o	$(DDOBJ)/OFS_UPDAT.o	$(DDOBJ)/OFS_UPDATCUR.o \
+	$(DDOBJ)/OFS_WRITE.o	$(DDOBJ)/OSM_APPEND.o	$(DDOBJ)/OSM_BUILD.o \
+	$(DDOBJ)/OSM_CLOSE.o	$(DDOBJ)/OSM_CROPEN.o	$(DDOBJ)/OSM_DROP.o \
+	$(DDOBJ)/OSM_OPEN.o	$(DDOBJ)/OSM_READ.o	$(DDOBJ)/OSM_REDFIRST.o \
+	$(DDOBJ)/OSM_REDLAST.o	$(DDOBJ)/OSM_REDLN.o	$(DDOBJ)/OSM_REDNX.o \
+	$(DDOBJ)/OSM_REDPR.o	$(DDOBJ)/OSM_UPDAT.o	$(DDOBJ)/OSM_UPDATCUR.o \
+	$(DDOBJ)/OSM_WRITE.o	$(DDOBJ)/SM_APPEND.o	$(DDOBJ)/SM_BUILD.o \
+	$(DDOBJ)/SM_CLOSE.o	$(DDOBJ)/SM_CROPEN.o	$(DDOBJ)/SM_DROP.o \
+	$(DDOBJ)/SM_OPEN.o	$(DDOBJ)/SM_READ.o	$(DDOBJ)/SM_REDFIRST.o \
+	$(DDOBJ)/SM_REDLAST.o	$(DDOBJ)/SM_REDLN.o	$(DDOBJ)/SM_REDNX.o \
+	$(DDOBJ)/SM_REDPR.o	$(DDOBJ)/SM_UPDAT.o	$(DDOBJ)/SM_UPDATCUR.o \
+	$(DDOBJ)/SM_WRITE.o	$(DDOBJ)/bp_prtdata.o	$(DDOBJ)/bp_prtff.o \
+	$(DDOBJ)/bp_prtform.o	$(DDOBJ)/bp_prtlf.o	$(DDOBJ)/bp_prtline.o \
+	$(DDOBJ)/bp_prtseg.o	$(DDOBJ)/bp_prtsegf.o	$(DDOBJ)/fioext.o \
+	$(DDOBJ)/fm_errset.o	$(DDOBJ)/fm_getfpath.o	$(DDOBJ)/fm_getline.o \
+	$(DDOBJ)/fm_savefile.o	$(DDOBJ)/fs_errset.o	$(DDOBJ)/fs_savefile.o \
+	$(DDOBJ)/sm_errset.o	$(DDOBJ)/l_fiosethyerrno.o
+
+all	: echo $(RUNUX)/lib/libfio.a $(RUNUX)/lib/libfio.$(MAKESLN)
+
+echo		:
+	@echo	HYPUB/LIBSRC/FIO$(ECHOLANG)
+
+$(RUNUX)/lib/libfio.a	: $(STATIC_OBJS)
+	ar vcr $(RUNUX)/lib/libfio.a $(STATIC_OBJS)
+
+$(RUNUX)/lib/libfio.$(MAKESLN)	: $(DYNAMIC_OBJS)
+	$(GENSL) -o $(RUNUX)/lib/libfio.$(MAKESLN) $(MAKESL) $(DYNAMIC_OBJS)
+
+
+$(SDOBJ)/FM_ALLCLOSE.o		: FM_ALLCLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FM_ALLCLOSE.o $(CFLAGS) -c FM_ALLCLOSE.c
+
+$(SDOBJ)/FM_CLOSE.o		: FM_CLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FM_CLOSE.o $(CFLAGS) -c FM_CLOSE.c
+
+$(SDOBJ)/FM_FILLFRM.o		: FM_FILLFRM.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FM_FILLFRM.o $(CFLAGS) -c FM_FILLFRM.c
+
+$(SDOBJ)/FM_FILLSEG.o		: FM_FILLSEG.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FM_FILLSEG.o $(CFLAGS) -c FM_FILLSEG.c
+
+$(SDOBJ)/FM_GETPATH.o		: FM_GETPATH.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FM_GETPATH.o $(CFLAGS) -c FM_GETPATH.c
+
+$(SDOBJ)/FM_GETSIZE.o		: FM_GETSIZE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FM_GETSIZE.o $(CFLAGS) -c FM_GETSIZE.c
+
+$(SDOBJ)/FM_OPEN.o		: FM_OPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FM_OPEN.o $(CFLAGS) -c FM_OPEN.c
+
+$(SDOBJ)/FS_ALLCLOSE.o		: FS_ALLCLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_ALLCLOSE.o $(CFLAGS) -c FS_ALLCLOSE.c
+
+$(SDOBJ)/FS_APPEND.o		: FS_APPEND.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_APPEND.o $(CFLAGS) -c FS_APPEND.c
+
+$(SDOBJ)/FS_BUILD.o		: FS_BUILD.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_BUILD.o $(CFLAGS) -c FS_BUILD.c
+
+$(SDOBJ)/FS_CLOSE.o		: FS_CLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_CLOSE.o $(CFLAGS) -c FS_CLOSE.c
+
+$(SDOBJ)/FS_CROPEN.o		: FS_CROPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_CROPEN.o $(CFLAGS) -c FS_CROPEN.c
+
+$(SDOBJ)/FS_DROP.o		: FS_DROP.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_DROP.o $(CFLAGS) -c FS_DROP.c
+
+$(SDOBJ)/FS_GETPATH.o		: FS_GETPATH.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_GETPATH.o $(CFLAGS) -c FS_GETPATH.c
+
+$(SDOBJ)/FS_OPEN.o		: FS_OPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_OPEN.o $(CFLAGS) -c FS_OPEN.c
+
+$(SDOBJ)/FS_READ.o		: FS_READ.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_READ.o $(CFLAGS) -c FS_READ.c
+
+$(SDOBJ)/FS_RECNUM.o		: FS_RECNUM.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_RECNUM.o $(CFLAGS) -c FS_RECNUM.c
+
+$(SDOBJ)/FS_REDFIRST.o		: FS_REDFIRST.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_REDFIRST.o $(CFLAGS) -c FS_REDFIRST.c
+
+$(SDOBJ)/FS_REDLAST.o		: FS_REDLAST.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_REDLAST.o $(CFLAGS) -c FS_REDLAST.c
+
+$(SDOBJ)/FS_REDLN.o		: FS_REDLN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_REDLN.o $(CFLAGS) -c FS_REDLN.c
+
+$(SDOBJ)/FS_REDNX.o		: FS_REDNX.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_REDNX.o $(CFLAGS) -c FS_REDNX.c
+
+$(SDOBJ)/FS_REDPR.o		: FS_REDPR.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_REDPR.o $(CFLAGS) -c FS_REDPR.c
+
+$(SDOBJ)/FS_UPDAT.o		: FS_UPDAT.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_UPDAT.o $(CFLAGS) -c FS_UPDAT.c
+
+$(SDOBJ)/FS_UPDATCUR.o		: FS_UPDATCUR.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_UPDATCUR.o $(CFLAGS) -c FS_UPDATCUR.c
+
+$(SDOBJ)/FS_WRITE.o		: FS_WRITE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/FS_WRITE.o $(CFLAGS) -c FS_WRITE.c
+
+$(SDOBJ)/OBP_PRTDATA.o		: OBP_PRTDATA.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OBP_PRTDATA.o $(CFLAGS) -c OBP_PRTDATA.c
+
+$(SDOBJ)/OBP_PRTFF.o		: OBP_PRTFF.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OBP_PRTFF.o $(CFLAGS) -c OBP_PRTFF.c
+
+$(SDOBJ)/OBP_PRTFORM.o		: OBP_PRTFORM.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OBP_PRTFORM.o $(CFLAGS) -c OBP_PRTFORM.c
+
+$(SDOBJ)/OBP_PRTLF.o		: OBP_PRTLF.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OBP_PRTLF.o $(CFLAGS) -c OBP_PRTLF.c
+
+$(SDOBJ)/OBP_PRTLINE.o		: OBP_PRTLINE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OBP_PRTLINE.o $(CFLAGS) -c OBP_PRTLINE.c
+
+$(SDOBJ)/OBP_PRTSEG.o		: OBP_PRTSEG.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OBP_PRTSEG.o $(CFLAGS) -c OBP_PRTSEG.c
+
+$(SDOBJ)/OBP_PRTSEGF.o		: OBP_PRTSEGF.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OBP_PRTSEGF.o $(CFLAGS) -c OBP_PRTSEGF.c
+
+$(SDOBJ)/OFM_ALLCLOSE.o		: OFM_ALLCLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFM_ALLCLOSE.o $(CFLAGS) -c OFM_ALLCLOSE.c
+
+$(SDOBJ)/OFM_CLOSE.o		: OFM_CLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFM_CLOSE.o $(CFLAGS) -c OFM_CLOSE.c
+
+$(SDOBJ)/OFM_FILLFRM.o		: OFM_FILLFRM.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFM_FILLFRM.o $(CFLAGS) -c OFM_FILLFRM.c
+
+$(SDOBJ)/OFM_FILLSEG.o		: OFM_FILLSEG.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFM_FILLSEG.o $(CFLAGS) -c OFM_FILLSEG.c
+
+$(SDOBJ)/OFM_GETPATH.o		: OFM_GETPATH.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFM_GETPATH.o $(CFLAGS) -c OFM_GETPATH.c
+
+$(SDOBJ)/OFM_GETSIZE.o		: OFM_GETSIZE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFM_GETSIZE.o $(CFLAGS) -c OFM_GETSIZE.c
+
+$(SDOBJ)/OFM_OPEN.o		: OFM_OPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFM_OPEN.o $(CFLAGS) -c OFM_OPEN.c
+
+$(SDOBJ)/OFS_ALLCLOSE.o		: OFS_ALLCLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_ALLCLOSE.o $(CFLAGS) -c OFS_ALLCLOSE.c
+
+$(SDOBJ)/OFS_APPEND.o		: OFS_APPEND.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_APPEND.o $(CFLAGS) -c OFS_APPEND.c
+
+$(SDOBJ)/OFS_BUILD.o		: OFS_BUILD.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_BUILD.o $(CFLAGS) -c OFS_BUILD.c
+
+$(SDOBJ)/OFS_CLOSE.o		: OFS_CLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_CLOSE.o $(CFLAGS) -c OFS_CLOSE.c
+
+$(SDOBJ)/OFS_CROPEN.o		: OFS_CROPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_CROPEN.o $(CFLAGS) -c OFS_CROPEN.c
+
+$(SDOBJ)/OFS_DROP.o		: OFS_DROP.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_DROP.o $(CFLAGS) -c OFS_DROP.c
+
+$(SDOBJ)/OFS_GETPATH.o		: OFS_GETPATH.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_GETPATH.o $(CFLAGS) -c OFS_GETPATH.c
+
+$(SDOBJ)/OFS_OPEN.o		: OFS_OPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_OPEN.o $(CFLAGS) -c OFS_OPEN.c
+
+$(SDOBJ)/OFS_READ.o		: OFS_READ.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_READ.o $(CFLAGS) -c OFS_READ.c
+
+$(SDOBJ)/OFS_REDFIRST.o		: OFS_REDFIRST.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_REDFIRST.o $(CFLAGS) -c OFS_REDFIRST.c
+
+$(SDOBJ)/OFS_REDLN.o		: OFS_REDLN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_REDLN.o $(CFLAGS) -c OFS_REDLN.c
+
+$(SDOBJ)/OFS_REDNX.o		: OFS_REDNX.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_REDNX.o $(CFLAGS) -c OFS_REDNX.c
+
+$(SDOBJ)/OFS_REDPR.o		: OFS_REDPR.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_REDPR.o $(CFLAGS) -c OFS_REDPR.c
+
+$(SDOBJ)/OFS_UPDAT.o		: OFS_UPDAT.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_UPDAT.o $(CFLAGS) -c OFS_UPDAT.c
+
+$(SDOBJ)/OFS_UPDATCUR.o		: OFS_UPDATCUR.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_UPDATCUR.o $(CFLAGS) -c OFS_UPDATCUR.c
+
+$(SDOBJ)/OFS_WRITE.o		: OFS_WRITE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OFS_WRITE.o $(CFLAGS) -c OFS_WRITE.c
+
+$(SDOBJ)/OSM_APPEND.o		: OSM_APPEND.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_APPEND.o $(CFLAGS) -c OSM_APPEND.c
+
+$(SDOBJ)/OSM_BUILD.o		: OSM_BUILD.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_BUILD.o $(CFLAGS) -c OSM_BUILD.c
+
+$(SDOBJ)/OSM_CLOSE.o		: OSM_CLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_CLOSE.o $(CFLAGS) -c OSM_CLOSE.c
+
+$(SDOBJ)/OSM_CROPEN.o		: OSM_CROPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_CROPEN.o $(CFLAGS) -c OSM_CROPEN.c
+
+$(SDOBJ)/OSM_DROP.o		: OSM_DROP.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_DROP.o $(CFLAGS) -c OSM_DROP.c
+
+$(SDOBJ)/OSM_OPEN.o		: OSM_OPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_OPEN.o $(CFLAGS) -c OSM_OPEN.c
+
+$(SDOBJ)/OSM_READ.o		: OSM_READ.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_READ.o $(CFLAGS) -c OSM_READ.c
+
+$(SDOBJ)/OSM_REDFIRST.o		: OSM_REDFIRST.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_REDFIRST.o $(CFLAGS) -c OSM_REDFIRST.c
+
+$(SDOBJ)/OSM_REDLAST.o		: OSM_REDLAST.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_REDLAST.o $(CFLAGS) -c OSM_REDLAST.c
+
+$(SDOBJ)/OSM_REDLN.o		: OSM_REDLN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_REDLN.o $(CFLAGS) -c OSM_REDLN.c
+
+$(SDOBJ)/OSM_REDNX.o		: OSM_REDNX.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_REDNX.o $(CFLAGS) -c OSM_REDNX.c
+
+$(SDOBJ)/OSM_REDPR.o		: OSM_REDPR.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_REDPR.o $(CFLAGS) -c OSM_REDPR.c
+
+$(SDOBJ)/OSM_UPDAT.o		: OSM_UPDAT.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_UPDAT.o $(CFLAGS) -c OSM_UPDAT.c
+
+$(SDOBJ)/OSM_UPDATCUR.o		: OSM_UPDATCUR.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_UPDATCUR.o $(CFLAGS) -c OSM_UPDATCUR.c
+
+$(SDOBJ)/OSM_WRITE.o		: OSM_WRITE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/OSM_WRITE.o $(CFLAGS) -c OSM_WRITE.c
+
+$(SDOBJ)/SM_APPEND.o		: SM_APPEND.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_APPEND.o $(CFLAGS) -c SM_APPEND.c
+
+$(SDOBJ)/SM_BUILD.o		: SM_BUILD.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_BUILD.o $(CFLAGS) -c SM_BUILD.c
+
+$(SDOBJ)/SM_CLOSE.o		: SM_CLOSE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_CLOSE.o $(CFLAGS) -c SM_CLOSE.c
+
+$(SDOBJ)/SM_CROPEN.o		: SM_CROPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_CROPEN.o $(CFLAGS) -c SM_CROPEN.c
+
+$(SDOBJ)/SM_DROP.o		: SM_DROP.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_DROP.o $(CFLAGS) -c SM_DROP.c
+
+$(SDOBJ)/SM_OPEN.o		: SM_OPEN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_OPEN.o $(CFLAGS) -c SM_OPEN.c
+
+$(SDOBJ)/SM_READ.o		: SM_READ.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_READ.o $(CFLAGS) -c SM_READ.c
+
+$(SDOBJ)/SM_REDFIRST.o		: SM_REDFIRST.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_REDFIRST.o $(CFLAGS) -c SM_REDFIRST.c
+
+$(SDOBJ)/SM_REDLAST.o		: SM_REDLAST.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_REDLAST.o $(CFLAGS) -c SM_REDLAST.c
+
+$(SDOBJ)/SM_REDLN.o		: SM_REDLN.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_REDLN.o $(CFLAGS) -c SM_REDLN.c
+
+$(SDOBJ)/SM_REDNX.o		: SM_REDNX.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_REDNX.o $(CFLAGS) -c SM_REDNX.c
+
+$(SDOBJ)/SM_REDPR.o		: SM_REDPR.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_REDPR.o $(CFLAGS) -c SM_REDPR.c
+
+$(SDOBJ)/SM_UPDAT.o		: SM_UPDAT.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_UPDAT.o $(CFLAGS) -c SM_UPDAT.c
+
+$(SDOBJ)/SM_UPDATCUR.o		: SM_UPDATCUR.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_UPDATCUR.o $(CFLAGS) -c SM_UPDATCUR.c
+
+$(SDOBJ)/SM_WRITE.o		: SM_WRITE.c $(HEADER)
+	$(CC) -o $(SDOBJ)/SM_WRITE.o $(CFLAGS) -c SM_WRITE.c
+
+$(SDOBJ)/bp_prtdata.o		: bp_prtdata.c $(HEADER)
+	$(CC) -o $(SDOBJ)/bp_prtdata.o $(CFLAGS) -c bp_prtdata.c
+
+$(SDOBJ)/bp_prtff.o		: bp_prtff.c $(HEADER)
+	$(CC) -o $(SDOBJ)/bp_prtff.o $(CFLAGS) -c bp_prtff.c
+
+$(SDOBJ)/bp_prtform.o		: bp_prtform.c $(HEADER)
+	$(CC) -o $(SDOBJ)/bp_prtform.o $(CFLAGS) -c bp_prtform.c
+
+$(SDOBJ)/bp_prtlf.o		: bp_prtlf.c $(HEADER)
+	$(CC) -o $(SDOBJ)/bp_prtlf.o $(CFLAGS) -c bp_prtlf.c
+
+$(SDOBJ)/bp_prtline.o		: bp_prtline.c $(HEADER)
+	$(CC) -o $(SDOBJ)/bp_prtline.o $(CFLAGS) -c bp_prtline.c
+
+$(SDOBJ)/bp_prtseg.o		: bp_prtseg.c $(HEADER)
+	$(CC) -o $(SDOBJ)/bp_prtseg.o $(CFLAGS) -c bp_prtseg.c
+
+$(SDOBJ)/bp_prtsegf.o		: bp_prtsegf.c $(HEADER)
+	$(CC) -o $(SDOBJ)/bp_prtsegf.o $(CFLAGS) -c bp_prtsegf.c
+
+$(SDOBJ)/fioext.o		: fioext.c $(HEADER)
+	$(CC) -o $(SDOBJ)/fioext.o $(CFLAGS) -c fioext.c
+
+$(SDOBJ)/fm_errset.o		: fm_errset.c $(HEADER)
+	$(CC) -o $(SDOBJ)/fm_errset.o $(CFLAGS) -c fm_errset.c
+
+$(SDOBJ)/fm_getfpath.o		: fm_getfpath.c $(HEADER)
+	$(CC) -o $(SDOBJ)/fm_getfpath.o $(CFLAGS) -c fm_getfpath.c
+
+$(SDOBJ)/fm_getline.o		: fm_getline.c $(HEADER)
+	$(CC) -o $(SDOBJ)/fm_getline.o $(CFLAGS) -c fm_getline.c
+
+$(SDOBJ)/fm_savefile.o		: fm_savefile.c $(HEADER)
+	$(CC) -o $(SDOBJ)/fm_savefile.o $(CFLAGS) -c fm_savefile.c
+
+$(SDOBJ)/fs_errset.o		: fs_errset.c $(HEADER)
+	$(CC) -o $(SDOBJ)/fs_errset.o $(CFLAGS) -c fs_errset.c
+
+$(SDOBJ)/fs_savefile.o		: fs_savefile.c $(HEADER)
+	$(CC) -o $(SDOBJ)/fs_savefile.o $(CFLAGS) -c fs_savefile.c
+
+$(SDOBJ)/sm_errset.o		: sm_errset.c $(HEADER)
+	$(CC) -o $(SDOBJ)/sm_errset.o $(CFLAGS) -c sm_errset.c
+
+$(SDOBJ)/l_fiosethyerrno.o		: l_fiosethyerrno.c $(HEADER)
+	$(CC) -o $(SDOBJ)/l_fiosethyerrno.o $(CFLAGS) -c l_fiosethyerrno.c
+
+
+$(DDOBJ)/FM_ALLCLOSE.o		: FM_ALLCLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FM_ALLCLOSE.o $(MAKESLO) $(CFLAGS) -c FM_ALLCLOSE.c
+
+$(DDOBJ)/FM_CLOSE.o		: FM_CLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FM_CLOSE.o $(MAKESLO) $(CFLAGS) -c FM_CLOSE.c
+
+$(DDOBJ)/FM_FILLFRM.o		: FM_FILLFRM.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FM_FILLFRM.o $(MAKESLO) $(CFLAGS) -c FM_FILLFRM.c
+
+$(DDOBJ)/FM_FILLSEG.o		: FM_FILLSEG.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FM_FILLSEG.o $(MAKESLO) $(CFLAGS) -c FM_FILLSEG.c
+
+$(DDOBJ)/FM_GETPATH.o		: FM_GETPATH.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FM_GETPATH.o $(MAKESLO) $(CFLAGS) -c FM_GETPATH.c
+
+$(DDOBJ)/FM_GETSIZE.o		: FM_GETSIZE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FM_GETSIZE.o $(MAKESLO) $(CFLAGS) -c FM_GETSIZE.c
+
+$(DDOBJ)/FM_OPEN.o		: FM_OPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FM_OPEN.o $(MAKESLO) $(CFLAGS) -c FM_OPEN.c
+
+$(DDOBJ)/FS_ALLCLOSE.o		: FS_ALLCLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_ALLCLOSE.o $(MAKESLO) $(CFLAGS) -c FS_ALLCLOSE.c
+
+$(DDOBJ)/FS_APPEND.o		: FS_APPEND.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_APPEND.o $(MAKESLO) $(CFLAGS) -c FS_APPEND.c
+
+$(DDOBJ)/FS_BUILD.o		: FS_BUILD.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_BUILD.o $(MAKESLO) $(CFLAGS) -c FS_BUILD.c
+
+$(DDOBJ)/FS_CLOSE.o		: FS_CLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_CLOSE.o $(MAKESLO) $(CFLAGS) -c FS_CLOSE.c
+
+$(DDOBJ)/FS_CROPEN.o		: FS_CROPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_CROPEN.o $(MAKESLO) $(CFLAGS) -c FS_CROPEN.c
+
+$(DDOBJ)/FS_DROP.o		: FS_DROP.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_DROP.o $(MAKESLO) $(CFLAGS) -c FS_DROP.c
+
+$(DDOBJ)/FS_GETPATH.o		: FS_GETPATH.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_GETPATH.o $(MAKESLO) $(CFLAGS) -c FS_GETPATH.c
+
+$(DDOBJ)/FS_OPEN.o		: FS_OPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_OPEN.o $(MAKESLO) $(CFLAGS) -c FS_OPEN.c
+
+$(DDOBJ)/FS_READ.o		: FS_READ.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_READ.o $(MAKESLO) $(CFLAGS) -c FS_READ.c
+
+$(DDOBJ)/FS_RECNUM.o		: FS_RECNUM.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_RECNUM.o $(MAKESLO) $(CFLAGS) -c FS_RECNUM.c
+
+$(DDOBJ)/FS_REDFIRST.o		: FS_REDFIRST.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_REDFIRST.o $(MAKESLO) $(CFLAGS) -c FS_REDFIRST.c
+
+$(DDOBJ)/FS_REDLAST.o		: FS_REDLAST.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_REDLAST.o $(MAKESLO) $(CFLAGS) -c FS_REDLAST.c
+
+$(DDOBJ)/FS_REDLN.o		: FS_REDLN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_REDLN.o $(MAKESLO) $(CFLAGS) -c FS_REDLN.c
+
+$(DDOBJ)/FS_REDNX.o		: FS_REDNX.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_REDNX.o $(MAKESLO) $(CFLAGS) -c FS_REDNX.c
+
+$(DDOBJ)/FS_REDPR.o		: FS_REDPR.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_REDPR.o $(MAKESLO) $(CFLAGS) -c FS_REDPR.c
+
+$(DDOBJ)/FS_UPDAT.o		: FS_UPDAT.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_UPDAT.o $(MAKESLO) $(CFLAGS) -c FS_UPDAT.c
+
+$(DDOBJ)/FS_UPDATCUR.o		: FS_UPDATCUR.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_UPDATCUR.o $(MAKESLO) $(CFLAGS) -c FS_UPDATCUR.c
+
+$(DDOBJ)/FS_WRITE.o		: FS_WRITE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/FS_WRITE.o $(MAKESLO) $(CFLAGS) -c FS_WRITE.c
+
+$(DDOBJ)/OBP_PRTDATA.o		: OBP_PRTDATA.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OBP_PRTDATA.o $(MAKESLO) $(CFLAGS) -c OBP_PRTDATA.c
+
+$(DDOBJ)/OBP_PRTFF.o		: OBP_PRTFF.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OBP_PRTFF.o $(MAKESLO) $(CFLAGS) -c OBP_PRTFF.c
+
+$(DDOBJ)/OBP_PRTFORM.o		: OBP_PRTFORM.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OBP_PRTFORM.o $(MAKESLO) $(CFLAGS) -c OBP_PRTFORM.c
+
+$(DDOBJ)/OBP_PRTLF.o		: OBP_PRTLF.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OBP_PRTLF.o $(MAKESLO) $(CFLAGS) -c OBP_PRTLF.c
+
+$(DDOBJ)/OBP_PRTLINE.o		: OBP_PRTLINE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OBP_PRTLINE.o $(MAKESLO) $(CFLAGS) -c OBP_PRTLINE.c
+
+$(DDOBJ)/OBP_PRTSEG.o		: OBP_PRTSEG.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OBP_PRTSEG.o $(MAKESLO) $(CFLAGS) -c OBP_PRTSEG.c
+
+$(DDOBJ)/OBP_PRTSEGF.o		: OBP_PRTSEGF.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OBP_PRTSEGF.o $(MAKESLO) $(CFLAGS) -c OBP_PRTSEGF.c
+
+$(DDOBJ)/OFM_ALLCLOSE.o		: OFM_ALLCLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFM_ALLCLOSE.o $(MAKESLO) $(CFLAGS) -c OFM_ALLCLOSE.c
+
+$(DDOBJ)/OFM_CLOSE.o		: OFM_CLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFM_CLOSE.o $(MAKESLO) $(CFLAGS) -c OFM_CLOSE.c
+
+$(DDOBJ)/OFM_FILLFRM.o		: OFM_FILLFRM.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFM_FILLFRM.o $(MAKESLO) $(CFLAGS) -c OFM_FILLFRM.c
+
+$(DDOBJ)/OFM_FILLSEG.o		: OFM_FILLSEG.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFM_FILLSEG.o $(MAKESLO) $(CFLAGS) -c OFM_FILLSEG.c
+
+$(DDOBJ)/OFM_GETPATH.o		: OFM_GETPATH.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFM_GETPATH.o $(MAKESLO) $(CFLAGS) -c OFM_GETPATH.c
+
+$(DDOBJ)/OFM_GETSIZE.o		: OFM_GETSIZE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFM_GETSIZE.o $(MAKESLO) $(CFLAGS) -c OFM_GETSIZE.c
+
+$(DDOBJ)/OFM_OPEN.o		: OFM_OPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFM_OPEN.o $(MAKESLO) $(CFLAGS) -c OFM_OPEN.c
+
+$(DDOBJ)/OFS_ALLCLOSE.o		: OFS_ALLCLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_ALLCLOSE.o $(MAKESLO) $(CFLAGS) -c OFS_ALLCLOSE.c
+
+$(DDOBJ)/OFS_APPEND.o		: OFS_APPEND.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_APPEND.o $(MAKESLO) $(CFLAGS) -c OFS_APPEND.c
+
+$(DDOBJ)/OFS_BUILD.o		: OFS_BUILD.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_BUILD.o $(MAKESLO) $(CFLAGS) -c OFS_BUILD.c
+
+$(DDOBJ)/OFS_CLOSE.o		: OFS_CLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_CLOSE.o $(MAKESLO) $(CFLAGS) -c OFS_CLOSE.c
+
+$(DDOBJ)/OFS_CROPEN.o		: OFS_CROPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_CROPEN.o $(MAKESLO) $(CFLAGS) -c OFS_CROPEN.c
+
+$(DDOBJ)/OFS_DROP.o		: OFS_DROP.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_DROP.o $(MAKESLO) $(CFLAGS) -c OFS_DROP.c
+
+$(DDOBJ)/OFS_GETPATH.o		: OFS_GETPATH.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_GETPATH.o $(MAKESLO) $(CFLAGS) -c OFS_GETPATH.c
+
+$(DDOBJ)/OFS_OPEN.o		: OFS_OPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_OPEN.o $(MAKESLO) $(CFLAGS) -c OFS_OPEN.c
+
+$(DDOBJ)/OFS_READ.o		: OFS_READ.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_READ.o $(MAKESLO) $(CFLAGS) -c OFS_READ.c
+
+$(DDOBJ)/OFS_REDFIRST.o		: OFS_REDFIRST.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_REDFIRST.o $(MAKESLO) $(CFLAGS) -c OFS_REDFIRST.c
+
+$(DDOBJ)/OFS_REDLN.o		: OFS_REDLN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_REDLN.o $(MAKESLO) $(CFLAGS) -c OFS_REDLN.c
+
+$(DDOBJ)/OFS_REDNX.o		: OFS_REDNX.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_REDNX.o $(MAKESLO) $(CFLAGS) -c OFS_REDNX.c
+
+$(DDOBJ)/OFS_REDPR.o		: OFS_REDPR.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_REDPR.o $(MAKESLO) $(CFLAGS) -c OFS_REDPR.c
+
+$(DDOBJ)/OFS_UPDAT.o		: OFS_UPDAT.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_UPDAT.o $(MAKESLO) $(CFLAGS) -c OFS_UPDAT.c
+
+$(DDOBJ)/OFS_UPDATCUR.o		: OFS_UPDATCUR.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_UPDATCUR.o $(MAKESLO) $(CFLAGS) -c OFS_UPDATCUR.c
+
+$(DDOBJ)/OFS_WRITE.o		: OFS_WRITE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OFS_WRITE.o $(MAKESLO) $(CFLAGS) -c OFS_WRITE.c
+
+$(DDOBJ)/OSM_APPEND.o		: OSM_APPEND.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_APPEND.o $(MAKESLO) $(CFLAGS) -c OSM_APPEND.c
+
+$(DDOBJ)/OSM_BUILD.o		: OSM_BUILD.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_BUILD.o $(MAKESLO) $(CFLAGS) -c OSM_BUILD.c
+
+$(DDOBJ)/OSM_CLOSE.o		: OSM_CLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_CLOSE.o $(MAKESLO) $(CFLAGS) -c OSM_CLOSE.c
+
+$(DDOBJ)/OSM_CROPEN.o		: OSM_CROPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_CROPEN.o $(MAKESLO) $(CFLAGS) -c OSM_CROPEN.c
+
+$(DDOBJ)/OSM_DROP.o		: OSM_DROP.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_DROP.o $(MAKESLO) $(CFLAGS) -c OSM_DROP.c
+
+$(DDOBJ)/OSM_OPEN.o		: OSM_OPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_OPEN.o $(MAKESLO) $(CFLAGS) -c OSM_OPEN.c
+
+$(DDOBJ)/OSM_READ.o		: OSM_READ.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_READ.o $(MAKESLO) $(CFLAGS) -c OSM_READ.c
+
+$(DDOBJ)/OSM_REDFIRST.o		: OSM_REDFIRST.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_REDFIRST.o $(MAKESLO) $(CFLAGS) -c OSM_REDFIRST.c
+
+$(DDOBJ)/OSM_REDLAST.o		: OSM_REDLAST.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_REDLAST.o $(MAKESLO) $(CFLAGS) -c OSM_REDLAST.c
+
+$(DDOBJ)/OSM_REDLN.o		: OSM_REDLN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_REDLN.o $(MAKESLO) $(CFLAGS) -c OSM_REDLN.c
+
+$(DDOBJ)/OSM_REDNX.o		: OSM_REDNX.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_REDNX.o $(MAKESLO) $(CFLAGS) -c OSM_REDNX.c
+
+$(DDOBJ)/OSM_REDPR.o		: OSM_REDPR.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_REDPR.o $(MAKESLO) $(CFLAGS) -c OSM_REDPR.c
+
+$(DDOBJ)/OSM_UPDAT.o		: OSM_UPDAT.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_UPDAT.o $(MAKESLO) $(CFLAGS) -c OSM_UPDAT.c
+
+$(DDOBJ)/OSM_UPDATCUR.o		: OSM_UPDATCUR.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_UPDATCUR.o $(MAKESLO) $(CFLAGS) -c OSM_UPDATCUR.c
+
+$(DDOBJ)/OSM_WRITE.o		: OSM_WRITE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/OSM_WRITE.o $(MAKESLO) $(CFLAGS) -c OSM_WRITE.c
+
+$(DDOBJ)/SM_APPEND.o		: SM_APPEND.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_APPEND.o $(MAKESLO) $(CFLAGS) -c SM_APPEND.c
+
+$(DDOBJ)/SM_BUILD.o		: SM_BUILD.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_BUILD.o $(MAKESLO) $(CFLAGS) -c SM_BUILD.c
+
+$(DDOBJ)/SM_CLOSE.o		: SM_CLOSE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_CLOSE.o $(MAKESLO) $(CFLAGS) -c SM_CLOSE.c
+
+$(DDOBJ)/SM_CROPEN.o		: SM_CROPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_CROPEN.o $(MAKESLO) $(CFLAGS) -c SM_CROPEN.c
+
+$(DDOBJ)/SM_DROP.o		: SM_DROP.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_DROP.o $(MAKESLO) $(CFLAGS) -c SM_DROP.c
+
+$(DDOBJ)/SM_OPEN.o		: SM_OPEN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_OPEN.o $(MAKESLO) $(CFLAGS) -c SM_OPEN.c
+
+$(DDOBJ)/SM_READ.o		: SM_READ.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_READ.o $(MAKESLO) $(CFLAGS) -c SM_READ.c
+
+$(DDOBJ)/SM_REDFIRST.o		: SM_REDFIRST.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_REDFIRST.o $(MAKESLO) $(CFLAGS) -c SM_REDFIRST.c
+
+$(DDOBJ)/SM_REDLAST.o		: SM_REDLAST.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_REDLAST.o $(MAKESLO) $(CFLAGS) -c SM_REDLAST.c
+
+$(DDOBJ)/SM_REDLN.o		: SM_REDLN.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_REDLN.o $(MAKESLO) $(CFLAGS) -c SM_REDLN.c
+
+$(DDOBJ)/SM_REDNX.o		: SM_REDNX.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_REDNX.o $(MAKESLO) $(CFLAGS) -c SM_REDNX.c
+
+$(DDOBJ)/SM_REDPR.o		: SM_REDPR.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_REDPR.o $(MAKESLO) $(CFLAGS) -c SM_REDPR.c
+
+$(DDOBJ)/SM_UPDAT.o		: SM_UPDAT.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_UPDAT.o $(MAKESLO) $(CFLAGS) -c SM_UPDAT.c
+
+$(DDOBJ)/SM_UPDATCUR.o		: SM_UPDATCUR.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_UPDATCUR.o $(MAKESLO) $(CFLAGS) -c SM_UPDATCUR.c
+
+$(DDOBJ)/SM_WRITE.o		: SM_WRITE.c $(HEADER)
+	$(CC) -o $(DDOBJ)/SM_WRITE.o $(MAKESLO) $(CFLAGS) -c SM_WRITE.c
+
+$(DDOBJ)/bp_prtdata.o		: bp_prtdata.c $(HEADER)
+	$(CC) -o $(DDOBJ)/bp_prtdata.o $(MAKESLO) $(CFLAGS) -c bp_prtdata.c
+
+$(DDOBJ)/bp_prtff.o		: bp_prtff.c $(HEADER)
+	$(CC) -o $(DDOBJ)/bp_prtff.o $(MAKESLO) $(CFLAGS) -c bp_prtff.c
+
+$(DDOBJ)/bp_prtform.o		: bp_prtform.c $(HEADER)
+	$(CC) -o $(DDOBJ)/bp_prtform.o $(MAKESLO) $(CFLAGS) -c bp_prtform.c
+
+$(DDOBJ)/bp_prtlf.o		: bp_prtlf.c $(HEADER)
+	$(CC) -o $(DDOBJ)/bp_prtlf.o $(MAKESLO) $(CFLAGS) -c bp_prtlf.c
+
+$(DDOBJ)/bp_prtline.o		: bp_prtline.c $(HEADER)
+	$(CC) -o $(DDOBJ)/bp_prtline.o $(MAKESLO) $(CFLAGS) -c bp_prtline.c
+
+$(DDOBJ)/bp_prtseg.o		: bp_prtseg.c $(HEADER)
+	$(CC) -o $(DDOBJ)/bp_prtseg.o $(MAKESLO) $(CFLAGS) -c bp_prtseg.c
+
+$(DDOBJ)/bp_prtsegf.o		: bp_prtsegf.c $(HEADER)
+	$(CC) -o $(DDOBJ)/bp_prtsegf.o $(MAKESLO) $(CFLAGS) -c bp_prtsegf.c
+
+$(DDOBJ)/fioext.o		: fioext.c $(HEADER)
+	$(CC) -o $(DDOBJ)/fioext.o $(MAKESLO) $(CFLAGS) -c fioext.c
+
+$(DDOBJ)/fm_errset.o		: fm_errset.c $(HEADER)
+	$(CC) -o $(DDOBJ)/fm_errset.o $(MAKESLO) $(CFLAGS) -c fm_errset.c
+
+$(DDOBJ)/fm_getfpath.o		: fm_getfpath.c $(HEADER)
+	$(CC) -o $(DDOBJ)/fm_getfpath.o $(MAKESLO) $(CFLAGS) -c fm_getfpath.c
+
+$(DDOBJ)/fm_getline.o		: fm_getline.c $(HEADER)
+	$(CC) -o $(DDOBJ)/fm_getline.o $(MAKESLO) $(CFLAGS) -c fm_getline.c
+
+$(DDOBJ)/fm_savefile.o		: fm_savefile.c $(HEADER)
+	$(CC) -o $(DDOBJ)/fm_savefile.o $(MAKESLO) $(CFLAGS) -c fm_savefile.c
+
+$(DDOBJ)/fs_errset.o		: fs_errset.c $(HEADER)
+	$(CC) -o $(DDOBJ)/fs_errset.o $(MAKESLO) $(CFLAGS) -c fs_errset.c
+
+$(DDOBJ)/fs_savefile.o		: fs_savefile.c $(HEADER)
+	$(CC) -o $(DDOBJ)/fs_savefile.o $(MAKESLO) $(CFLAGS) -c fs_savefile.c
+
+$(DDOBJ)/sm_errset.o		: sm_errset.c $(HEADER)
+	$(CC) -o $(DDOBJ)/sm_errset.o $(MAKESLO) $(CFLAGS) -c sm_errset.c
+
+$(DDOBJ)/l_fiosethyerrno.o		: l_fiosethyerrno.c $(HEADER)
+	$(CC) -o $(DDOBJ)/l_fiosethyerrno.o $(MAKESLO) $(CFLAGS) -c l_fiosethyerrno.c
+

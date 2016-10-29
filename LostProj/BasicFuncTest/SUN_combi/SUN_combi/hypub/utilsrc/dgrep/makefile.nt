@@ -1,0 +1,30 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h
+
+DLIBS = \
+
+LIBS = \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\dgrep.obj	
+
+all	: echo $(RUNNT)\bin\dgrep.exe
+
+echo	:
+	@echo	HYPUB/UTILSRC/DGREP
+
+$(RUNNT)\bin\dgrep.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\dgrep.obj	: dgrep.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c dgrep.c
+
+

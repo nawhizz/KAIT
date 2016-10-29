@@ -1,0 +1,268 @@
+서울특별시                              LCA000                                            Y                               
+강남구                                  LCA001                                            Y                               
+강동구                                  LCA002                                            Y                               
+강북구                                  LCA003                                            Y                               
+강서구                                  LCA004                                            Y                               
+관악구                                  LCA005                                            Y                               
+광진구                                  LCA006                                            Y                               
+구로구                                  LCA007                                            Y                               
+금천구                                  LCA008                                            Y                               
+노원구                                  LCA009                                            Y                               
+도봉구                                  LCA010                                            Y                               
+동대문구                                LCA011                                            Y                               
+마포구                                  LCA012                                            Y                               
+서대문구                                LCA013                                            Y                               
+서초구                                  LCA014                                            Y                               
+성동구                                  LCA015                                            Y                               
+성북구                                  LCA016                                            Y                               
+송파구                                  LCA017                                            Y                               
+양천구                                  LCA018                                            Y                               
+영등포구                                LCA019                                            Y                               
+용산구                                  LCA020                                            Y                               
+은평구                                  LCA021                                            Y                               
+종로구                                  LCA022                                            Y                               
+중구                                    LCA023                                            Y                               
+중량구                                  LCA024                                            Y                               
+기타                                    LCE000                                            Y                               
+해외                                    LCF000                                            Y                               
+강원도                                  LCH000                                            Y                               
+강릉시                                  LCH001                                            Y                               
+고성군                                  LCH002                                            Y                               
+동해시                                  LCH003                                            Y                               
+삼척시                                  LCH004                                            Y                               
+속초시                                  LCH005                                            Y                               
+양구군                                  LCH006                                            Y                               
+양양군                                  LCH007                                            Y                               
+영월군                                  LCH008                                            Y                               
+원주시                                  LCH009                                            Y                               
+인제군                                  LCH010                                            Y                               
+정선군                                  LCH011                                            Y                               
+철원군                                  LCH012                                            Y                               
+춘천시                                  LCH013                                            Y                               
+태백시                                  LCH014                                            Y                               
+평창군                                  LCH015                                            Y                               
+홍천군                                  LCH016                                            Y                               
+화천군                                  LCH017                                            Y                               
+횡성군                                  LCH018                                            Y                               
+경기도                                  LCI000                                            Y                               
+가평군                                  LCI001                                            Y                               
+고양시 덕양구                           LCI002                                            Y                               
+고양시 일산동구                         LCI003                                            Y                               
+고양시 일산서구                         LCI004                                            Y                               
+과천시                                  LCI005                                            Y                               
+광명시                                  LCI006                                            Y                               
+광주시                                  LCI007                                            Y                               
+구리시                                  LCI008                                            Y                               
+군포시                                  LCI009                                            Y                               
+김포시                                  LCI010                                            Y                               
+남양주시                                LCI011                                            Y                               
+동두천시                                LCI012                                            Y                               
+부천시 소사구                           LCI013                                            Y                               
+부천시 오정구                           LCI014                                            Y                               
+부천시 원미구                           LCI015                                            Y                               
+성남시 분당구                           LCI016                                            Y                               
+성남시 수정구                           LCI017                                            Y                               
+성남시 중원구                           LCI018                                            Y                               
+수원시 권선구                           LCI019                                            Y                               
+수원시 영통구                           LCI020                                            Y                               
+수원시 장안구                           LCI021                                            Y                               
+수원시 팔달구                           LCI022                                            Y                               
+시흥시                                  LCI023                                            Y                               
+안산시 단원구                           LCI024                                            Y                               
+안산시 상록구                           LCI025                                            Y                               
+안성시                                  LCI026                                            Y                               
+안양시 동안구                           LCI027                                            Y                               
+안양시 만안구                           LCI028                                            Y                               
+양주시                                  LCI029                                            Y                               
+양평군                                  LCI030                                            Y                               
+여주군                                  LCI031                                            Y                               
+연천군                                  LCI032                                            Y                               
+오산시                                  LCI033                                            Y                               
+용인시 기흥구                           LCI034                                            Y                               
+용인시 수지구                           LCI035                                            Y                               
+용인시 처인구                           LCI036                                            Y                               
+의왕시                                  LCI037                                            Y                               
+의정부시                                LCI038                                            Y                               
+이천시                                  LCI039                                            Y                               
+파주시                                  LCI040                                            Y                               
+평택시                                  LCI041                                            Y                               
+포천시                                  LCI042                                            Y                               
+하남시                                  LCI043                                            Y                               
+화성시                                  LCI044                                            Y                               
+경상남도                                LCJ000                                            Y                               
+거제시                                  LCJ001                                            Y                               
+거창군                                  LCJ002                                            Y                               
+고성군                                  LCJ003                                            Y                               
+김해시                                  LCJ004                                            Y                               
+남해군                                  LCJ005                                            Y                               
+밀양시                                  LCJ006                                            Y                               
+사천시                                  LCJ007                                            Y                               
+산청군                                  LCJ008                                            Y                               
+양산시                                  LCJ009                                            Y                               
+의령군                                  LCJ010                                            Y                               
+진주시                                  LCJ011                                            Y                               
+창녕군                                  LCJ012                                            Y                               
+창원시 마산합포구                       LCJ013                                            Y                               
+창원시 마산회원구                       LCJ014                                            Y                               
+창원시 성산구                           LCJ015                                            Y                               
+창원시 의창구                           LCJ016                                            Y                               
+창원시 진해구                           LCJ017                                            Y                               
+통영시                                  LCJ018                                            Y                               
+하동군                                  LCJ019                                            Y                               
+함안군                                  LCJ020                                            Y                               
+함양군                                  LCJ021                                            Y                               
+합천군                                  LCJ022                                            Y                               
+경상북도                                LCK000                                            Y                               
+경산시                                  LCK001                                            Y                               
+경주시                                  LCK002                                            Y                               
+고령군                                  LCK003                                            Y                               
+구미시                                  LCK004                                            Y                               
+군위군                                  LCK005                                            Y                               
+김천시                                  LCK006                                            Y                               
+문경시                                  LCK007                                            Y                               
+봉화군                                  LCK008                                            Y                               
+상주시                                  LCK009                                            Y                               
+성주군                                  LCK010                                            Y                               
+안동시                                  LCK011                                            Y                               
+영덕군                                  LCK012                                            Y                               
+영양군                                  LCK013                                            Y                               
+영주시                                  LCK014                                            Y                               
+영천시                                  LCK015                                            Y                               
+예천군                                  LCK016                                            Y                               
+울릉군                                  LCK017                                            Y                               
+울진군                                  LCK018                                            Y                               
+의성군                                  LCK019                                            Y                               
+청도군                                  LCK020                                            Y                               
+청송군                                  LCK021                                            Y                               
+칠곡군                                  LCK022                                            Y                               
+포항시 남구                             LCK023                                            Y                               
+포항시 북구                             LCK024                                            Y                               
+전라남도                                LCL000                                            Y                               
+강진군                                  LCL001                                            Y                               
+고흥군                                  LCL002                                            Y                               
+곡성군                                  LCL003                                            Y                               
+광양시                                  LCL004                                            Y                               
+구례군                                  LCL005                                            Y                               
+나주시                                  LCL006                                            Y                               
+담양군                                  LCL007                                            Y                               
+목포시                                  LCL008                                            Y                               
+무안군                                  LCL009                                            Y                               
+보성군                                  LCL010                                            Y                               
+순천시                                  LCL011                                            Y                               
+신안군                                  LCL012                                            Y                               
+여수시                                  LCL013                                            Y                               
+영광군                                  LCL014                                            Y                               
+영암군                                  LCL015                                            Y                               
+완도군                                  LCL016                                            Y                               
+장성군                                  LCL017                                            Y                               
+장흥군                                  LCL018                                            Y                               
+진도군                                  LCL019                                            Y                               
+함평군                                  LCL020                                            Y                               
+해남군                                  LCL021                                            Y                               
+화순군                                  LCL022                                            Y                               
+전라북도                                LCM000                                            Y                               
+고창군                                  LCM001                                            Y                               
+군산시                                  LCM002                                            Y                               
+김제시                                  LCM003                                            Y                               
+남원시                                  LCM004                                            Y                               
+무주군                                  LCM005                                            Y                               
+부안군                                  LCM006                                            Y                               
+순창군                                  LCM007                                            Y                               
+완주군                                  LCM008                                            Y                               
+익산시                                  LCM009                                            Y                               
+임실군                                  LCM010                                            Y                               
+장수군                                  LCM011                                            Y                               
+전주시 덕진구                           LCM012                                            Y                               
+전주시 완산구                           LCM013                                            Y                               
+정읍시                                  LCM014                                            Y                               
+진안군                                  LCM015                                            Y                               
+충청남도                                LCN000                                            Y                               
+계룡시                                  LCN001                                            Y                               
+공주시                                  LCN002                                            Y                               
+금산군                                  LCN003                                            Y                               
+논산시                                  LCN004                                            Y                               
+당진군                                  LCN005                                            Y                               
+보령시                                  LCN006                                            Y                               
+부여군                                  LCN007                                            Y                               
+서산시                                  LCN008                                            Y                               
+서천군                                  LCN009                                            Y                               
+아산시                                  LCN010                                            Y                               
+연기군                                  LCN011                                            Y                               
+예산군                                  LCN012                                            Y                               
+천안시 동남구                           LCN013                                            Y                               
+천안시 서북구                           LCN014                                            Y                               
+청양군                                  LCN015                                            Y                               
+태안군                                  LCN016                                            Y                               
+홍성군                                  LCN017                                            Y                               
+충청북도                                LCO000                                            Y                               
+괴산군                                  LCO001                                            Y                               
+단양군                                  LCO002                                            Y                               
+보은군                                  LCO003                                            Y                               
+영동군                                  LCO004                                            Y                               
+옥천군                                  LCO005                                            Y                               
+음성군                                  LCO006                                            Y                               
+제천시                                  LCO007                                            Y                               
+증평군                                  LCO008                                            Y                               
+진천군                                  LCO009                                            Y                               
+청원군                                  LCO010                                            Y                               
+청주시 상당구                           LCO011                                            Y                               
+청주시 흥덕구                           LCO012                                            Y                               
+충주시                                  LCO013                                            Y                               
+제주도                                  LCP000                                            Y                               
+서귀포시                                LCP001                                            Y                               
+제주시                                  LCP002                                            Y                               
+광주광역시                              LCQ000                                            Y                               
+광산구                                  LCQ001                                            Y                               
+남구                                    LCQ002                                            Y                               
+동구                                    LCQ003                                            Y                               
+북구                                    LCQ004                                            Y                               
+서구                                    LCQ005                                            Y                               
+대구광역시                              LCR000                                            Y                               
+남구                                    LCR001                                            Y                               
+달서구                                  LCR002                                            Y                               
+달성군                                  LCR003                                            Y                               
+동구                                    LCR004                                            Y                               
+북구                                    LCR005                                            Y                               
+서구                                    LCR006                                            Y                               
+수성구                                  LCR007                                            Y                               
+중구                                    LCR008                                            Y                               
+대전광역시                              LCS000                                            Y                               
+대덕구                                  LCS001                                            Y                               
+동구                                    LCS002                                            Y                               
+서구                                    LCS003                                            Y                               
+유성구                                  LCS004                                            Y                               
+중구                                    LCS005                                            Y                               
+부산광역시                              LCT000                                            Y                               
+강서구                                  LCT001                                            Y                               
+금정구                                  LCT002                                            Y                               
+기장군                                  LCT003                                            Y                               
+남구                                    LCT004                                            Y                               
+동구                                    LCT005                                            Y                               
+동래구                                  LCT006                                            Y                               
+부산진구                                LCT007                                            Y                               
+북구                                    LCT008                                            Y                               
+사상구                                  LCT009                                            Y                               
+사하구                                  LCT010                                            Y                               
+서구                                    LCT011                                            Y                               
+수영구                                  LCT012                                            Y                               
+연제구                                  LCT013                                            Y                               
+영도구                                  LCT014                                            Y                               
+중구                                    LCT015                                            Y                               
+해운대구                                LCT016                                            Y                               
+울산광역시                              LCU000                                            Y                               
+남구                                    LCU001                                            Y                               
+동구                                    LCU002                                            Y                               
+북구                                    LCU003                                            Y                               
+울주군                                  LCU004                                            Y                               
+중구                                    LCU005                                            Y                               
+인천광역시                              LCV000                                            Y                               
+강화군                                  LCV001                                            Y                               
+계양구                                  LCV002                                            Y                               
+남구                                    LCV003                                            Y                               
+남동구                                  LCV004                                            Y                               
+동구                                    LCV005                                            Y                               
+부평구                                  LCV006                                            Y                               
+서구                                    LCV007                                            Y                               
+연수구                                  LCV008                                            Y                               
+옹진군                                  LCV009                                            Y                               
+중구                                    LCV010                                            Y                               

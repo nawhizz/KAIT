@@ -1,0 +1,28 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = $(COMMON)\include\ipcwrap.h 
+
+DLIBS = $(RUNNT)\lib\ipcwrap.lib 
+
+LIBS =  $(RUNNT)\lib\ipcwrap.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\ipcrm.obj	
+
+all	: echo $(RUNNT)\bin\ipcrm.exe
+
+echo	:
+	@echo  HYPUB/UTILSRC/IPCRM
+
+$(RUNNT)\bin\ipcrm.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\ipcrm.obj	: ipcrm.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ipcrm.c
+
+

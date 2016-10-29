@@ -1,0 +1,20 @@
+;-----------------------------------
+; WFM module definition file
+;-----------------------------------
+
+LIBRARY 	WFM
+DESCRIPTION	'WFM 2000/08/29'
+EXPORTS
+
+	WFmAllClose	@1
+	WFmClose	@2
+	WFmFillHead	@3
+	WFmFillData	@4
+	WFmFillTail	@5
+	WFmOpen 	@6
+	OWFM_ALLCLOSE	@7
+	OWFM_CLOSE	@8
+	OWFM_FILLHEAD	@9
+	OWFM_FILLDATA	@10
+	OWFM_FILLTAIL	@11
+	OWFM_OPEN 	@12

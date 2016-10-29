@@ -1,0 +1,53 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\ipcwrap.h \
+	$(COMMON)\include\gps.h \
+	$(COMMON)\include\pisam.h
+
+DLIBS = \
+	$(RUNNT)\lib\ipcwrap.lib \
+	$(RUNNT)\lib\pisam.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(RUNNT)\lib\disam32.lib
+
+LIBS = \
+	$(RUNNT)\lib\ipcwrap.lib \
+	$(RUNNT)\lib\pisam.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(RUNNT)\lib\disam32.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\main.obj		$(INTDIR)\TPI_OPEN.obj \
+	$(INTDIR)\TPI_KEYLENGTH.obj	$(INTDIR)\TPI_READ.obj \
+	$(INTDIR)\TPI_WRITE.obj
+
+all	: echo $(INTDIR)\pisamtst.exe
+
+echo	:
+	@echo	HYPUB/TESTSRC/PISAMTST
+
+$(INTDIR)\pisamtst.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\main.obj	: main.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c main.c
+
+$(INTDIR)\TPI_OPEN.obj	: TPI_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c TPI_OPEN.c
+
+$(INTDIR)\TPI_KEYLENGTH.obj	: TPI_KEYLENGTH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c TPI_KEYLENGTH.c
+
+$(INTDIR)\TPI_READ.obj	: TPI_READ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c TPI_READ.c
+
+$(INTDIR)\TPI_WRITE.obj	: TPI_WRITE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c TPI_WRITE.c

@@ -1,0 +1,156 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/I $(COMMON)\include \
+	/I $(DLTP)\dblay \
+	/I $(PSCON)\dblay \
+	/I $(CVMS)\dblay \
+	/I $(DLTP)\tblay \
+	/D "_WINDOWS" \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h	$(COMMON)\include\iswrap.h \
+	$(COMMON)\include\gps.h		$(COMMON)\include\pisam.h \
+	$(COMMON)\include\stpapi.h	$(COMMON)\include\cmreg.h \
+	$(COMMON)\include\stpmacro.h \
+	$(DLTP)\dblay\clnt.h		$(DLTP)\dblay\clntv.h \
+	$(DLTP)\dblay\lusr.h		$(DLTP)\dblay\lusrv.h \
+	$(DLTP)\dblay\usid.h		$(DLTP)\dblay\usidv.h \
+	$(DLTP)\dblay\txid.h		$(DLTP)\dblay\txidv.h \
+	$(PSCON)\dblay\fmid.h		$(PSCON)\dblay\fmidv.h \
+	$(PSCON)\dblay\evct.h		$(PSCON)\dblay\evctv.h \
+	$(PSCON)\dblay\stev.h		$(PSCON)\dblay\stevv.h \
+	$(CVMS)\dblay\ascl.h		$(CVMS)\dblay\asclv.h \
+	$(DLTP)\tblay\csa.h \
+	.\cmregdef.h
+
+DLIBS = \
+	$(RUNNT)\lib\disam32.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(RUNNT)\lib\pisam.lib \
+	$(RUNNT)\lib\stpapi.lib
+
+LIBS = \
+	$(RUNNT)\lib\disam32.lib \
+	$(RUNNT)\lib\gps.lib \
+	$(RUNNT)\lib\pisam.lib \
+	$(RUNNT)\lib\stpapi.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\CmRegClose.obj	$(INTDIR)\CmRegOpen.obj \
+	$(INTDIR)\CmRegCommit.obj	$(INTDIR)\CmRegRollback.obj \
+	$(INTDIR)\CmRegLusr.obj		$(INTDIR)\CmRegUser.obj \
+	$(INTDIR)\CmRegUsid.obj		$(INTDIR)\CmRegTxid.obj \
+	$(INTDIR)\CmRegFmid.obj		$(INTDIR)\CmRegEvct.obj \
+	$(INTDIR)\CmRegAscl.obj		$(INTDIR)\CmRegClnt.obj \
+	$(INTDIR)\CmRegStev.obj \
+	$(INTDIR)\OCMREGCLOSE.obj	$(INTDIR)\OCMREGOPEN.obj \
+	$(INTDIR)\OCMREGCOMMIT.obj	$(INTDIR)\OCMREGROLLBACK.obj \
+	$(INTDIR)\OCMREGLUSR.obj	$(INTDIR)\OCMREGUSER.obj \
+	$(INTDIR)\OCMREGUSID.obj	$(INTDIR)\OCMREGTXID.obj \
+	$(INTDIR)\OCMREGFMID.obj	$(INTDIR)\OCMREGEVCT.obj \
+	$(INTDIR)\OCMREGASCL.obj	$(INTDIR)\OCMREGCLNT.obj \
+	$(INTDIR)\cmregext.obj		$(INTDIR)\l_cmregcom.obj \
+	$(INTDIR)\l_errset.obj		$(INTDIR)\l_sethyerrno.obj \
+	$(INTDIR)\tracelog.obj	
+
+all	: echo $(RUNNT)\bin\cmreg.dll
+
+echo	:
+	@echo	COMMON/LIBSRC/CMREG
+
+$(RUNNT)\bin\cmreg.dll	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /dll /def:"cmreg.def" /subsystem:windows \
+	/implib:"$(RUNNT)\lib\cmreg.lib" $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\CmRegClose.obj	: CmRegClose.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegClose.c
+
+$(INTDIR)\CmRegOpen.obj	: CmRegOpen.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegOpen.c
+
+$(INTDIR)\CmRegCommit.obj	: CmRegCommit.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegCommit.c
+
+$(INTDIR)\CmRegRollback.obj	: CmRegRollback.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegRollback.c
+
+$(INTDIR)\CmRegLusr.obj	: CmRegLusr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegLusr.c
+
+$(INTDIR)\CmRegUser.obj	: CmRegUser.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegUser.c
+
+$(INTDIR)\CmRegUsid.obj	: CmRegUsid.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegUsid.c
+
+$(INTDIR)\CmRegTxid.obj	: CmRegTxid.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegTxid.c
+
+$(INTDIR)\CmRegFmid.obj	: CmRegFmid.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegFmid.c
+
+$(INTDIR)\CmRegEvct.obj	: CmRegEvct.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegEvct.c
+
+$(INTDIR)\CmRegAscl.obj	: CmRegAscl.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegAscl.c
+
+$(INTDIR)\CmRegClnt.obj	: CmRegClnt.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegClnt.c
+
+$(INTDIR)\CmRegStev.obj	: CmRegStev.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c CmRegStev.c
+
+$(INTDIR)\OCMREGCLOSE.obj	: OCMREGCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGCLOSE.c
+
+$(INTDIR)\OCMREGOPEN.obj	: OCMREGOPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGOPEN.c
+
+$(INTDIR)\OCMREGCOMMIT.obj	: OCMREGCOMMIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGCOMMIT.c
+
+$(INTDIR)\OCMREGROLLBACK.obj	: OCMREGROLLBACK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGROLLBACK.c
+
+$(INTDIR)\OCMREGLUSR.obj	: OCMREGLUSR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGLUSR.c
+
+$(INTDIR)\OCMREGUSER.obj	: OCMREGUSER.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGUSER.c
+
+$(INTDIR)\OCMREGUSID.obj	: OCMREGUSID.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGUSID.c
+
+$(INTDIR)\OCMREGTXID.obj	: OCMREGTXID.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGTXID.c
+
+$(INTDIR)\OCMREGFMID.obj	: OCMREGFMID.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGFMID.c
+
+$(INTDIR)\OCMREGEVCT.obj	: OCMREGEVCT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGEVCT.c
+
+$(INTDIR)\OCMREGASCL.obj	: OCMREGASCL.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGASCL.c
+
+$(INTDIR)\OCMREGCLNT.obj	: OCMREGCLNT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OCMREGCLNT.c
+
+$(INTDIR)\cmregext.obj	: cmregext.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c cmregext.c
+
+$(INTDIR)\l_cmregcom.obj	: l_cmregcom.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_cmregcom.c
+
+$(INTDIR)\l_errset.obj	: l_errset.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_errset.c
+
+$(INTDIR)\l_sethyerrno.obj	: l_sethyerrno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_sethyerrno.c
+
+$(INTDIR)\tracelog.obj	: tracelog.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c tracelog.c

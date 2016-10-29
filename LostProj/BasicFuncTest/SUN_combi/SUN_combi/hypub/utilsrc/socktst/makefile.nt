@@ -1,0 +1,30 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h
+
+DLIBS = \
+
+LIBS = \
+	$(LSYS) wsock32.lib
+
+OBJS =  \
+	$(INTDIR)\socktst.obj	
+
+all	: echo $(RUNNT)\bin\socktst.exe
+
+echo	:
+	@echo	HYPUB/UTILSRC/SOCKTST
+
+$(RUNNT)\bin\socktst.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\socktst.obj	: socktst.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c socktst.c
+
+

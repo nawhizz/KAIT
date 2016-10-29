@@ -1,0 +1,30 @@
+!INCLUDE	$(SVRHOME)\makent.env
+
+CFLAGS	= \
+	/D "_WINDOWS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER	= \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\ipcwrap.h \
+	ipcwrapdef.h
+
+DLIBS	= \
+
+LIBS	= \
+	$(LSYS) advapi32.lib
+
+OBJS	= $(INTDIR)\ipcd.obj
+
+all	: echo $(RUNNT)\bin\ipcd.exe
+
+echo		:
+	@echo	HYPUB/LIBSRC/IPCWRAP/IPCD.EXE
+
+$(RUNNT)\bin\ipcd.exe		: $(OBJS)
+	$(LINK) /out:"$@" /subsystem:windows $(LDOPT) $(OBJS) $(LIBS)
+
+
+$(INTDIR)\ipcd.obj	: ipcd.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ipcd.c

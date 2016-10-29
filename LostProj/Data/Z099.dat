@@ -1,0 +1,5 @@
+전월통계 재실행일자                     01        99                                      Y                               
+INSU정보 업데이트시 POCH 체크여부(S/K/L)02        Y         Y         Y                   Y                               
+PP_POCH 체크여부                        03        N                                       Y                               
+PP_PHON 체크여부                        04        Y                                       Y                               
+새우편번호적용여부                      05        Y                                       Y                               

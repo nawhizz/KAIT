@@ -1,0 +1,30 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h
+
+DLIBS = \
+
+LIBS = \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\fsep.obj	
+
+all	: echo $(RUNNT)\bin\fsep.exe
+
+echo	:
+	@echo	HYPUB/UTILSRC/FSEP
+
+$(RUNNT)\bin\fsep.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\fsep.obj	: fsep.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fsep.c
+
+

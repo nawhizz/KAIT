@@ -1,0 +1,44 @@
+object Form1: TForm1
+  Left = 547
+  Top = 296
+  Width = 535
+  Height = 369
+  Caption = 'Form1'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object strngrd1: TStringGrid
+    Left = 16
+    Top = 16
+    Width = 361
+    Height = 273
+    ColCount = 4
+    FixedCols = 0
+    TabOrder = 0
+    ColWidths = (
+      64
+      64
+      89
+      137)
+  end
+  object btn1: TBitBtn
+    Left = 384
+    Top = 16
+    Width = 121
+    Height = 33
+    Caption = #49440#53469
+    TabOrder = 1
+    OnClick = btn1Click
+  end
+  object OpenDialog: TOpenDialog
+    Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
+    Left = 400
+    Top = 16
+  end
+end

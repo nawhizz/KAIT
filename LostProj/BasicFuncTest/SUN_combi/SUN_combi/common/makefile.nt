@@ -1,0 +1,14 @@
+SUBDIR	= libsrc
+
+all	: echo $(SUBDIR)
+
+echo	:
+	@echo	COMMON
+
+
+$(SUBDIR): a 
+        @cd $@
+        @nmake /nologo -f makefile.nt
+        @cd ..
+
+a :

@@ -1,0 +1,92 @@
+#
+#   Generate makefile for making static and/or dynamic library
+#   ----------------------------------------------------------
+#                                  95.03.10.   by SJW
+#
+
+echo "***********************************"
+echo "***  makefile generation start ****"
+echo "***********************************"
+echo ""
+
+if ("$1" == "") then
+	echo "Enter Library name..."
+	set LIB_NAME = $<
+    else
+	set LIB_NAME = $1
+endif
+
+echo ""
+
+echo LIBNAME = $LIB_NAME > makefile
+echo >> makefile
+
+echo ""
+echo ""
+echo "Enter Include directorys one by one..."
+echo "If you want to stop entering, just press RETURN..."
+echo "    Maximum input count : 10"
+echo "----------------------------------------------------"
+@ incnum = 1
+set input = "dummy"
+set inc_dir = ("" "" "" "" "" "" "" "" "" "")
+set inc_all = ("" "" "" "" "" "" "" "" "" "")
+while ($input != "")
+	echo INC$incnum =\>
+	set input = $<
+	if ( $input == "" ) then
+		break;
+	endif
+	set inc_dir[$incnum] = $input
+	@ incnum ++
+end
+if ($incnum > 1) then
+	echo "" >> makefile
+	@ i = 1
+	while ($i < $incnum)
+		echo INC$i = $inc_dir[$i] >> makefile
+		set inc_all[$i] = -I\$\(INC$i\)
+		@ i ++
+	end
+	echo "" >> makefile
+	echo INCL = $inc_all[*] >> makefile
+	echo "" >> makefile
+endif
+
+/usr/bin/ls *.c | cut -d. -f1 | paste - - - - | awk 'BEGIN {printf "FLIST ="} {printf " \\\n\t%s",$0} END {printf "\n"}' >> makefile
+
+echo "" >> makefile
+echo STATIC_LIB  = lib\$\(LIBNAME\).a >> makefile
+echo DYNAMIC_LIB = lib\$\(LIBNAME\).so >> makefile
+echo "" >> makefile
+echo OBJ  = \$\(FLIST:%=%.o\) >> makefile
+echo "" >> makefile
+echo all: static dynamic >> makefile
+echo "" >> makefile
+echo static: \$\(STATIC_LIB\) >> makefile
+echo dynamic: \$\(DYNAMIC_LIB\) >> makefile
+echo "" >> makefile
+echo \$\(STATIC_LIB\): \$\(OBJ\) >> makefile
+echo '	ar vcr $@ $?' >> makefile
+echo "" >> makefile
+echo \$\(DYNAMIC_LIB\): \$\(OBJ\) >> makefile
+echo '	gcc -o $@ -shared $(OBJ)' >> makefile
+echo "" >> makefile
+echo %.o: %.c >> makefile
+if ($incnum > 1) then
+	echo '	gcc -o $@ $(INCL) -c $<' >> makefile
+    else
+	echo '	gcc -o $@ -c $<' >> makefile
+endif
+
+echo ""
+echo \"makefile\" generated successfully for \"$LIB_NAME\" library.
+echo Library will be created by "make" as follows.
+echo ""
+echo "	static  : lib$LIB_NAME.a"
+echo "	dynamic : lib$LIB_NAME.so"
+echo ""
+echo "	Usage : make		=\> make all"
+echo "	      : make static	=\> make static library only"
+echo "	      : make dynamic	=\> make dynamic library only"
+echo ""

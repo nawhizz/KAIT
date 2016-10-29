@@ -1,0 +1,17 @@
+;-----------------------------------
+; SOCKCOMM module definition file
+;-----------------------------------
+
+LIBRARY		SOCKCOMM
+DESCRIPTION	'SOCKCOMM 1998/04/23'
+EXPORTS
+
+        sock_close	@1
+        sock_connect	@2
+        sock_open	@3
+        sock_send	@4
+        sock_recv	@5
+        sock_getportno	@6
+        sock_select     @7
+	sock_startup	@8
+	sock_cleanup	@9

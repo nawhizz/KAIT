@@ -1,0 +1,639 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_WINDOWS" /D "GPS_INTERNAL" /D "__IS_HYS_GPS__" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\ipcwrap.h \
+	$(COMMON)\include\gps.h
+
+DLIBS = \
+	$(RUNNT)\lib\ipcwrap.lib \
+
+LIBS = \
+	$(RUNNT)\lib\ipcwrap.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\OD_ADJNDECIMAL.obj	$(INTDIR)\OD_DECTOINT.obj \
+	$(INTDIR)\OD_FILLDATA.obj	$(INTDIR)\OD_FILLFORM.obj \
+	$(INTDIR)\OD_FMASK.obj		$(INTDIR)\OD_HANADJT.obj \
+	$(INTDIR)\OD_HEXTOINT.obj	$(INTDIR)\OD_IMASK.obj \
+	$(INTDIR)\OD_INT2NDEC.obj	$(INTDIR)\OD_INT2NHEX.obj \
+	$(INTDIR)\OD_INTTODEC.obj	$(INTDIR)\OD_INTTOHEX.obj \
+	$(INTDIR)\OD_ISSPACENSTR.obj	$(INTDIR)\OD_LEFTALIGN.obj \
+	$(INTDIR)\OD_MKSTR.obj		$(INTDIR)\OD_MKSTRADD.obj \
+	$(INTDIR)\OD_NDECTOINT.obj	$(INTDIR)\OD_NSTRADD.obj \
+	$(INTDIR)\OD_NSTRADD2.obj	$(INTDIR)\OD_RIGHTALIGN.obj \
+	$(INTDIR)\OD_STRENDNULL.obj	$(INTDIR)\OD_STRNCAT.obj \
+	$(INTDIR)\OD_STRSORT.obj	$(INTDIR)\OD_UMASK.obj \
+	$(INTDIR)\OE_ALLDAYGET.obj	$(INTDIR)\OE_CHKDATE.obj \
+	$(INTDIR)\OE_DATE2JUL.obj	$(INTDIR)\OE_DATECHK.obj \
+	$(INTDIR)\OE_DATECMP.obj	$(INTDIR)\OE_DUDATE.obj \
+	$(INTDIR)\OE_FULLYEAR.obj	$(INTDIR)\OE_GDATE2DATE.obj \
+	$(INTDIR)\OE_GDATE2YEAR.obj	$(INTDIR)\OE_GDATEBYDU.obj \
+	$(INTDIR)\OE_GETENV.obj		$(INTDIR)\OE_GETSYSTIME.obj \
+	$(INTDIR)\OE_GETWEEKDAY.obj \
+	$(INTDIR)\OE_GETYEAR.obj	$(INTDIR)\OE_GMONTBYDU.obj \
+	$(INTDIR)\OE_GRE2JUL.obj	$(INTDIR)\OE_JUL2DATE.obj \
+	$(INTDIR)\OE_JUL2GRE.obj	$(INTDIR)\OE_LSTDAYGET.obj \
+	$(INTDIR)\OE_NEXTDAY.obj	$(INTDIR)\OE_NEXTMONTH.obj \
+	$(INTDIR)\OE_PREVDAY.obj	$(INTDIR)\OE_PREVMONTH.obj \
+	$(INTDIR)\OE_RUNSYS.obj		$(INTDIR)\OE_RUNSYSSTS.obj \
+	$(INTDIR)\OE_SLEEP0001.obj	$(INTDIR)\OF_CHMOD.obj \
+	$(INTDIR)\OF_CHOWN.obj		$(INTDIR)\OF_GETENV.obj \
+	$(INTDIR)\OF_GETFPATH.obj	$(INTDIR)\OF_LOCK.obj \
+	$(INTDIR)\OF_LOCKWAIT.obj	$(INTDIR)\OF_TEMPNAM.obj \
+	$(INTDIR)\OF_UNLINK.obj		$(INTDIR)\OF_UNLOCK.obj \
+	$(INTDIR)\OF_COPY.obj \
+	$(INTDIR)\OK_ACCEPTSTR.obj	$(INTDIR)\OK_GETCHAR.obj \
+	$(INTDIR)\OK_INPNNUMERIC.obj	$(INTDIR)\OK_INPNSTRING.obj \
+	$(INTDIR)\OR_EXECPRG.obj	$(INTDIR)\OR_RUNCONT.obj \
+	$(INTDIR)\OR_RUNWAIT.obj	$(INTDIR)\cfgfun.obj \
+	$(INTDIR)\d_adjndecimal.obj	$(INTDIR)\d_d2nstr.obj \
+	$(INTDIR)\d_dectoint.obj	$(INTDIR)\d_filldata.obj \
+	$(INTDIR)\d_fillform.obj	$(INTDIR)\d_fmask.obj \
+	$(INTDIR)\d_hanadjt.obj		$(INTDIR)\d_hextoint.obj \
+	$(INTDIR)\d_imask.obj		$(INTDIR)\d_int2ndec.obj \
+	$(INTDIR)\d_int2nhex.obj	$(INTDIR)\d_inttodec.obj \
+	$(INTDIR)\d_inttohex.obj	$(INTDIR)\d_isnumstr.obj \
+	$(INTDIR)\d_isspacenstr.obj	$(INTDIR)\d_isspacestr.obj \
+	$(INTDIR)\d_julsa.obj		$(INTDIR)\d_leftalign.obj \
+	$(INTDIR)\d_mkstr.obj		$(INTDIR)\d_mkstradd.obj \
+	$(INTDIR)\d_ndec2int.obj	$(INTDIR)\d_nhex2int.obj \
+	$(INTDIR)\d_nstr2d.obj		$(INTDIR)\d_nstradd.obj \
+	$(INTDIR)\d_nstradd2.obj	$(INTDIR)\d_rightalign.obj \
+	$(INTDIR)\d_strendnull.obj	$(INTDIR)\d_strsort.obj \
+	$(INTDIR)\d_umask.obj		$(INTDIR)\e_addsigact.obj \
+	$(INTDIR)\e_alldayget.obj	$(INTDIR)\e_cdate2form.obj \
+	$(INTDIR)\e_chkdate.obj		$(INTDIR)\e_cmdarg.obj \
+	$(INTDIR)\e_date2jul.obj	$(INTDIR)\e_datechk.obj \
+	$(INTDIR)\e_datecmp.obj		$(INTDIR)\e_day2nday.obj \
+	$(INTDIR)\e_delenv.obj		$(INTDIR)\e_dudate.obj \
+	$(INTDIR)\e_fullyear.obj	$(INTDIR)\e_gdate2date.obj \
+	$(INTDIR)\e_gdate2year.obj	$(INTDIR)\e_gdatebydu.obj \
+	$(INTDIR)\e_getdatestr.obj	$(INTDIR)\e_getenv.obj \
+	$(INTDIR)\e_getsysdate.obj	$(INTDIR)\e_gettime.obj \
+	$(INTDIR)\e_getweekday.obj \
+	$(INTDIR)\e_getyear.obj		$(INTDIR)\e_gmontbydu.obj \
+	$(INTDIR)\e_gre2jul.obj		$(INTDIR)\e_jul2date.obj \
+	$(INTDIR)\e_jul2gre.obj		$(INTDIR)\e_lstdayget.obj \
+	$(INTDIR)\e_nextday.obj		$(INTDIR)\e_nextmonth.obj \
+	$(INTDIR)\e_prevday.obj		$(INTDIR)\e_prevmonth.obj \
+	$(INTDIR)\e_runp.obj		$(INTDIR)\e_runpsts.obj \
+	$(INTDIR)\e_runsys.obj		$(INTDIR)\e_runsyssts.obj \
+	$(INTDIR)\e_setenv.obj		$(INTDIR)\e_sighandle.obj \
+	$(INTDIR)\e_sleep0001.obj	$(INTDIR)\e_timegap.obj \
+	$(INTDIR)\f_chmod.obj		$(INTDIR)\f_chown.obj \
+	$(INTDIR)\f_getenv.obj		$(INTDIR)\f_getfpath.obj \
+	$(INTDIR)\f_lock.obj		$(INTDIR)\f_lockwait.obj \
+	$(INTDIR)\f_mkdir.obj		$(INTDIR)\f_setenv.obj \
+	$(INTDIR)\f_unlock.obj		$(INTDIR)\f_copy.obj \
+	$(INTDIR)\fifofun.obj \
+	$(INTDIR)\gps.obj		$(INTDIR)\h_errno.obj \
+	$(INTDIR)\hymsg.obj		$(INTDIR)\k_acceptstr.obj \
+	$(INTDIR)\k_getchar.obj		$(INTDIR)\k_inpnnumeric.obj \
+	$(INTDIR)\k_inpnstring.obj	$(INTDIR)\l_allday2date.obj \
+	$(INTDIR)\l_allday2get.obj	$(INTDIR)\l_datechkconv.obj \
+	$(INTDIR)\l_gpssethyerrno.obj	$(INTDIR)\l_lstdaychkget.obj \
+	$(INTDIR)\l_ntchmod.obj		$(INTDIR)\l_ntchown.obj \
+	$(INTDIR)\l_pickdata.obj	$(INTDIR)\l_readline.obj \
+	$(INTDIR)\r_chkshm.obj		$(INTDIR)\r_crtshm.obj \
+	$(INTDIR)\r_delshm.obj		$(INTDIR)\r_execprg.obj \
+	$(INTDIR)\r_getshm.obj		$(INTDIR)\r_runcont.obj \
+	$(INTDIR)\r_runwait.obj		$(INTDIR)\ringfun.obj \
+	$(INTDIR)\s_readstream.obj	$(INTDIR)\s_writestream.obj \
+	$(INTDIR)\tracelog.obj
+
+all	: echo $(RUNNT)\bin\gps.dll
+
+echo	:
+	@echo	HYPUB/LIBSRC/GPS
+
+$(RUNNT)\bin\gps.dll	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /dll /def:"gps.def" /subsystem:windows \
+	/implib:"$(RUNNT)\lib\gps.lib" $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\OD_ADJNDECIMAL.obj	: OD_ADJNDECIMAL.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_ADJNDECIMAL.c
+
+$(INTDIR)\OD_DECTOINT.obj	: OD_DECTOINT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_DECTOINT.c
+
+$(INTDIR)\OD_FILLDATA.obj	: OD_FILLDATA.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_FILLDATA.c
+
+$(INTDIR)\OD_FILLFORM.obj	: OD_FILLFORM.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_FILLFORM.c
+
+$(INTDIR)\OD_FMASK.obj	: OD_FMASK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_FMASK.c
+
+$(INTDIR)\OD_HANADJT.obj	: OD_HANADJT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_HANADJT.c
+
+$(INTDIR)\OD_HEXTOINT.obj	: OD_HEXTOINT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_HEXTOINT.c
+
+$(INTDIR)\OD_IMASK.obj	: OD_IMASK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_IMASK.c
+
+$(INTDIR)\OD_INT2NDEC.obj	: OD_INT2NDEC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_INT2NDEC.c
+
+$(INTDIR)\OD_INT2NHEX.obj	: OD_INT2NHEX.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_INT2NHEX.c
+
+$(INTDIR)\OD_INTTODEC.obj	: OD_INTTODEC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_INTTODEC.c
+
+$(INTDIR)\OD_INTTOHEX.obj	: OD_INTTOHEX.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_INTTOHEX.c
+
+$(INTDIR)\OD_ISSPACENSTR.obj	: OD_ISSPACENSTR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_ISSPACENSTR.c
+
+$(INTDIR)\OD_LEFTALIGN.obj	: OD_LEFTALIGN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_LEFTALIGN.c
+
+$(INTDIR)\OD_MKSTR.obj	: OD_MKSTR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_MKSTR.c
+
+$(INTDIR)\OD_MKSTRADD.obj	: OD_MKSTRADD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_MKSTRADD.c
+
+$(INTDIR)\OD_NDECTOINT.obj	: OD_NDECTOINT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_NDECTOINT.c
+
+$(INTDIR)\OD_NSTRADD.obj	: OD_NSTRADD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_NSTRADD.c
+
+$(INTDIR)\OD_NSTRADD2.obj	: OD_NSTRADD2.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_NSTRADD2.c
+
+$(INTDIR)\OD_RIGHTALIGN.obj	: OD_RIGHTALIGN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_RIGHTALIGN.c
+
+$(INTDIR)\OD_STRENDNULL.obj	: OD_STRENDNULL.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_STRENDNULL.c
+
+$(INTDIR)\OD_STRNCAT.obj	: OD_STRNCAT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_STRNCAT.c
+
+$(INTDIR)\OD_STRSORT.obj	: OD_STRSORT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_STRSORT.c
+
+$(INTDIR)\OD_UMASK.obj	: OD_UMASK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OD_UMASK.c
+
+$(INTDIR)\OE_ALLDAYGET.obj	: OE_ALLDAYGET.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_ALLDAYGET.c
+
+$(INTDIR)\OE_CHKDATE.obj	: OE_CHKDATE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_CHKDATE.c
+
+$(INTDIR)\OE_DATE2JUL.obj	: OE_DATE2JUL.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_DATE2JUL.c
+
+$(INTDIR)\OE_DATECHK.obj	: OE_DATECHK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_DATECHK.c
+
+$(INTDIR)\OE_DATECMP.obj	: OE_DATECMP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_DATECMP.c
+
+$(INTDIR)\OE_DUDATE.obj	: OE_DUDATE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_DUDATE.c
+
+$(INTDIR)\OE_FULLYEAR.obj	: OE_FULLYEAR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_FULLYEAR.c
+
+$(INTDIR)\OE_GDATE2DATE.obj	: OE_GDATE2DATE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GDATE2DATE.c
+
+$(INTDIR)\OE_GDATE2YEAR.obj	: OE_GDATE2YEAR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GDATE2YEAR.c
+
+$(INTDIR)\OE_GDATEBYDU.obj	: OE_GDATEBYDU.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GDATEBYDU.c
+
+$(INTDIR)\OE_GETENV.obj	: OE_GETENV.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GETENV.c
+
+$(INTDIR)\OE_GETSYSTIME.obj	: OE_GETSYSTIME.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GETSYSTIME.c
+
+$(INTDIR)\OE_GETWEEKDAY.obj	: OE_GETWEEKDAY.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GETWEEKDAY.c
+
+$(INTDIR)\OE_GETYEAR.obj	: OE_GETYEAR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GETYEAR.c
+
+$(INTDIR)\OE_GMONTBYDU.obj	: OE_GMONTBYDU.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GMONTBYDU.c
+
+$(INTDIR)\OE_GRE2JUL.obj	: OE_GRE2JUL.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_GRE2JUL.c
+
+$(INTDIR)\OE_JUL2DATE.obj	: OE_JUL2DATE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_JUL2DATE.c
+
+$(INTDIR)\OE_JUL2GRE.obj	: OE_JUL2GRE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_JUL2GRE.c
+
+$(INTDIR)\OE_LSTDAYGET.obj	: OE_LSTDAYGET.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_LSTDAYGET.c
+
+$(INTDIR)\OE_NEXTDAY.obj	: OE_NEXTDAY.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_NEXTDAY.c
+
+$(INTDIR)\OE_NEXTMONTH.obj	: OE_NEXTMONTH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_NEXTMONTH.c
+
+$(INTDIR)\OE_PREVDAY.obj	: OE_PREVDAY.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_PREVDAY.c
+
+$(INTDIR)\OE_PREVMONTH.obj	: OE_PREVMONTH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_PREVMONTH.c
+
+$(INTDIR)\OE_RUNSYS.obj	: OE_RUNSYS.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_RUNSYS.c
+
+$(INTDIR)\OE_RUNSYSSTS.obj	: OE_RUNSYSSTS.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_RUNSYSSTS.c
+
+$(INTDIR)\OE_SLEEP0001.obj	: OE_SLEEP0001.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OE_SLEEP0001.c
+
+$(INTDIR)\OF_CHMOD.obj	: OF_CHMOD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_CHMOD.c
+
+$(INTDIR)\OF_CHOWN.obj	: OF_CHOWN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_CHOWN.c
+
+$(INTDIR)\OF_GETENV.obj	: OF_GETENV.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_GETENV.c
+
+$(INTDIR)\OF_GETFPATH.obj	: OF_GETFPATH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_GETFPATH.c
+
+$(INTDIR)\OF_LOCK.obj	: OF_LOCK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_LOCK.c
+
+$(INTDIR)\OF_LOCKWAIT.obj	: OF_LOCKWAIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_LOCKWAIT.c
+
+$(INTDIR)\OF_TEMPNAM.obj	: OF_TEMPNAM.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_TEMPNAM.c
+
+$(INTDIR)\OF_UNLINK.obj	: OF_UNLINK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_UNLINK.c
+
+$(INTDIR)\OF_UNLOCK.obj	: OF_UNLOCK.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_UNLOCK.c
+
+$(INTDIR)\OF_COPY.obj	: OF_COPY.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OF_COPY.c
+
+$(INTDIR)\OK_ACCEPTSTR.obj	: OK_ACCEPTSTR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OK_ACCEPTSTR.c
+
+$(INTDIR)\OK_GETCHAR.obj	: OK_GETCHAR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OK_GETCHAR.c
+
+$(INTDIR)\OK_INPNNUMERIC.obj	: OK_INPNNUMERIC.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OK_INPNNUMERIC.c
+
+$(INTDIR)\OK_INPNSTRING.obj	: OK_INPNSTRING.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OK_INPNSTRING.c
+
+$(INTDIR)\OR_EXECPRG.obj	: OR_EXECPRG.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OR_EXECPRG.c
+
+$(INTDIR)\OR_RUNCONT.obj	: OR_RUNCONT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OR_RUNCONT.c
+
+$(INTDIR)\OR_RUNWAIT.obj	: OR_RUNWAIT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OR_RUNWAIT.c
+
+$(INTDIR)\cfgfun.obj	: cfgfun.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c cfgfun.c
+
+$(INTDIR)\d_adjndecimal.obj	: d_adjndecimal.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_adjndecimal.c
+
+$(INTDIR)\d_d2nstr.obj	: d_d2nstr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_d2nstr.c
+
+$(INTDIR)\d_dectoint.obj	: d_dectoint.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_dectoint.c
+
+$(INTDIR)\d_filldata.obj	: d_filldata.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_filldata.c
+
+$(INTDIR)\d_fillform.obj	: d_fillform.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_fillform.c
+
+$(INTDIR)\d_fmask.obj	: d_fmask.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_fmask.c
+
+$(INTDIR)\d_hanadjt.obj	: d_hanadjt.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_hanadjt.c
+
+$(INTDIR)\d_hextoint.obj	: d_hextoint.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_hextoint.c
+
+$(INTDIR)\d_imask.obj	: d_imask.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_imask.c
+
+$(INTDIR)\d_int2ndec.obj	: d_int2ndec.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_int2ndec.c
+
+$(INTDIR)\d_int2nhex.obj	: d_int2nhex.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_int2nhex.c
+
+$(INTDIR)\d_inttodec.obj	: d_inttodec.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_inttodec.c
+
+$(INTDIR)\d_inttohex.obj	: d_inttohex.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_inttohex.c
+
+$(INTDIR)\d_isnumstr.obj	: d_isnumstr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_isnumstr.c
+
+$(INTDIR)\d_isspacenstr.obj	: d_isspacenstr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_isspacenstr.c
+
+$(INTDIR)\d_isspacestr.obj	: d_isspacestr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_isspacestr.c
+
+$(INTDIR)\d_julsa.obj	: d_julsa.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_julsa.c
+
+$(INTDIR)\d_leftalign.obj	: d_leftalign.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_leftalign.c
+
+$(INTDIR)\d_mkstr.obj	: d_mkstr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_mkstr.c
+
+$(INTDIR)\d_mkstradd.obj	: d_mkstradd.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_mkstradd.c
+
+$(INTDIR)\d_ndec2int.obj	: d_ndec2int.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_ndec2int.c
+
+$(INTDIR)\d_nhex2int.obj	: d_nhex2int.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_nhex2int.c
+
+$(INTDIR)\d_nstr2d.obj	: d_nstr2d.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_nstr2d.c
+
+$(INTDIR)\d_nstradd.obj	: d_nstradd.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_nstradd.c
+
+$(INTDIR)\d_nstradd2.obj	: d_nstradd2.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_nstradd2.c
+
+$(INTDIR)\d_rightalign.obj	: d_rightalign.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_rightalign.c
+
+$(INTDIR)\d_strendnull.obj	: d_strendnull.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_strendnull.c
+
+$(INTDIR)\d_strsort.obj	: d_strsort.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_strsort.c
+
+$(INTDIR)\d_umask.obj	: d_umask.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c d_umask.c
+
+$(INTDIR)\e_addsigact.obj	: e_addsigact.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_addsigact.c
+
+$(INTDIR)\e_alldayget.obj	: e_alldayget.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_alldayget.c
+
+$(INTDIR)\e_cdate2form.obj	: e_cdate2form.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_cdate2form.c
+
+$(INTDIR)\e_chkdate.obj	: e_chkdate.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_chkdate.c
+
+$(INTDIR)\e_cmdarg.obj	: e_cmdarg.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_cmdarg.c
+
+$(INTDIR)\e_date2jul.obj	: e_date2jul.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_date2jul.c
+
+$(INTDIR)\e_datechk.obj	: e_datechk.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_datechk.c
+
+$(INTDIR)\e_datecmp.obj	: e_datecmp.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_datecmp.c
+
+$(INTDIR)\e_day2nday.obj	: e_day2nday.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_day2nday.c
+
+$(INTDIR)\e_delenv.obj	: e_delenv.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_delenv.c
+
+$(INTDIR)\e_dudate.obj	: e_dudate.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_dudate.c
+
+$(INTDIR)\e_fullyear.obj	: e_fullyear.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_fullyear.c
+
+$(INTDIR)\e_gdate2date.obj	: e_gdate2date.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_gdate2date.c
+
+$(INTDIR)\e_gdate2year.obj	: e_gdate2year.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_gdate2year.c
+
+$(INTDIR)\e_gdatebydu.obj	: e_gdatebydu.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_gdatebydu.c
+
+$(INTDIR)\e_getdatestr.obj	: e_getdatestr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_getdatestr.c
+
+$(INTDIR)\e_getenv.obj	: e_getenv.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_getenv.c
+
+$(INTDIR)\e_getsysdate.obj	: e_getsysdate.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_getsysdate.c
+
+$(INTDIR)\e_gettime.obj	: e_gettime.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_gettime.c
+
+$(INTDIR)\e_getweekday.obj	: e_getweekday.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_getweekday.c
+
+$(INTDIR)\e_getyear.obj	: e_getyear.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_getyear.c
+
+$(INTDIR)\e_gmontbydu.obj	: e_gmontbydu.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_gmontbydu.c
+
+$(INTDIR)\e_gre2jul.obj	: e_gre2jul.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_gre2jul.c
+
+$(INTDIR)\e_jul2date.obj	: e_jul2date.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_jul2date.c
+
+$(INTDIR)\e_jul2gre.obj	: e_jul2gre.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_jul2gre.c
+
+$(INTDIR)\e_lstdayget.obj	: e_lstdayget.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_lstdayget.c
+
+$(INTDIR)\e_nextday.obj	: e_nextday.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_nextday.c
+
+$(INTDIR)\e_nextmonth.obj	: e_nextmonth.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_nextmonth.c
+
+$(INTDIR)\e_prevday.obj	: e_prevday.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_prevday.c
+
+$(INTDIR)\e_prevmonth.obj	: e_prevmonth.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_prevmonth.c
+
+$(INTDIR)\e_runp.obj	: e_runp.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_runp.c
+
+$(INTDIR)\e_runpsts.obj	: e_runpsts.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_runpsts.c
+
+$(INTDIR)\e_runsys.obj	: e_runsys.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_runsys.c
+
+$(INTDIR)\e_runsyssts.obj	: e_runsyssts.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_runsyssts.c
+
+$(INTDIR)\e_setenv.obj	: e_setenv.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_setenv.c
+
+$(INTDIR)\e_sighandle.obj	: e_sighandle.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_sighandle.c
+
+$(INTDIR)\e_sleep0001.obj	: e_sleep0001.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_sleep0001.c
+
+$(INTDIR)\e_timegap.obj	: e_timegap.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c e_timegap.c
+
+$(INTDIR)\f_chmod.obj	: f_chmod.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_chmod.c
+
+$(INTDIR)\f_chown.obj	: f_chown.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_chown.c
+
+$(INTDIR)\f_getenv.obj	: f_getenv.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_getenv.c
+
+$(INTDIR)\f_getfpath.obj	: f_getfpath.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_getfpath.c
+
+$(INTDIR)\f_lock.obj	: f_lock.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_lock.c
+
+$(INTDIR)\f_lockwait.obj	: f_lockwait.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_lockwait.c
+
+$(INTDIR)\f_mkdir.obj	: f_mkdir.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_mkdir.c
+
+$(INTDIR)\f_setenv.obj	: f_setenv.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_setenv.c
+
+$(INTDIR)\f_unlock.obj	: f_unlock.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_unlock.c
+
+$(INTDIR)\f_copy.obj	: f_copy.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c f_copy.c
+
+$(INTDIR)\fifofun.obj	: fifofun.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fifofun.c
+
+$(INTDIR)\gps.obj	: gps.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c gps.c
+
+$(INTDIR)\h_errno.obj	: h_errno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c h_errno.c
+
+$(INTDIR)\hymsg.obj	: hymsg.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c hymsg.c
+
+$(INTDIR)\k_acceptstr.obj	: k_acceptstr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c k_acceptstr.c
+
+$(INTDIR)\k_getchar.obj	: k_getchar.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c k_getchar.c
+
+$(INTDIR)\k_inpnnumeric.obj	: k_inpnnumeric.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c k_inpnnumeric.c
+
+$(INTDIR)\k_inpnstring.obj	: k_inpnstring.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c k_inpnstring.c
+
+$(INTDIR)\l_allday2date.obj	: l_allday2date.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_allday2date.c
+
+$(INTDIR)\l_allday2get.obj	: l_allday2get.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_allday2get.c
+
+$(INTDIR)\l_datechkconv.obj	: l_datechkconv.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_datechkconv.c
+
+$(INTDIR)\l_gpssethyerrno.obj	: l_gpssethyerrno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_gpssethyerrno.c
+
+$(INTDIR)\l_lstdaychkget.obj	: l_lstdaychkget.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_lstdaychkget.c
+
+$(INTDIR)\l_ntchmod.obj	: l_ntchmod.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_ntchmod.c
+
+$(INTDIR)\l_ntchown.obj	: l_ntchown.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_ntchown.c
+
+$(INTDIR)\l_pickdata.obj	: l_pickdata.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_pickdata.c
+
+$(INTDIR)\l_readline.obj	: l_readline.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_readline.c
+
+$(INTDIR)\r_chkshm.obj	: r_chkshm.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c r_chkshm.c
+
+$(INTDIR)\r_crtshm.obj	: r_crtshm.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c r_crtshm.c
+
+$(INTDIR)\r_delshm.obj	: r_delshm.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c r_delshm.c
+
+$(INTDIR)\r_execprg.obj	: r_execprg.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c r_execprg.c
+
+$(INTDIR)\r_getshm.obj	: r_getshm.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c r_getshm.c
+
+$(INTDIR)\r_runcont.obj	: r_runcont.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c r_runcont.c
+
+$(INTDIR)\r_runwait.obj	: r_runwait.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c r_runwait.c
+
+$(INTDIR)\ringfun.obj	: ringfun.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ringfun.c
+
+$(INTDIR)\s_readstream.obj	: s_readstream.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c s_readstream.c
+
+$(INTDIR)\s_writestream.obj	: s_writestream.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c s_writestream.c
+
+$(INTDIR)\tracelog.obj	: tracelog.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c tracelog.c
+
+

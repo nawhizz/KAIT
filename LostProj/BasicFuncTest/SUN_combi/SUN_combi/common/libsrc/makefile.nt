@@ -1,0 +1,14 @@
+SUBDIR	= cmreg
+
+all	: echo $(SUBDIR)
+
+echo	:
+	@echo	COMMON/LIBSRC
+
+
+$(SUBDIR): a 
+        @cd $@
+        @nmake /nologo -f makefile.nt
+        @cd ..
+
+a :

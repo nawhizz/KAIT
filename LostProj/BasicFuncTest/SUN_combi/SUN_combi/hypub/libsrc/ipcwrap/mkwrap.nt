@@ -1,0 +1,69 @@
+!INCLUDE	$(SVRHOME)\makent.env
+
+CFLAGS	= \
+	/D "_WINDOWS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER	= \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\ipcwrap.h \
+	ipcwrapdef.h
+
+DLIBS	= \
+
+LIBS	= \
+	$(LSYS)
+
+OBJS	= \
+	$(INTDIR)\ftok.obj	$(INTDIR)\getshmid.obj	$(INTDIR)\ipcwrap.obj \
+	$(INTDIR)\semctl.obj	$(INTDIR)\semget.obj	$(INTDIR)\semop.obj \
+	$(INTDIR)\semopx.obj	$(INTDIR)\shmat.obj	$(INTDIR)\shmctl.obj \
+	$(INTDIR)\shmdt.obj	$(INTDIR)\shmget.obj	$(INTDIR)\getsemid.obj
+
+
+all	: echo $(RUNNT)\bin\ipcwrap.dll
+
+echo		:
+	@echo	HYPUB/LIBSRC/IPCWRAP/IPCWRAP.DLL
+
+$(RUNNT)\bin\ipcwrap.dll	: $(OBJS)
+	$(LINK) /out:"$@" /dll /def:"ipcwrap.def" /subsystem:windows \
+	/implib:"$(RUNNT)\lib\ipcwrap.lib" $(LDOPT) $(OBJS) $(LIBS)
+
+
+$(INTDIR)\ftok.obj	: ftok.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ftok.c
+
+$(INTDIR)\getshmid.obj	: getshmid.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c getshmid.c
+
+$(INTDIR)\ipcwrap.obj	: ipcwrap.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c ipcwrap.c
+
+$(INTDIR)\semctl.obj	: semctl.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c semctl.c
+
+$(INTDIR)\semget.obj	: semget.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c semget.c
+
+$(INTDIR)\semop.obj	: semop.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c semop.c
+
+$(INTDIR)\semopx.obj	: semopx.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c semopx.c
+
+$(INTDIR)\shmat.obj	: shmat.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c shmat.c
+
+$(INTDIR)\shmctl.obj	: shmctl.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c shmctl.c
+
+$(INTDIR)\shmdt.obj	: shmdt.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c shmdt.c
+
+$(INTDIR)\shmget.obj	: shmget.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c shmget.c
+
+$(INTDIR)\getsemid.obj	: getsemid.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c getsemid.c

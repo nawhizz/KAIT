@@ -1,0 +1,102 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_WINDOWS" /D "WFM_INTERNAL" /D "__IS_HYS_GPS__" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\wfm.h
+
+DLIBS = \
+	$(RUNNT)\lib\gps.lib
+
+LIBS = \
+	$(RUNNT)\lib\gps.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\OWFM_ALLCLOSE.obj	$(INTDIR)\OWFM_CLOSE.obj \
+	$(INTDIR)\OWFM_OPEN.obj		$(INTDIR)\OWFM_FILLDATA.obj \
+	$(INTDIR)\OWFM_FILLHEAD.obj	$(INTDIR)\OWFM_FILLTAIL.obj \
+	$(INTDIR)\WFmAllClose.obj	$(INTDIR)\WFmClose.obj \
+	$(INTDIR)\WFmOpen.obj		$(INTDIR)\WFmFillData.obj \
+	$(INTDIR)\WFmFillHead.obj	$(INTDIR)\WFmFillTail.obj \
+	$(INTDIR)\wfm_extvar.obj	$(INTDIR)\wfm_savefile.obj \
+	$(INTDIR)\wfm_saveseginfo.obj	$(INTDIR)\wfm_freeblkinfo.obj \
+	$(INTDIR)\wfm_freeseginfo.obj	$(INTDIR)\wfm_dbgfun.obj \
+	$(INTDIR)\wfm_str2strarr.obj	$(INTDIR)\wfm_errset.obj \
+	$(INTDIR)\l_wfmsethyerrno.obj
+
+all	: echo $(RUNNT)\bin\wfm.dll
+
+echo	:
+	@echo	HYPUB/LIBSRC/WFM
+
+$(RUNNT)\bin\wfm.dll	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /dll /def:"wfm.def" /subsystem:windows \
+	/implib:"$(RUNNT)\lib\wfm.lib" $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\OWFM_ALLCLOSE.obj	: OWFM_ALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OWFM_ALLCLOSE.c
+
+$(INTDIR)\OWFM_CLOSE.obj		: OWFM_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OWFM_CLOSE.c
+
+$(INTDIR)\OWFM_OPEN.obj		: OWFM_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OWFM_OPEN.c
+
+$(INTDIR)\OWFM_FILLHEAD.obj	: OWFM_FILLHEAD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OWFM_FILLHEAD.c
+
+$(INTDIR)\OWFM_FILLDATA.obj	: OWFM_FILLDATA.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OWFM_FILLDATA.c
+
+$(INTDIR)\OWFM_FILLTAIL.obj	: OWFM_FILLTAIL.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OWFM_FILLTAIL.c
+
+$(INTDIR)\WFmAllClose.obj	: WFmAllClose.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c WFmAllClose.c
+
+$(INTDIR)\WFmClose.obj	: WFmClose.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c WFmClose.c
+
+$(INTDIR)\WFmOpen.obj	: WFmOpen.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c WFmOpen.c
+
+$(INTDIR)\WFmFillData.obj	: WFmFillData.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c WFmFillData.c
+
+$(INTDIR)\WFmFillHead.obj	: WFmFillHead.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c WFmFillHead.c
+
+$(INTDIR)\WFmFillTail.obj	: WFmFillTail.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c WFmFillTail.c
+
+$(INTDIR)\wfm_extvar.obj	: wfm_extvar.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c wfm_extvar.c
+
+$(INTDIR)\wfm_savefile.obj	: wfm_savefile.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c wfm_savefile.c
+
+$(INTDIR)\wfm_saveseginfo.obj	: wfm_saveseginfo.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c wfm_saveseginfo.c
+
+$(INTDIR)\wfm_freeseginfo.obj	: wfm_freeseginfo.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c wfm_freeseginfo.c
+
+$(INTDIR)\wfm_freeblkinfo.obj	: wfm_freeblkinfo.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c wfm_freeblkinfo.c
+
+$(INTDIR)\wfm_dbgfun.obj	: wfm_dbgfun.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c wfm_dbgfun.c
+
+$(INTDIR)\wfm_str2strarr.obj	: wfm_str2strarr.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c wfm_str2strarr.c
+
+$(INTDIR)\wfm_errset.obj	: wfm_errset.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c wfm_errset.c
+
+$(INTDIR)\l_wfmsethyerrno.obj	: l_wfmsethyerrno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_wfmsethyerrno.c

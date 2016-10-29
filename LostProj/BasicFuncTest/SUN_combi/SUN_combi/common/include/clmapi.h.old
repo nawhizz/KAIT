@@ -1,0 +1,149 @@
+/* clmapi.h */
+/*----------------------------------------------------------------------*/
+/* HEADER for CLMLIB							*/
+/*----------------------------------------------------------------------*/
+#ifndef CLMAPI_H
+#define CLMAPI_H
+
+/*-----	System Library Headers	----------------------------------------*/
+#ifndef	WIN32
+#include	<sys/types.h>
+#endif
+
+/*----- Common Library Headers -----------------------------------------*/
+#include        "cbuni.h"
+#include	"convwin32.h"
+
+/*----- Define Variable ------------------------------------------------*/
+/* 평가판 여부 */
+#define	TrialVersion	'T'				/* 평가판 */
+#define	NoTriVersion	'R'				/* 정식 버전 */
+
+/* DLTP 사용자 수 제한 방법 */
+#define	MaxUserLimit		'1'			/* 최대 사용자 수로 */
+#define	ConcurrentUserLimit	'2'			/* 동시 사용자 수로 */
+
+/*----- Internal Structures Define -------------------------------------*/
+struct	clmFORM {
+	int	clmsize		;			/* clmFORM size	      */
+	int	tpmuser		;			/* dltp. 사용자 수    */
+	int	tpmins		;			/* dltp. 인스턴스 수  */
+	int	dbcuser		;			/* dbcenter	"     */
+	int	dbcins		;			/* dbcenter	"     */
+	int	webuser		;			/* combiweb	"     */
+	int	webins		;			/* combiweb	"     */
+	char	version		[ 8];			/* ##.### null term.  */
+	char	kind		[ 1];			/* 'T'rial, 'R':정식  */
+	char	date		[ 8];			/* YYYYMMDD	      */
+	char	limit_method	[ 1];			/* <dltp> '1', '2'    */
+	char	setupdate	[ 8];			/* 설치 일자	      */
+	char	updatedate	[ 8];			/* 수정 일자	      */
+	char	ieaphome	[128];			/* combi home	      */
+#ifdef	WIN32
+	char	hostid		[39];			/* HW PROFILE GUID    */
+#else
+	char	hostid		[18];			/* 서버 고유 id	      */
+#endif
+};
+
+/*----------------------------------------------------------------------*/
+/* FUNCTION PROTOTYPE							*/
+/*----------------------------------------------------------------------*/
+/* for 'C' */
+#ifdef	__cplusplus
+extern	"C" {
+#endif
+
+int CBD1	lm_chkvalidity CBD2(( void ));
+int CBD1	lm_create CBD2(( struct clmFORM *clmbuf, char *fpath ));
+int CBD1	lm_createdbc CBD2(( key_t shmkey, int maxuser ));
+int CBD1	lm_createtpm CBD2(( int portno, int maxuser ));
+int CBD1	lm_createweb CBD2(( key_t shmkey, int maxuser ));
+void CBD1	lm_cut_logfile CBD2(( int fd, char *fpath ));
+int CBD1	lm_deletedbc CBD2(( key_t shmkey ));
+int CBD1	lm_deletetpm CBD2(( int portno ));
+int CBD1	lm_deleteweb CBD2(( key_t shmkey ));
+int CBD1	lm_freefordbc CBD2(( key_t shmkey, pid_t pid ));
+/* 2001.6.5. clikind 추가 */
+int CBD1	lm_freefortpm CBD2(( int portno,
+				     int ssno, char *cliid, char *clikind ));
+int CBD1	lm_freeforweb CBD2(( key_t shmkey, pid_t pid ));
+int CBD1	lm_getclmdata CBD2(( struct clmFORM *clmbuf, char *fpath ));
+int CBD1	lm_getclminfo CBD2(( struct clmFORM *clmbuf ));
+int CBD1	lm_isLoaddbc CBD2(( void ));
+int CBD1	lm_isLoadtpm CBD2(( void ));
+int CBD1	lm_isLoadweb CBD2(( void ));
+int CBD1	lm_remainfordbc CBD2(( void ));
+int CBD1	lm_remainfortpm CBD2(( void ));
+int CBD1	lm_remainforweb CBD2(( void ));
+int CBD1	lm_setvalidity CBD2(( char *home ));
+int CBD1	lm_unloaddbc CBD2(( void ));
+int CBD1	lm_unloadtpm CBD2(( void ));
+int CBD1	lm_unloadweb CBD2(( void ));
+int CBD1	lm_usefordbc CBD2(( key_t shmkey, pid_t pid ));
+/* 2001.6.5. clikind 추가 */
+int CBD1	lm_usefortpm CBD2(( int portno,
+				    int ssno, char *cliid, char *clikind ));
+int CBD1	lm_useforweb CBD2(( key_t shmkey, pid_t pid ));
+
+#ifdef	WIN32
+
+char CBD1	getopt CBD2(( int argc, char *argv[], char *findstr ));
+int CBD1	lm_readstream CBD2(( HANDLE fd, char *data,
+					int datalen, int timeoutsec ));
+int CBD1	lm_writestream CBD2(( HANDLE fd, char *data,
+					int datalen, int timeoutsec ));
+
+#else
+
+int CBD1	lm_readstream CBD2(( int fd, char *data,
+					int datalen, int timeoutsec ));
+int CBD1	lm_writestream CBD2(( int fd, char *data,
+					int datalen, int timeoutsec ));
+
+#endif
+
+
+#ifdef	__cplusplus
+}
+#endif
+
+/*----------------------------------------------------------------------*/
+/*  통신 data layout	*/
+/*----------------------------------------------------------------------*/
+struct clmdata {
+	char	name[6];	/* tpm 여부의 판단			*/
+	char	version[1];	/* version 정보				*/
+	char	kind[1];	/* 0:tp start, 1:check use, 2:free	*/ 
+				/*	3:tp down, 4:LM exit 		*/
+	char	cliid[8];	/* usefortpm 에서 확인 요청한 cliid 	*/
+	char	clikind[1];	/* 2001.6.5. client kind		*/
+	int	maxuser;	/* tpm					*/
+	int	portno;		/* tpm	 				*/
+	int	ssno;		/* tpm	 				*/
+	pid_t	pid;		/* 응답을 줄 fifo file path 		*/
+#ifdef	WIN32
+	DWORD	threadid;	/* 응답을 줄 fifo file path		*/
+#endif
+};
+
+struct dbcweb {
+	char	name[6];	/* dbc, web 여부의 판단			*/
+	char	version[1];	/* version 정보				*/
+	char	kind[1];	/* 0:tp start, 1:check use, 2:free	*/ 
+				/*	3:tp down, 4:LM exit 		*/
+	int	maxuser;	/* dbc, web				*/
+	key_t	shmkey;		/* 					*/
+	pid_t	userid;		/* 기동한 process id			*/
+	pid_t	pid;		/* 응답을 줄 fifo file path 		*/
+	char	filler[4];	/* filler 				*/
+};
+
+struct	respFORM {
+	char	fl[1];		/* '0' : error, '1' : ok	*/
+	int	remain;		/* 사용 가능한 license 수	*/
+};
+#endif
+
+/*----------------------------------------------------------------------*/
+/* end of clmapi.h */

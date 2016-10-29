@@ -1,0 +1,14 @@
+SUBDIR	= gpstest dsml2tst
+
+all	: echo $(SUBDIR)
+
+echo	:
+	@echo HYPUB/TESTSRC
+
+
+$(SUBDIR): a
+	@cd $@
+	@nmake /nologo -f makefile.nt
+	@cd ..
+
+a :

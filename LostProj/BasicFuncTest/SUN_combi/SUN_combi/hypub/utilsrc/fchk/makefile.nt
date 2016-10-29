@@ -1,0 +1,30 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_CONSOLE" /D "_MBCS" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h
+
+DLIBS = \
+
+LIBS = \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\fchk.obj	
+
+all	: echo $(RUNNT)\bin\fchk.exe
+
+echo	:
+	@echo	HYPUB/UTILSRC/FCHK
+
+$(RUNNT)\bin\fchk.exe	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /subsystem:console $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\fchk.obj	: fchk.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fchk.c
+
+

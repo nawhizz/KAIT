@@ -1,0 +1,95 @@
+
+
+C Library Functions                                     qsort(3C)
+
+NAME
+     qsort - quick sort
+
+SYNOPSIS
+     #include <stdlib.h>
+
+     void  qsort(void  *base,  size_t  nel,  size_t  width,   int
+     (*compar)(const void *, const void *));
+
+DESCRIPTION
+     The qsort() function is an implementation of the  quick-sort
+     algorithm.  It  sorts a table of data in place. The contents
+     of the table are sorted in ascending order according to  the
+     user-supplied comparison function.
+
+     The base argument points to the element at the base  of  the
+     table.   The  nel  argument is the number of elements in the
+     table.  The width argument specifies the size of  each  ele-
+     ment  in bytes.  The compar argument is the name of the com-
+     parison function, which is called with  two  arguments  that
+     point to the elements being compared.
+
+     The function must return an integer less than, equal to,  or
+     greater than zero to indicate if the first argument is to be
+     considered less than, equal to, or greater than  the  second
+     argument.
+
+     The contents of the table  are  sorted  in  ascending  order
+     according to the user supplied comparison function.
+
+EXAMPLES
+     Example 1: Program sorts.
+
+     The following program sorts a simple array:
+
+     static  int intcompare(int *i, int *j)
+     {
+             if (*i > *j)
+                     return (1);
+             if (*i < *j)
+                     return (-1);
+             return (0);
+     }
+     main()
+     {
+             int a[10];
+             int i;
+             a[0] = 9;
+             a[1] = 8;
+             a[2] = 7;
+             a[3] = 6;
+             a[4] = 5;
+
+SunOS 5.7           Last change: 16 Apr 1997                    1
+
+C Library Functions                                     qsort(3C)
+
+             a[5] = 4;
+             a[6] = 3;
+             a[7] = 2;
+             a[8] = 1;
+             a[9] = 0;
+
+             qsort((char *) a, 10, sizeof(int), intcompare);
+
+             for (i=0; i<10; i++) printf(" %d",a[i]);
+             printf("\n");
+     }
+
+ATTRIBUTES
+     See attributes(5) for descriptions of the  following  attri-
+     butes:
+     ____________________________________________________________
+    |       ATTRIBUTE TYPE        |       ATTRIBUTE VALUE       |
+    |_____________________________|_____________________________|
+    | MT-Level                    | MT-Safe                     |
+    |_____________________________|_____________________________|
+
+SEE ALSO
+     sort(1), bsearch(3C), lsearch(3C), string(3C), attributes(5)
+
+NOTES
+     The comparison function need  not  compare  every  byte,  so
+     arbitrary  data may be contained in the elements in addition
+     to the values being compared.
+
+     The relative order in the output of two items  that  compare
+     as equal is unpredictable.
+
+SunOS 5.7           Last change: 16 Apr 1997                    2
+

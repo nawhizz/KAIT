@@ -1,0 +1,74 @@
+/* clmapi.h */
+/*----------------------------------------------------------------------*/
+/* HEADER for CLMLIB							*/
+/*----------------------------------------------------------------------*/
+#ifndef CLMAPI_H
+#define CLMAPI_H
+
+#include        "cbuni.h"
+
+/*----------------------------------------------------------------------*/
+/* FUNCTION PROTOTYPE							*/
+/*----------------------------------------------------------------------*/
+/* for 'C' */
+#ifdef	__cplusplus
+extern	"C" {
+#endif
+
+int CBD1	lm_create CBD2(( char *version, char kind, char date[8],
+				char limit_way, int tpmuser, int tpmins,
+				int dbcuser, int dbcins,
+				int webuser, int webins ));
+int CBD1	lm_chkvalidity CBD2(( void ));
+int CBD1	lm_getconcuser CBD2(( int kind ));
+int CBD1	lm_getmaxlicense CBD2(( int kind ));
+int CBD1	lm_gettrialdate CBD2(( void ));
+int CBD1	lm_getversion CBD2(( void ));
+int CBD1	lm_sethome CBD2(( char *home ));
+int CBD1	lm_sethostid CBD2(( char *hostid ));
+int CBD1	lm_usefortpm CBD2(( int portno, int ssno, char cliid[8] ));
+int CBD1	lm_freefortpm CBD2(( int portno, int ssno, char cliid[8] ));
+int CBD1	lm_createtpm CBD2(( int portno, int maxuser ));
+int CBD1	lm_deletetpm CBD2(( int portno ));
+int CBD1	lm_usefordbc CBD2(( key_t shmkey, pid_t pid ));
+int CBD1	lm_freefordbc CBD2(( key_t shmkey, pid_t pid ));
+int CBD1	lm_createdbc CBD2(( key_t shmkey ));
+int CBD1	lm_deletedbc CBD2(( key_t shmkey ));
+int CBD1	lm_usefordbc CBD2(( key_t shmkey, pid_t pid ));
+int CBD1	lm_freefordbc CBD2(( key_t shmkey, pid_t pid ));
+int CBD1	lm_createdbc CBD2(( key_t shmkey ));
+int CBD1	lm_deletedbc CBD2(( key_t shmkey ));
+
+#ifdef	__cplusplus
+}
+#endif
+
+#endif
+/*----------------------------------------------------------------------*/
+/*  통신 data layout	*/
+/*----------------------------------------------------------------------*/
+struct clmdata{
+	char	name[6];	/* tpm 여부의 판단			*/
+	char	version[1];	/* version 정보				*/
+	char	kind[1];	/* 0:tp start, 1:check use, 2:free	*/ 
+				/*	3:tp down, 4:LM exit 		*/
+	char	cliid[8];	/* usefortpm 에서 확인 요청한 cliid 	*/
+	int	maxuser;	/* tpm					*/
+	int	portno;		/* tpm	 				*/
+	int	ssno;		/* tpm	 				*/
+	pid_t	pid;		/* 응답을 줄 fifo file path 		*/
+	};
+
+struct dbcweb{
+	char	name[6];	/* dbc, web 여부의 판단			*/
+	char	version[1];	/* version 정보				*/
+	char	kind[1];	/* 0:tp start, 1:check use, 2:free	*/ 
+				/*	3:tp down, 4:LM exit 		*/
+	int	maxuser;	/* dbc, web				*/
+	key_t	shmkey;		/* 		*/
+	pid_t	pid;		/* 응답을 줄 fifo file path 		*/
+	char	filler[4];	/* filler 				*/
+	};
+
+/*----------------------------------------------------------------------*/
+/* end of clmapi.h */

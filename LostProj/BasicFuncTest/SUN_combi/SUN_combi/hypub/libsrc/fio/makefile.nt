@@ -1,0 +1,384 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_WINDOWS" /D "FIO_INTERNAL" /D "__IS_HYS_GPS__" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\fio.h
+
+DLIBS = \
+	$(RUNNT)\lib\gps.lib
+
+LIBS = \
+	$(RUNNT)\lib\gps.lib \
+	$(LSYS)
+
+OBJS =  \
+	$(INTDIR)\FM_ALLCLOSE.obj	$(INTDIR)\FM_CLOSE.obj \
+	$(INTDIR)\FM_FILLFRM.obj	$(INTDIR)\FM_FILLSEG.obj \
+	$(INTDIR)\FM_GETPATH.obj	$(INTDIR)\FM_GETSIZE.obj \
+	$(INTDIR)\FM_OPEN.obj		$(INTDIR)\FS_ALLCLOSE.obj \
+	$(INTDIR)\FS_APPEND.obj		$(INTDIR)\FS_BUILD.obj \
+	$(INTDIR)\FS_CLOSE.obj		$(INTDIR)\FS_CROPEN.obj \
+	$(INTDIR)\FS_DROP.obj		$(INTDIR)\FS_GETPATH.obj \
+	$(INTDIR)\FS_OPEN.obj		$(INTDIR)\FS_READ.obj \
+	$(INTDIR)\FS_RECNUM.obj		$(INTDIR)\FS_REDFIRST.obj \
+	$(INTDIR)\FS_REDLAST.obj	$(INTDIR)\FS_REDLN.obj \
+	$(INTDIR)\FS_REDNX.obj		$(INTDIR)\FS_REDPR.obj \
+	$(INTDIR)\FS_UPDAT.obj		$(INTDIR)\FS_UPDATCUR.obj \
+	$(INTDIR)\FS_WRITE.obj		$(INTDIR)\OBP_PRTDATA.obj \
+	$(INTDIR)\OBP_PRTFF.obj		$(INTDIR)\OBP_PRTFORM.obj \
+	$(INTDIR)\OBP_PRTLF.obj		$(INTDIR)\OBP_PRTLINE.obj \
+	$(INTDIR)\OBP_PRTSEG.obj	$(INTDIR)\OBP_PRTSEGF.obj \
+	$(INTDIR)\OFM_ALLCLOSE.obj	$(INTDIR)\OFM_CLOSE.obj \
+	$(INTDIR)\OFM_FILLFRM.obj	$(INTDIR)\OFM_FILLSEG.obj \
+	$(INTDIR)\OFM_GETPATH.obj	$(INTDIR)\OFM_GETSIZE.obj \
+	$(INTDIR)\OFM_OPEN.obj		$(INTDIR)\OFS_ALLCLOSE.obj \
+	$(INTDIR)\OFS_APPEND.obj	$(INTDIR)\OFS_BUILD.obj \
+	$(INTDIR)\OFS_CLOSE.obj		$(INTDIR)\OFS_CROPEN.obj \
+	$(INTDIR)\OFS_DROP.obj		$(INTDIR)\OFS_GETPATH.obj \
+	$(INTDIR)\OFS_OPEN.obj		$(INTDIR)\OFS_READ.obj \
+	$(INTDIR)\OFS_REDFIRST.obj	$(INTDIR)\OFS_REDLN.obj \
+	$(INTDIR)\OFS_REDNX.obj		$(INTDIR)\OFS_REDPR.obj \
+	$(INTDIR)\OFS_UPDAT.obj		$(INTDIR)\OFS_UPDATCUR.obj \
+	$(INTDIR)\OFS_WRITE.obj		$(INTDIR)\OSM_APPEND.obj \
+	$(INTDIR)\OSM_BUILD.obj		$(INTDIR)\OSM_CLOSE.obj \
+	$(INTDIR)\OSM_CROPEN.obj	$(INTDIR)\OSM_DROP.obj \
+	$(INTDIR)\OSM_OPEN.obj		$(INTDIR)\OSM_READ.obj \
+	$(INTDIR)\OSM_REDFIRST.obj	$(INTDIR)\OSM_REDLAST.obj \
+	$(INTDIR)\OSM_REDLN.obj		$(INTDIR)\OSM_REDNX.obj \
+	$(INTDIR)\OSM_REDPR.obj		$(INTDIR)\OSM_UPDAT.obj \
+	$(INTDIR)\OSM_UPDATCUR.obj	$(INTDIR)\OSM_WRITE.obj \
+	$(INTDIR)\SM_APPEND.obj		$(INTDIR)\SM_BUILD.obj \
+	$(INTDIR)\SM_CLOSE.obj		$(INTDIR)\SM_CROPEN.obj \
+	$(INTDIR)\SM_DROP.obj		$(INTDIR)\SM_OPEN.obj \
+	$(INTDIR)\SM_READ.obj		$(INTDIR)\SM_REDFIRST.obj \
+	$(INTDIR)\SM_REDLAST.obj	$(INTDIR)\SM_REDLN.obj \
+	$(INTDIR)\SM_REDNX.obj		$(INTDIR)\SM_REDPR.obj \
+	$(INTDIR)\SM_UPDAT.obj		$(INTDIR)\SM_UPDATCUR.obj \
+	$(INTDIR)\SM_WRITE.obj		$(INTDIR)\bp_prtdata.obj \
+	$(INTDIR)\bp_prtff.obj		$(INTDIR)\bp_prtform.obj \
+	$(INTDIR)\bp_prtlf.obj		$(INTDIR)\bp_prtline.obj \
+	$(INTDIR)\bp_prtseg.obj		$(INTDIR)\bp_prtsegf.obj \
+	$(INTDIR)\fioext.obj		$(INTDIR)\fm_errset.obj \
+	$(INTDIR)\fm_getfpath.obj	$(INTDIR)\fm_getline.obj \
+	$(INTDIR)\fm_savefile.obj	$(INTDIR)\fs_errset.obj \
+	$(INTDIR)\fs_savefile.obj	$(INTDIR)\l_fiosethyerrno.obj \
+	$(INTDIR)\sm_errset.obj
+
+all	: echo $(RUNNT)\bin\fio.dll
+
+echo	:
+	@echo	HYPUB/LIBSRC/FIO
+
+$(RUNNT)\bin\fio.dll	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /dll /def:"fio.def" /subsystem:windows \
+	/implib:"$(RUNNT)\lib\fio.lib" $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\FM_ALLCLOSE.obj	: FM_ALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FM_ALLCLOSE.c
+
+$(INTDIR)\FM_CLOSE.obj	: FM_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FM_CLOSE.c
+
+$(INTDIR)\FM_FILLFRM.obj	: FM_FILLFRM.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FM_FILLFRM.c
+
+$(INTDIR)\FM_FILLSEG.obj	: FM_FILLSEG.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FM_FILLSEG.c
+
+$(INTDIR)\FM_GETPATH.obj	: FM_GETPATH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FM_GETPATH.c
+
+$(INTDIR)\FM_GETSIZE.obj	: FM_GETSIZE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FM_GETSIZE.c
+
+$(INTDIR)\FM_OPEN.obj	: FM_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FM_OPEN.c
+
+$(INTDIR)\FS_ALLCLOSE.obj	: FS_ALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_ALLCLOSE.c
+
+$(INTDIR)\FS_APPEND.obj	: FS_APPEND.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_APPEND.c
+
+$(INTDIR)\FS_BUILD.obj	: FS_BUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_BUILD.c
+
+$(INTDIR)\FS_CLOSE.obj	: FS_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_CLOSE.c
+
+$(INTDIR)\FS_CROPEN.obj	: FS_CROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_CROPEN.c
+
+$(INTDIR)\FS_DROP.obj	: FS_DROP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_DROP.c
+
+$(INTDIR)\FS_GETPATH.obj	: FS_GETPATH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_GETPATH.c
+
+$(INTDIR)\FS_OPEN.obj	: FS_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_OPEN.c
+
+$(INTDIR)\FS_READ.obj	: FS_READ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_READ.c
+
+$(INTDIR)\FS_RECNUM.obj	: FS_RECNUM.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_RECNUM.c
+
+$(INTDIR)\FS_REDFIRST.obj	: FS_REDFIRST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_REDFIRST.c
+
+$(INTDIR)\FS_REDLAST.obj	: FS_REDLAST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_REDLAST.c
+
+$(INTDIR)\FS_REDLN.obj	: FS_REDLN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_REDLN.c
+
+$(INTDIR)\FS_REDNX.obj	: FS_REDNX.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_REDNX.c
+
+$(INTDIR)\FS_REDPR.obj	: FS_REDPR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_REDPR.c
+
+$(INTDIR)\FS_UPDAT.obj	: FS_UPDAT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_UPDAT.c
+
+$(INTDIR)\FS_UPDATCUR.obj	: FS_UPDATCUR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_UPDATCUR.c
+
+$(INTDIR)\FS_WRITE.obj	: FS_WRITE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c FS_WRITE.c
+
+$(INTDIR)\OBP_PRTDATA.obj	: OBP_PRTDATA.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OBP_PRTDATA.c
+
+$(INTDIR)\OBP_PRTFF.obj	: OBP_PRTFF.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OBP_PRTFF.c
+
+$(INTDIR)\OBP_PRTFORM.obj	: OBP_PRTFORM.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OBP_PRTFORM.c
+
+$(INTDIR)\OBP_PRTLF.obj	: OBP_PRTLF.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OBP_PRTLF.c
+
+$(INTDIR)\OBP_PRTLINE.obj	: OBP_PRTLINE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OBP_PRTLINE.c
+
+$(INTDIR)\OBP_PRTSEG.obj	: OBP_PRTSEG.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OBP_PRTSEG.c
+
+$(INTDIR)\OBP_PRTSEGF.obj	: OBP_PRTSEGF.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OBP_PRTSEGF.c
+
+$(INTDIR)\OFM_ALLCLOSE.obj	: OFM_ALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFM_ALLCLOSE.c
+
+$(INTDIR)\OFM_CLOSE.obj	: OFM_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFM_CLOSE.c
+
+$(INTDIR)\OFM_FILLFRM.obj	: OFM_FILLFRM.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFM_FILLFRM.c
+
+$(INTDIR)\OFM_FILLSEG.obj	: OFM_FILLSEG.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFM_FILLSEG.c
+
+$(INTDIR)\OFM_GETPATH.obj	: OFM_GETPATH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFM_GETPATH.c
+
+$(INTDIR)\OFM_GETSIZE.obj	: OFM_GETSIZE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFM_GETSIZE.c
+
+$(INTDIR)\OFM_OPEN.obj	: OFM_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFM_OPEN.c
+
+$(INTDIR)\OFS_ALLCLOSE.obj	: OFS_ALLCLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_ALLCLOSE.c
+
+$(INTDIR)\OFS_APPEND.obj	: OFS_APPEND.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_APPEND.c
+
+$(INTDIR)\OFS_BUILD.obj	: OFS_BUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_BUILD.c
+
+$(INTDIR)\OFS_CLOSE.obj	: OFS_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_CLOSE.c
+
+$(INTDIR)\OFS_CROPEN.obj	: OFS_CROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_CROPEN.c
+
+$(INTDIR)\OFS_DROP.obj	: OFS_DROP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_DROP.c
+
+$(INTDIR)\OFS_GETPATH.obj	: OFS_GETPATH.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_GETPATH.c
+
+$(INTDIR)\OFS_OPEN.obj	: OFS_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_OPEN.c
+
+$(INTDIR)\OFS_READ.obj	: OFS_READ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_READ.c
+
+$(INTDIR)\OFS_REDFIRST.obj	: OFS_REDFIRST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_REDFIRST.c
+
+$(INTDIR)\OFS_REDLN.obj	: OFS_REDLN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_REDLN.c
+
+$(INTDIR)\OFS_REDNX.obj	: OFS_REDNX.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_REDNX.c
+
+$(INTDIR)\OFS_REDPR.obj	: OFS_REDPR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_REDPR.c
+
+$(INTDIR)\OFS_UPDAT.obj	: OFS_UPDAT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_UPDAT.c
+
+$(INTDIR)\OFS_UPDATCUR.obj	: OFS_UPDATCUR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_UPDATCUR.c
+
+$(INTDIR)\OFS_WRITE.obj	: OFS_WRITE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OFS_WRITE.c
+
+$(INTDIR)\OSM_APPEND.obj	: OSM_APPEND.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_APPEND.c
+
+$(INTDIR)\OSM_BUILD.obj	: OSM_BUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_BUILD.c
+
+$(INTDIR)\OSM_CLOSE.obj	: OSM_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_CLOSE.c
+
+$(INTDIR)\OSM_CROPEN.obj	: OSM_CROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_CROPEN.c
+
+$(INTDIR)\OSM_DROP.obj	: OSM_DROP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_DROP.c
+
+$(INTDIR)\OSM_OPEN.obj	: OSM_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_OPEN.c
+
+$(INTDIR)\OSM_READ.obj	: OSM_READ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_READ.c
+
+$(INTDIR)\OSM_REDFIRST.obj	: OSM_REDFIRST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_REDFIRST.c
+
+$(INTDIR)\OSM_REDLAST.obj	: OSM_REDLAST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_REDLAST.c
+
+$(INTDIR)\OSM_REDLN.obj	: OSM_REDLN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_REDLN.c
+
+$(INTDIR)\OSM_REDNX.obj	: OSM_REDNX.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_REDNX.c
+
+$(INTDIR)\OSM_REDPR.obj	: OSM_REDPR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_REDPR.c
+
+$(INTDIR)\OSM_UPDAT.obj	: OSM_UPDAT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_UPDAT.c
+
+$(INTDIR)\OSM_UPDATCUR.obj	: OSM_UPDATCUR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_UPDATCUR.c
+
+$(INTDIR)\OSM_WRITE.obj	: OSM_WRITE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c OSM_WRITE.c
+
+$(INTDIR)\SM_APPEND.obj	: SM_APPEND.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_APPEND.c
+
+$(INTDIR)\SM_BUILD.obj	: SM_BUILD.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_BUILD.c
+
+$(INTDIR)\SM_CLOSE.obj	: SM_CLOSE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_CLOSE.c
+
+$(INTDIR)\SM_CROPEN.obj	: SM_CROPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_CROPEN.c
+
+$(INTDIR)\SM_DROP.obj	: SM_DROP.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_DROP.c
+
+$(INTDIR)\SM_OPEN.obj	: SM_OPEN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_OPEN.c
+
+$(INTDIR)\SM_READ.obj	: SM_READ.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_READ.c
+
+$(INTDIR)\SM_REDFIRST.obj	: SM_REDFIRST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_REDFIRST.c
+
+$(INTDIR)\SM_REDLAST.obj	: SM_REDLAST.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_REDLAST.c
+
+$(INTDIR)\SM_REDLN.obj	: SM_REDLN.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_REDLN.c
+
+$(INTDIR)\SM_REDNX.obj	: SM_REDNX.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_REDNX.c
+
+$(INTDIR)\SM_REDPR.obj	: SM_REDPR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_REDPR.c
+
+$(INTDIR)\SM_UPDAT.obj	: SM_UPDAT.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_UPDAT.c
+
+$(INTDIR)\SM_UPDATCUR.obj	: SM_UPDATCUR.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_UPDATCUR.c
+
+$(INTDIR)\SM_WRITE.obj	: SM_WRITE.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c SM_WRITE.c
+
+$(INTDIR)\bp_prtdata.obj	: bp_prtdata.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c bp_prtdata.c
+
+$(INTDIR)\bp_prtff.obj	: bp_prtff.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c bp_prtff.c
+
+$(INTDIR)\bp_prtform.obj	: bp_prtform.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c bp_prtform.c
+
+$(INTDIR)\bp_prtlf.obj	: bp_prtlf.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c bp_prtlf.c
+
+$(INTDIR)\bp_prtline.obj	: bp_prtline.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c bp_prtline.c
+
+$(INTDIR)\bp_prtseg.obj	: bp_prtseg.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c bp_prtseg.c
+
+$(INTDIR)\bp_prtsegf.obj	: bp_prtsegf.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c bp_prtsegf.c
+
+$(INTDIR)\fioext.obj	: fioext.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fioext.c
+
+$(INTDIR)\fm_errset.obj	: fm_errset.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fm_errset.c
+
+$(INTDIR)\fm_getfpath.obj	: fm_getfpath.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fm_getfpath.c
+
+$(INTDIR)\fm_getline.obj	: fm_getline.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fm_getline.c
+
+$(INTDIR)\fm_savefile.obj	: fm_savefile.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fm_savefile.c
+
+$(INTDIR)\fs_errset.obj	: fs_errset.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fs_errset.c
+
+$(INTDIR)\fs_savefile.obj	: fs_savefile.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c fs_savefile.c
+
+$(INTDIR)\l_fiosethyerrno.obj	: l_fiosethyerrno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_fiosethyerrno.c
+
+$(INTDIR)\sm_errset.obj	: sm_errset.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c sm_errset.c
+
+

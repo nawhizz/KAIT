@@ -1,0 +1,38 @@
+!INCLUDE		$(SVRHOME)\makent.env
+
+CFLAGS = \
+	/D "_WINDOWS" /D "__IS_HYS_GPS__" \
+	/I $(COMMON)\include \
+	$(CFOPT)
+
+HEADER = \
+	$(COMMON)\include\cbuni.h \
+	$(COMMON)\include\gps.h \
+	$(COMMON)\include\sockcomm.h
+
+DLIBS = \
+	$(RUNNT)\lib\gps.lib
+
+LIBS = \
+	$(RUNNT)\lib\gps.lib \
+	$(LSYS) wsock32.lib
+
+OBJS =  \
+	$(INTDIR)\l_socksethyerrno.obj	$(INTDIR)\sockcomm.obj
+
+all	: echo $(RUNNT)\bin\sockcomm.dll
+
+echo	:
+	@echo	HYPUB/LIBSRC/SOCKCOMM
+
+$(RUNNT)\bin\sockcomm.dll	: $(OBJS) $(DLIBS)
+	$(LINK) /out:"$@" /dll /def:"sockcomm.def" /subsystem:windows \
+	/implib:"$(RUNNT)\lib\sockcomm.lib" $(LDOPT) $(OBJS) $(LIBS)
+
+$(INTDIR)\l_socksethyerrno.obj	: l_socksethyerrno.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c l_socksethyerrno.c
+
+$(INTDIR)\sockcomm.obj	: sockcomm.c $(HEADER)
+	$(CC) /Fo"$@" $(CFLAGS) /c sockcomm.c
+
+

@@ -1,0 +1,12 @@
+SUBDIR	= mkipcd mkwrap
+
+all	: echo $(SUBDIR)
+
+echo	:
+	@echo HYPUB/LIBSRC/IPCWRAP
+
+
+$(SUBDIR): a
+	@nmake /nologo -f $@.nt
+
+a :
