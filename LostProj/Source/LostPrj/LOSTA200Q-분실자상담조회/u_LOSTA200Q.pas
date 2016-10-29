@@ -1,0 +1,1053 @@
+{*---------------------------------------------------------------------------
+프로그램ID    : LOSTA200Q (분실자 상담조회)
+프로그램 종류 : Online
+작성자	      : 최 대 성
+작성일	      : 2011. 09. 11
+완료일	      : ####. ##. ##
+프로그램 개요 :
+-------------------------------------------------------------------------------
+<버전 관리>
+변경일자      :
+작성자	      :
+변경내용      :
+처리번호      :
+Ver	      :
+-----------------------------------------------------------------------------*}
+
+unit u_LOSTA200Q;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, Buttons, ExtCtrls, ComCtrls, Grids, Mask, ToolEdit,WinSkinData,
+  common_lib, so_tmax, Menus, Clipbrd,Func_Lib, ComObj;
+
+const
+  TITLE   = '분실자 상담조회';
+  PGM_ID  = 'LOSTA200Q';
+
+type
+  Tfm_LOSTA200Q = class(TForm)
+    Bevel1          : TBevel;
+    Bevel16         : TBevel;
+    Bevel2          : TBevel;
+    search_condition_cb: TComboBox;
+    cmb_model_cb    : TComboBox;
+    edt_Inq_Str     : TEdit;
+    serial_edit     : TEdit;
+    GroupBox1       : TGroupBox;
+    lbl_Inq_Str     : TLabel;
+    pnl_Program_Name: TLabel;
+    jo_gu_label     : TLabel;
+    edt_phone_no    : TMaskEdit;
+    Panel2          : TPanel;
+    serial_no_pnl   : TPanel;
+    pnl_Command     : TPanel;
+    RadioButton1    : TRadioButton;
+    RadioButton2    : TRadioButton;
+    SkinData1       : TSkinData;
+    sts_Message     : TStatusBar;
+    grd_display     : TStringGrid;
+    TMAX            : TTMAX;
+    grd_display2: TStringGrid;
+    btn_Add: TSpeedButton;
+    btn_Update: TSpeedButton;
+    btn_Delete: TSpeedButton;
+    btn_Inquiry: TSpeedButton;
+    btn_Link: TSpeedButton;
+    btn_Print: TSpeedButton;
+    btn_Close: TSpeedButton;
+    btn_query: TSpeedButton;
+    btn_excel: TSpeedButton;
+    btn_reset: TSpeedButton;
+    edt_birth_dt: TEdit;
+
+
+    procedure FormCreate                  (Sender: TObject);
+    procedure btn_CloseClick              (Sender: TObject);
+    procedure btn_InquiryClick            (Sender: TObject);
+    procedure edt_Inq_StrKeyPress         (Sender: TObject; var Key: Char);
+    procedure grd_displayKeyPress         (Sender: TObject; var Key: Char);
+    procedure search_condition_cbChange   (Sender: TObject);
+    procedure search_condition_cbKeyPress (Sender: TObject; var Key: Char);
+    procedure btn_LinkClick               (Sender: TObject);
+    procedure dte_Ip_DtKeyPress           (Sender: TObject; var Key: Char);
+    procedure edt_phone_noKeyPress        (Sender: TObject; var Key: Char);
+    procedure serial_editKeyPress         (Sender: TObject; var Key: Char);
+    procedure grd_displayKeyUp            (Sender: TObject; var Key: Word;  Shift: TShiftState);
+    procedure grd_displayDrawCell         (Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure grd_displayDrawCell2        (Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure StringGrid_DrawCell         (Sender: TObject; ACol, ARow: Integer; Rect: TRect; i_align : integer);
+    procedure btn_ExcelClick              (Sender: TObject);
+    procedure grd_displayDblClick         (Sender: TObject);
+    procedure grd_displayClick            (Sender: TObject);
+    procedure onkeyPress                  (Sender : TObject ; var key : char);
+    procedure btn_resetClick              (Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btn_queryClick(Sender: TObject);
+
+  private
+    { Private declarations }
+    cmb_model_cb_d:TZ0xxArray;
+    searchCondition :Integer; 	//검색조건, 1=성명, 2=날짜, 3= 폰번, 4=모델명+시리얼번호
+    isData:Boolean;	            //스트링 그리드에 데이터가 있다.
+    grdFocousEnable:Boolean;	  //스트링그리드에 포커스가 가능한가?
+
+    //실행중 콤포넌트 사용중지
+    procedure disableComponents;
+    //실행완료 후 콤포넌트 사용 가능하게
+    procedure enableComponents;
+
+  public
+    { Public declarations }
+    procedure Link_rtn(var Msg:TMessage); message WM_LOSTPROJECT;
+
+    procedure initStrGrid;
+    procedure initComponents;
+    procedure unvisiableComponents;    
+
+  end;
+
+var
+  fm_LOSTA200Q: Tfm_LOSTA200Q;
+  qryStr:String;
+
+implementation
+{$R *.DFM}
+
+//그리드의 첫번째 라인(메목)을 이쁘게 튜닝한다.
+procedure Tfm_LOSTA200Q.grd_displayDrawCell(Sender: TObject; ACol,
+  ARow: Integer; Rect: TRect; State: TGridDrawState);
+var
+  grid:TStringGrid;
+  S:String;
+begin
+	grid:= Sender as TStringGrid;
+    grid.RowHeights[ARow] := 21;
+
+	S:= grid.Cells[ACol,ARow];
+  if (ARow =0) then begin
+    grid.Canvas.Brush.Color := clBtnFace;
+    grid.Canvas.Font.Color := clBlack;
+    grid.Canvas.FillRect(Rect);
+    DrawText(grid.canvas.Handle, PChar(S), length(S), Rect, dt_center or dt_singleline or dt_vcenter);
+    end
+    else
+    // 타이틀인 첫행을 제외한 컬럼들의 정렬을 담당한다.
+    begin
+    case ACol of
+      2,4,7,9,13,15,16: StringGrid_DrawCell(Sender, ACol, ARow, Rect, 0);
+      0,1,3,5,6,8,10,11,12,14,17: StringGrid_DrawCell(Sender, ACol, ARow, Rect, 1);
+    end;
+  end;
+end;
+
+procedure Tfm_LOSTA200Q.grd_displayDrawCell2(Sender: TObject; ACol,
+  ARow: Integer; Rect: TRect; State: TGridDrawState);
+var
+  grid:TStringGrid;
+  S:String;
+begin
+	grid:= Sender as TStringGrid;
+    grid.RowHeights[ARow] := 21;
+
+	S:= grid.Cells[ACol,ARow];
+  if (ARow = 0) then begin
+    grid.Canvas.Brush.Color := clBtnFace;
+    grid.Canvas.Font.Color := clBlack;
+    grid.Canvas.FillRect(Rect);
+    DrawText(grid.canvas.Handle, PChar(S), length(S), Rect, dt_center or dt_singleline or dt_vcenter);
+    end
+  else
+  // 타이틀인 첫행을 제외한 컬럼들의 정렬을 담당한다.
+  begin
+    case ACol of
+      1,4,8,9,10: StringGrid_DrawCell(Sender, ACol, ARow, Rect, 0);
+      else StringGrid_DrawCell(Sender, ACol, ARow, Rect, 1);
+    end;
+  end;
+end;
+
+//모든 콤포넌트 숨기기
+procedure Tfm_LOSTA200Q.unvisiableComponents;
+begin
+	//성명
+	edt_Inq_Str.Visible     := false;
+	jo_gu_label.Visible     := false;
+	Bevel2.Visible          := false;
+	GroupBox1.Visible       := false;
+
+	//생년월일(1):
+	edt_birth_dt.Visible       := false;
+
+	//분실핸드폰번호(2):
+	edt_phone_no.Visible    := false;
+
+	//모델명+일련번호(3):
+	cmb_model_cb.Visible    := false;
+	serial_edit.Visible     := false;
+  serial_no_pnl.Visible   := false;
+end;
+
+procedure Tfm_LOSTA200Q.disableComponents;
+begin
+    btn_Inquiry.Enabled   := False;
+    btn_reset.Enabled     := False;
+    btn_close.Enabled     := False;
+end;
+
+procedure Tfm_LOSTA200Q.enableComponents;
+begin
+    btn_Inquiry.Enabled   := True;
+    btn_reset.Enabled     := True;    
+    btn_close.Enabled     := True;
+end;
+
+
+procedure Tfm_LOSTA200Q.initStrGrid;
+begin
+  with grd_display do begin
+    RowCount      :=  2;
+    ColCount      := 20;
+    RowHeights[0] := 21;
+
+    ColWidths[ 0] :=  45;    // SEQ
+    ColWidths[ 1] := 100;    // 콜센터/우체국구분
+    ColWidths[ 2] := 110;    // 성명(업체명)
+    ColWidths[ 3] := 130;    // 생년월일
+    ColWidths[ 4] :=  -1;    // 처리구분코드|Z040
+    ColWidths[ 5] :=  90;    // 처리구분명
+    ColWidths[ 6] := 120;    // 보험금상태
+    ColWidths[ 7] :=  90;    // 입고일자
+    ColWidths[ 8] := 100;    // 등록일자
+    ColWidths[ 9] :=  -1;    // 우체국코드|Z042
+    ColWidths[10] := 120;    // 우체국코드명
+    ColWidths[11] :=  -1;    // 모델코드|Z008
+    ColWidths[12] := 120;    // 모델명
+    ColWidths[13] := 160;    // 단말기일련번호
+    ColWidths[14] := 100;    // 분실핸드폰번호
+    ColWidths[15] :=  -1;    // 접수SEQ
+    ColWidths[16] := 120;    // 전화번호
+    ColWidths[17] := 240;    // 주소
+    ColWidths[18] :=  80;    // 우편번호
+    ColWidths[19] :=  -1;    // 주민사업자번호
+
+    Cells[ 0,0]   :=  'SEQ';
+    Cells[ 1,0]   :=  '구분';
+    Cells[ 2,0]   :=  '성명(업체명)';
+    Cells[ 3,0]   :=  '생년월일';
+    Cells[ 4,0]   :=  '처리구분코드';
+    Cells[ 5,0]   :=  '처리구분';
+    Cells[ 6,0]   :=  '보험금상태';
+    Cells[ 7,0]   :=  '입고일자';
+    Cells[ 8,0]   :=  '등록일자';
+    Cells[ 9,0]   :=  '우체국코드';
+    Cells[10,0]   :=  '총괄국명';
+    Cells[11,0]   :=  '모델코드';
+    Cells[12,0]   :=  '모델명';
+    Cells[13,0]   :=  '일련번호';
+    Cells[14,0]   :=  '분실핸드폰번호';
+    Cells[15,0]   :=  '접수SEQ';
+    Cells[16,0]   :=  '전화번호';
+    Cells[17,0]   :=  '주소';
+    Cells[18,0]   :=  '우편번호';
+    Cells[19,0]   :=  '주민사업자번호';
+
+  end;
+
+  with grd_display2 do begin
+    RowCount      :=  2;
+    ColCount      := 13;
+    RowHeights[0] := 21;
+
+    ColWidths[ 0] :=  45;    // SEQ
+    ColWidths[ 1] := 180;    // 성명
+    ColWidths[ 2] := 120;    // 생년월일
+    ColWidths[ 3] := 100;    // 등록일자
+    ColWidths[ 4] := 180;    // 접수처
+    ColWidths[ 5] := 100;    // 접수처연락처
+    ColWidths[ 6] := 140;    // 모델명
+    ColWidths[ 7] := 180;    // 일련번호
+    ColWidths[ 8] := 120;    // 연락처
+    ColWidths[ 9] := 140;    // 핸드폰번호
+    ColWidths[10] := 180;    // 상담상태
+    ColWidths[11] := 120;    // 담당자명
+    ColWidths[12] := 100;    // 관리번호
+
+    Cells[ 0,0]   := 'SEQ';
+    Cells[ 1,0]   := '성명'; 
+    Cells[ 2,0]   := '생년월일'; 
+    Cells[ 3,0]   := '등록일자'; 
+    Cells[ 4,0]   := '접수처'; 
+    Cells[ 5,0]   := '접수처연락처'; 
+    Cells[ 6,0]   := '모델명';
+    Cells[ 7,0]   := '일련번호'; 
+    Cells[ 8,0]   := '연락처'; 
+    Cells[ 9,0]   := '핸드폰번호';
+    Cells[10,0]   := '상담상태';
+    Cells[11,0]   := '담당자명';
+    Cells[12,0]   := '관리번호';
+
+  end;
+end;
+
+{----------------------------------------------------------------------------}
+procedure Tfm_LOSTA200Q.btn_CloseClick(Sender: TObject);
+begin
+     close;
+end;
+
+//콤포넌트 자리 재 배치
+procedure Tfm_LOSTA200Q.initComponents;
+var
+	compTop:Integer;
+begin
+  // 버튼 이미지 초기화
+  changeBtn(Self);
+
+  qryStr := '';
+
+  btn_excel.Enabled := False;
+  btn_Print.Enabled := false;
+
+  edt_Inq_Str.Text        := '';
+  edt_birth_dt.Text       := '';
+  edt_phone_no.Text       := '';
+  cmb_model_cb.ItemIndex  := 0;
+  serial_edit.Text        := '';
+
+  sts_Message.Panels[1].Text := '';
+
+  grdFocousEnable := True;
+  searchCondition := 1;
+
+  search_condition_cbChange(Self);
+
+  //스트링그리드에 데이터가 없다.
+  isData:= False;
+
+  compTop           := edt_Inq_Str.Top;
+  edt_birth_dt.Top  := compTop;		    //생년월일
+  edt_phone_no.Top  := compTop;	      //분실핸드폰번호
+  cmb_model_cb.Top  := compTop; 	    //모델명+시리얼번호
+  serial_edit.Top   := compTop;		      //
+  serial_no_pnl.Top := compTop-1;
+
+  pInitStrGrd(Self);
+
+  initStrGrid;
+end;
+
+procedure Tfm_LOSTA200Q.FormCreate(Sender: TObject);
+begin
+//======== 각 윈도우 마다 공통적으로 작성해야 할 부분======================
+	//이 부분은 테스티 기간동안 만 코멘트 처리한다. 테스트 끝난 후에는 이 부분을 해제할 것.
+	if ParamCount <> 6 then begin //실행 프로그램은 제외하고 파라메터 값만 카운트 한다.
+    ShowMessage('로그인 후 사용하세요');
+    PostMessage(self.Handle, WM_QUIT, 0,0);
+    exit;
+  end;
+//	if ParamCount <> 6 then begin //실행 프로그램은 제외하고 파라메터 값만 카운트 한다.
+//    ShowMessage('로그인 후 사용하세요');
+//    PostMessage(self.Handle, WM_QUIT, 0,0);
+//    exit;
+//  end;
+
+    //공통변수 설정--common_lib.pas 참조할 것.
+  common_kait       := ParamStr(1);
+	common_caller     := ParamStr(2);
+  common_handle     := intToStr(self.Handle);
+	common_userid     := ParamStr(3);
+	common_username   := ParamStr(4);
+	common_usergroup  := ParamStr(5);
+  common_seedkey    := ParamStr(6);
+
+  //테스트 후에는 이 부분을 삭제할 것.
+//  common_userid       := '0294'   ;  // ParamStr(3);
+//  common_username     := '정호영' ;  // ParamStr(4);
+//  common_usergroup    := 'SYSM'   ;  // ParamStr(5);
+
+  {----------------------- 공통 어플리케이션 설정 ---------------------------}
+
+  // 프로그램 캡션 설정
+  Self.Caption := '[' + PGM_ID + ']' + TITLE;
+
+  // 테스크바 캡션설정
+  Application.Title := TITLE;
+
+  // 프로그램 내부 캡션 설정
+  pnl_Program_Name.Caption := TITLE;
+
+  // 프로그램 상단 아이콘 설정
+  fSetIcon(Application);
+
+  // 메세지 바 넓이 설정
+  pSetStsWidth(sts_Message);
+
+  // 텍스트 선택시 전체 선택 기능
+  pSetTxtSelAll(Self);
+
+  // 프로그램 보더 아이콘 설정
+  Self.BorderIcons  := [biSystemMenu,biMinimize];
+
+  // 프로그램 시작 위치 설정
+  Self.Position     := poScreenCenter;
+  {--------------------------------------------------------------------------}
+
+  edt_birth_dt.OnKeyPress := self.onkeyPress;
+  edt_phone_no.OnKeyPress := self.onkeyPress;
+  //serial_edit.OnKeyPress  := self.onkeyPress;
+
+  // 스킨 초기화
+  initSkinForm(SkinData1);
+
+  //콤보박스 'cmb_model_cb'에 모델정보를 채운다.
+  initComboBoxWithZ0xx('Z008.dat', cmb_model_cb_d, '','',  cmb_model_cb);
+
+  //스태터스바에 사용자 정보를 보여준다.
+  sts_Message.Panels[2].Text := '['+ common_userid +']'+ common_username;
+end;
+
+procedure Tfm_LOSTA200Q.btn_InquiryClick(Sender: TObject);
+var
+  i:Integer;
+  totalCount:Integer;
+  seq,RowPos:Integer;
+  STR001,STR002,STR003,STR004:String;
+  svcNm : string;
+
+  chkValue : Boolean;
+
+  // 암호화 관련 변수
+  ECPlazaSeed: OLEVariant;
+  seed_ganm, seed_gano, seed_gatl, seed_mtno : String;
+
+  Label LIQUIDATION;
+  Label SEEDKEY;
+  Label INQUIRY;
+
+begin
+  // 암호화 모듈
+  ECPlazaSeed := CreateOleObject('ECPlaza.Seed');
+
+  seed_ganm := '';
+  seed_gano := '';
+  seed_gatl := '';
+  seed_mtno := '';
+
+  qryStr := '';
+	//그리드 디스플레이
+  seq                   := 1; //순번
+  RowPos                := 1;	//그리드 레코드 포지션
+
+  isData                := False; //스트링 그리드에 데이터가 없다.
+  svcNm                 := 'S01';
+
+  chkValue              := False;
+
+  pInitStrGrd(Self);
+
+  disableComponents;	//작업중 다른 기능 잠시 중지.
+
+  //서버에서 메뉴를 가져오기 위해서 TMAX로 연결한다.
+  TMAX.FileName := 'C:\WINDOWS\system32\tmax.env';
+  TMAX.Server := 'KAIT_LOSTPRJ';
+
+	if not TMAX.Ping then begin
+		ShowMessage('['+TMAX.Server+'] TMAX Server를 찾을수 없습니다.');
+    goto LIQUIDATION;
+	end;
+
+	TMAX.ReadEnvFile();
+  TMAX.Connect;
+
+	if not TMAX.Connected then begin
+		ShowMessage('TMAX 서버에 연결되어 있지 않습니다.');
+    goto LIQUIDATION;
+	end;
+
+	TMAX.AllocBuffer(1024);
+
+	if not TMAX.BufferAlloced then begin
+		ShowMessage('TMAX 메모리 할당에 실패 하였습니다.');
+    goto LIQUIDATION;
+	end;
+
+	TMAX.InitBuffer;
+
+	if not TMAX.Start then begin
+		ShowMessage('TMAX 시작에 실패 하였습니다.');
+    goto LIQUIDATION;
+	end;
+
+//SEED KEY 조회
+SEEDKEY:
+
+  //공통입력 부분
+	if (TMAX.SendString('INF002',common_userid) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('INF002',common_username) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('INF002',common_usergroup) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('INF003','LOSTZ900Q') < 0) then  goto LIQUIDATION;
+
+	if (TMAX.SendString('INF001','S03') < 0) then  goto LIQUIDATION;
+
+  //서비스 호출
+	//if not TMAX.Call('LOSTB220Q') then goto LIQUIDATION;
+  if not TMAX.Call('LOSTZ900Q') then goto LIQUIDATION;
+
+  common_seedkey := Copy(ECPlazaSeed.Decrypt(TMAX.RecvString('STR101', 0), SEEDPBKAITSHOPKEY), 0, 16);   //SEED암호화키
+
+//내역조회
+INQUIRY:
+
+	TMAX.InitBuffer;
+
+	STR001  := intToStr(searchCondition);
+	STR002  := ' ';
+	STR003  := '1';
+	STR004  := '1';
+
+  case searchCondition of
+    1,5:	begin	//성명
+
+          if (Length(edt_Inq_Str.Text) < 1 ) then
+          begin
+            ShowMessage('최소 한글자 이상 입력하세세요.');
+            chkValue := True;;
+          end;
+
+          STR002 := Trim(edt_Inq_Str.Text);
+
+          if RadioButton1.Checked then
+            STR004:= '1'
+          else
+            STR004:= '2';
+        end;
+
+      2:	begin
+          if (length(edt_birth_dt.Text) < 1 ) then
+          begin
+            ShowMessage('최소 한글자 이상 입력하세세요.');
+            chkValue := True;
+          end;
+
+          STR002 :=  delHyphen(Trim(edt_birth_dt.Text));  //1973-08-16 ==> 19630816
+        end;
+
+      3:  begin
+          if (length(edt_phone_no.Text) < 1 ) then
+          begin
+            ShowMessage('최소 한글자 이상 입력하세세요.');
+            chkValue := True;;
+          end;
+
+          STR002 := delHyphenPhone(edt_phone_no.Text);
+        end;
+
+      4:  begin
+          if (length(serial_edit.Text) < 1 ) then
+          begin
+            ShowMessage('최소 한글자 이상 입력하세세요.');
+            chkValue := True;;
+          end;
+
+          STR002 := findCodeFromName(cmb_model_cb.Text, cmb_model_cb_d, cmb_model_cb.Items.Count);
+          STR003 := Trim(serial_edit.Text);
+          STR004 := '2';
+        end;
+  end;
+
+  if chkValue then goto LIQUIDATION;
+
+  if (searchCondition = 5) then
+  begin
+    grd_display2.RowCount  := 2;
+    grd_display2.FixedRows := 1;
+    grd_display2.Cursor := crSQLWait;	//작업중....
+    svcNm := 'S02';
+  end
+  else
+  begin
+    grd_display.RowCount  := 2;
+    grd_display.FixedRows := 1;
+    grd_display.Cursor := crSQLWait;	//작업중....
+  end;
+
+    //공통입력 부분
+	if (TMAX.SendString('INF002',common_userid      ) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('INF002',common_username    ) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('INF002',common_usergroup   ) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('INF003','LOSTA200Q'        ) < 0) then  goto LIQUIDATION;
+
+	if (TMAX.SendString('INF001',svcNm              ) < 0) then  goto LIQUIDATION;
+
+	if (TMAX.SendString('STR001', STR001            ) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('STR002', STR002            ) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('STR003', STR003            ) < 0) then  goto LIQUIDATION;
+	if (TMAX.SendString('STR004', STR004            ) < 0) then  goto LIQUIDATION;
+
+
+    //서비스 호출
+	if not TMAX.Call('LOSTA200Q') then
+  begin
+    if (TMAX.RecvString('INF011',0) = 'Y') then
+      sts_Message.Panels[1].Text := ' '+ TMAX.RecvString('INF012',0)
+    else
+      MessageBox(handle,PChar(TMAX.RecvString('INF012',0)),PChar('서비스호출 오류'),MB_OK);
+
+    goto LIQUIDATION;
+  end;
+
+	totalCount := TMAX.RecvInteger('INT100',0);
+
+  if totalCount > 0 then
+    isData:= True;	//스트링그리드에 데이터가 있다.
+
+  if svcNm = 'S01' then
+  begin
+    grd_display.RowCount := grd_display.RowCount + totalCount;
+
+    with grd_display do begin
+      for i:=0 to totalCount-1 do
+        begin
+          (*  SEQ              *) Cells[ 0,RowPos] :=       intToStr(seq);    //순번
+          (* 콜센터/우체국구분 *) Cells[ 1,RowPos] :=       TMAX.RecvString('STR101',i);
+          (* 성명(업체명)      *) seed_ganm        :=       TMAX.RecvString('STR102',i);
+                                  Cells[ 2,RowPos] := ECPlazaSeed.Decrypt(seed_ganm, common_seedkey);
+          (* 주민사업자번호    *) seed_gano        :=       TMAX.RecvString('STR103',i);
+                                  Cells[ 3,RowPos] := Copy(ECPlazaSeed.Decrypt(seed_gano, common_seedkey),0,7);
+          (* 처리구분코드|Z040 *) Cells[ 4,RowPos] :=       TMAX.RecvString('STR104',i);
+          (* 처리구분명        *) Cells[ 5,RowPos] :=       TMAX.RecvString('STR105',i);
+          (* 보험금상태        *) Cells[ 6,RowPos] := Trim(      TMAX.RecvString('STR118',i));
+          (* 입고일자          *) Cells[ 7,RowPos] := Trim(      TMAX.RecvString('STR110',i));
+          (* 등록일자          *) Cells[ 8,RowPos] := InsHyphen(      TMAX.RecvString('STR113',i));
+          (* 우체국코드|Z042   *) Cells[ 9,RowPos] := Trim( TMAX.RecvString('STR111',i));
+          (* 우체국코드명      *) Cells[10,RowPos] := Trim( TMAX.RecvString('STR112',i));
+          (* 모델코드|Z008     *) Cells[11,RowPos] :=       TMAX.RecvString('STR106',i);
+          (* 모델명            *) Cells[12,RowPos] :=       TMAX.RecvString('STR107',i);
+          (* 단말기일련번호    *) Cells[13,RowPos] :=       TMAX.RecvString('STR108',i);
+          (* 분실핸드폰번호    *) seed_mtno        :=       TMAX.RecvString('STR109',i);
+                                  Cells[14,RowPos] := Trim( ECPlazaSeed.Decrypt(seed_mtno, common_seedkey) );
+          (* 접수SEQ           *) Cells[15,RowPos] := Trim( TMAX.RecvString('STR114',i));
+          (* 전화번호          *) seed_gatl        :=       TMAX.RecvString('STR115',i);
+                                  Cells[16,RowPos] := Trim( ECPlazaSeed.Decrypt(seed_gatl, common_seedkey) );
+          (* 주소              *) Cells[17,RowPos] := Trim( TMAX.RecvString('STR116',i));
+          (* 우편번호          *) // Cells[18,RowPos] := InsHyphen(Trim( TMAX.RecvString('STR117',i)));
+          (* 우편번호          *) Cells[18,RowPos] := Trim( TMAX.RecvString('STR117',i));
+          (* 주민사업자번호    *) Cells[19,RowPos] := TMAX.RecvString('STR103',i);
+
+          Inc(seq);
+          Inc(RowPos);
+        end;
+    end;
+  end
+  else
+  begin
+    grd_display2.RowCount := grd_display2.RowCount + totalCount;
+
+    with grd_display2 do begin
+      for i:=0 to totalCount-1 do
+        begin
+          (* SEQ          *) Cells[ 0,RowPos] := intToStr(seq);    //순번
+          (* 성명         *) seed_ganm        := TMAX.RecvString('STR101',i);
+                             Cells[ 1,RowPos] := ECPlazaSeed.Decrypt(seed_ganm, common_seedkey);
+          (* 생년월일     *) seed_gano        := TMAX.RecvString('STR102',i);
+                             Cells[ 2,RowPos] := ECPlazaSeed.Decrypt(seed_gano, common_seedkey);
+          (* 등록일자     *) Cells[ 3,RowPos] := TMAX.RecvString('STR103',i);
+          (* 접수처       *) Cells[ 4,RowPos] := TMAX.RecvString('STR104',i);
+          (* 접수처연락처 *) Cells[ 5,RowPos] := TMAX.RecvString('STR105',i);
+          (* 모델명       *) Cells[ 6,RowPos] := TMAX.RecvString('STR106',i);
+          (* 일련번호     *) Cells[ 7,RowPos] := TMAX.RecvString('STR107',i);
+          (* 연락처       *) seed_gatl        := TMAX.RecvString('STR108',i);
+                             Cells[ 8,RowPos] := ECPlazaSeed.Decrypt(seed_gatl, common_seedkey);
+          (* 핸드폰번호   *) seed_mtno        := TMAX.RecvString('STR109',i);
+                             Cells[ 9,RowPos] := ECPlazaSeed.Decrypt(seed_mtno, common_seedkey);
+          (* 상담상태     *) Cells[10,RowPos] := Trim(        TMAX.RecvString('STR110',i));
+          (* 담당자명     *) Cells[11,RowPos] := TMAX.RecvString('STR111',i);
+          (* 관리번호     *) Cells[12,RowPos] := TMAX.RecvString('STR112',i);
+
+          Inc(seq);
+          Inc(RowPos);
+        end;
+    end;
+  end;
+
+  //스테터스바에 메세지 뿌리기
+  sts_Message.Panels[1].Text := ' ' + intToStr(totalCount) + '건이 조회 되었습니다.';
+  Application.ProcessMessages;
+
+  // 쿼리를 담는다.
+  qryStr:= TMAX.RecvString('INF014',0);    
+
+   // count2 := TMAX.RecvInteger('INT100',0);
+   // if count1 = count2 then
+   // 	goto INQUIRY;
+
+LIQUIDATION:
+  TMAX.InitBuffer;
+  TMAX.FreeBuffer;
+  TMAX.EndTMAX;
+  TMAX.Disconnect;
+
+  if (svcNm = 'S01') then
+  begin
+    if isData then
+    begin
+      grd_display.Cursor     := crDefault;	//작업완료
+      grd_display.RowCount  := grd_display.RowCount -1;
+      grd_display.SetFocus;	//스트링 그리드로 포커스 이동
+    end
+  end
+  else
+    if isData then
+  begin
+      grd_display2.SetFocus;	//스트링 그리드로 포커스 이동
+    grd_display2.Cursor    := crDefault;	//작업완료
+    grd_display2.RowCount  := grd_display2.RowCount -1;
+  end;
+
+  enableComponents;
+end;
+
+//On-KeyPress => edt_inq_str, 성명으로 조회
+procedure Tfm_LOSTA200Q.edt_Inq_StrKeyPress(Sender: TObject;  var Key: Char);
+begin
+	edt_inq_str.OnKeyPress := nil;
+
+	if key = #13 then begin
+		btn_InquiryClick(self);	//'조회' 버튼 클릭
+    end;
+
+	edt_inq_str.OnKeyPress := edt_inq_strKeyPress;
+end;
+
+//On-KeyPress => 스트링 그리드
+procedure Tfm_LOSTA200Q.grd_displayKeyPress(Sender: TObject; var Key: Char);
+begin
+	if key = #13 then
+		btn_LinkClick(self)	//'선택' 버튼 클릭
+end;
+
+//'조회조건' 값이 변경된 경우
+procedure Tfm_LOSTA200Q.search_condition_cbChange(Sender: TObject);
+begin
+	//모든 콤포넌트를 숨긴다.
+    unvisiableComponents  ;
+    searchCondition:= search_condition_cb.ItemIndex + 1;
+
+    grd_display.Show;
+    grd_display2.Hide;
+
+    Case  search_condition_cb.ItemIndex of
+        0,4:  							//성명
+        begin
+        	edt_Inq_Str.Visible   := True;
+          jo_gu_label.Visible   := True;
+          Bevel1.Visible        := True;
+          GroupBox1.Visible     := True;
+
+          if search_condition_cb.ItemIndex = 4 then
+          begin
+            grd_display.Hide;
+            grd_display2.Show;
+          end;
+
+          edt_Inq_Str.SetFocus;
+
+        end;
+
+        1:
+        begin
+        	edt_birth_dt.Visible:= True;  	//생년월일
+          edt_birth_dt.SetFocus;
+        end;
+
+        2:
+        begin
+        	edt_phone_no.Visible:= True;	//분실핸드폰번호
+          edt_phone_no.SetFocus;
+        end;
+        3: 								//모델명+일련번호
+        begin
+        	cmb_model_cb.Visible  := True;
+          cmb_model_cb.SetFocus;
+          serial_edit.Visible   := True;
+          serial_no_pnl.Visible := True;
+        end;
+    end;
+end;
+
+procedure Tfm_LOSTA200Q.btn_LinkClick(Sender: TObject);
+begin
+  grd_displayDblClick(Sender);  
+end;
+
+//On-KeyPress => 생년월일로 조회
+procedure Tfm_LOSTA200Q.dte_Ip_DtKeyPress(Sender: TObject; var Key: Char);
+begin
+	edt_birth_dt.OnKeyPress := nil;
+
+	if key = #13 then begin
+		btn_InquiryClick(self);	//'조회' 버튼 클릭
+    end;
+
+	edt_birth_dt.OnKeyPress := dte_Ip_DtKeyPress;
+end;
+
+//On-KeyPress => 분실폰번호로 조회
+procedure Tfm_LOSTA200Q.edt_phone_noKeyPress(Sender: TObject;  var Key: Char);
+begin
+	edt_phone_no.OnKeyPress := nil;
+
+	if key = #13 then begin
+		btn_InquiryClick(self);	//'조회' 버튼 클릭
+    end;
+
+	edt_phone_no.OnKeyPress := edt_phone_noKeyPress;
+end;
+
+//On-KeyPress => 모델명+시리얼번호 로 조회
+procedure Tfm_LOSTA200Q.serial_editKeyPress(Sender: TObject; var Key: Char);
+begin
+	serial_edit.OnKeyPress := nil;
+
+	if key = #13 then
+  begin
+		btn_InquiryClick(self);	//'조회' 버튼 클릭
+    Exit;
+  end
+  else if not ( key in ['0'..'z',#8,#9,#22]) then key := #0;
+
+	serial_edit.OnKeyPress := serial_editKeyPress;
+end;
+
+//On-KeyPressUp =>스트링 그리드
+procedure Tfm_LOSTA200Q.grd_displayKeyUp(Sender: TObject; var Key: Word;  Shift: TShiftState);
+begin
+  if key = vk_F2 then
+    search_condition_cb.SetFocus;	//'검색조건' 콤보박스로 포커스이동
+end;
+
+//On-KeyPress =>검색조건 콤보박스
+procedure Tfm_LOSTA200Q.search_condition_cbKeyPress(Sender: TObject;  var Key: Char);
+begin
+	if key = #13 then begin
+    	Case self.searchCondition of
+        1: edt_Inq_Str.SetFocus;
+        2: edt_birth_dt.SetFocus;
+        3: edt_phone_no.SetFocus;
+        4: cmb_model_cb.SetFocus;
+      end;
+  end;
+end;
+
+procedure Tfm_LOSTA200Q.btn_ExcelClick(Sender: TObject);
+begin
+	Proc_gridtoexcel(TITLE + '(' + PGM_ID + ')',grd_display.RowCount, grd_display.ColCount, grd_display, PGM_ID);
+end;
+
+{*******************************************************************************
+* procedure Name : StringGrid_DrawCell
+* 기 능 설 명 : 정해진 변수에 따라서 Grid의 정렬이 된다.
+*******************************************************************************}
+procedure Tfm_LOSTA200Q.StringGrid_DrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; i_align : integer);
+var
+  LeftPos: Integer;
+  TopPos : integer;
+  CellStr: string;
+begin
+  with TStringGrid(Sender).Canvas do begin
+    CellStr := TStringGrid(Sender).Cells[ACol, ARow];
+    TopPos  := ((Rect.Top - Rect.Bottom -TStringGrid(Sender).Canvas.TextHeight(CellStr)) div 2) + Rect.Bottom;
+    case i_align of
+      1 :  LeftPos := ((Rect.Right - Rect.Left - TStringGrid(Sender).Canvas.TextWidth(CellStr)) div 2) + Rect.Left;
+      2 :  LeftPos :=  (Rect.Right - Rect.Left - TStringGrid(Sender).Canvas.TextWidth(CellStr)) +
+                        Rect.Left - 5;
+      else LeftPos := Rect.Left + 5;
+    end;
+
+    
+    if (TStringGrid(Sender).Cells[ 1, ARow] = '우체국') then
+    begin
+      TStringGrid(Sender).Canvas.Brush.Color := clYellow;
+      TStringGrid(Sender).Canvas.Font.Color  := clBlack;
+
+    end;
+
+    if (search_condition_cb.ItemIndex <> 4) then
+    begin
+      if (TStringGrid(Sender).Cells[ 6, ARow] <> '') and (ACol = 6) then
+      begin
+        TStringGrid(Sender).Canvas.Brush.Color := clPurple;
+        TStringGrid(Sender).Canvas.Font.Color  := clWhite;
+
+      end;
+    end;
+
+    FillRect(Rect);
+    TextOut(LeftPos, TopPos, CellStr);
+  end;
+end;
+
+procedure Tfm_LOSTA200Q.grd_displayDblClick(Sender: TObject);
+var
+  Value : array of string;
+
+  commandStr:String;
+
+  progID : string;
+
+//  str_tmp : string;
+
+	ret:Integer;
+begin
+
+//  str_tmp := '';
+//
+//  case StrToInt(copy(grd_display.Cells[3,grd_display.Row],8,1)) of
+//    1,2,5,6 : str_tmp := '19';
+//    3,4,7,8 : str_tmp := '20';
+//  else str_tmp := '19';
+//  end;
+
+  if (grd_display.Cells[ 1,grd_display.Row] = '콜센터') then
+  begin
+    progID := 'LOSTA110P';
+
+    SetLength(Value, 5 );
+
+    Value[0] := Trim(grd_display.Cells[ 2,grd_display.Row]); //  성명
+//    Value[1] := str_tmp + Copy(grd_display.Cells[ 3,grd_display.Row],0,6); // 생년월일
+    Value[1] := Trim(grd_display.Cells[ 3,grd_display.Row]); // 생년월일
+    Value[2] := Trim(grd_display.Cells[12,grd_display.Row]); // 모델명
+    Value[3] := Trim(grd_display.Cells[13,grd_display.Row]); // 시리얼번호
+    Value[4] := Trim(grd_display.Cells[ 7,grd_display.Row]); // 입고일자
+
+    (****************************************************************************)
+    (* 공통 조회 Prog 파일명 및 파라미터 설정                                   *)
+    (****************************************************************************)
+    commandStr := (* paramstr(0) - 파일명            *)         progID +'.exe'
+                  (* paramstr(1) - 이용자 PW         *)+ ' ' +  common_kait
+                  (* paramstr(2) - Process ID        *)+ ' ' +  intToStr(self.Handle)
+                  (* paramstr(3) - 이용자 ID         *)+ ' ' +  common_userid
+                  (* paramstr(4) - 이용자 명         *)+ ' ' +  common_username
+                  (* paramstr(5)                     *)+ ' ' +  common_usergroup
+                  (* paramstr(6) -                   *)+ ' ' +  fNVL(Value[0])
+                  (* paramstr(7) -                   *)+ ' ' +  fNVL(Value[1])
+                  (* paramstr(8) -                   *)+ ' ' +  fNVL(Value[2])
+                  (* paramstr(9) -                   *)+ ' ' +  fNVL(Value[3])
+                  (* paramstr(10) -                  *)+ ' ' +  fNVL(Value[4])
+//    ;
+    ;
+
+  end
+  else
+  begin
+    progID := 'LOSTC100P';
+    SetLength(Value, 9 );
+
+    Value[0] := Trim(grd_display.Cells[ 2,grd_display.Row]); //  성명
+//    Value[1] := str_tmp + Copy(grd_display.Cells[ 3,grd_display.Row],0,6); // 생년월일
+    Value[1] := Trim(grd_display.Cells[ 3,grd_display.Row]); // 생년월일
+    Value[2] := Trim(grd_display.Cells[12,grd_display.Row]); // 모델명
+    Value[3] := Trim(grd_display.Cells[13,grd_display.Row]); // 시리얼번호
+    if (Trim(DelHyphen(grd_display.Cells[ 7,grd_display.Row])) = '') then Value[4] := '-'
+    else Value[4] := Trim(DelHyphen(grd_display.Cells[ 7,grd_display.Row])); // 입고일자
+    Value[5] := Trim(grd_display.Cells[ 9,grd_display.Row]); // 우체국코드
+    Value[6] := Trim(DelHyphen(grd_display.Cells[ 8,grd_display.Row])); // 등록일자
+    Value[7] := Trim(grd_display.Cells[15,grd_display.Row]); // 접수일련번호
+    Value[8] := Trim(grd_display.Cells[19,grd_display.Row]); // 주민등록번호
+
+
+    (****************************************************************************)
+    (* 공통 조회 Prog 파일명 및 파라미터 설정                                   *)
+    (****************************************************************************)
+    commandStr := (* paramstr(0) - 파일명            *)         progID +'.exe'
+                  (* paramstr(1) - 이용자 PW         *)+ ' ' +  common_kait
+                  (* paramstr(2) - Process ID        *)+ ' ' +  intToStr(self.Handle)
+                  (* paramstr(3) - 이용자 ID         *)+ ' ' +  common_userid
+                  (* paramstr(4) - 이용자 명         *)+ ' ' +  common_username
+                  (* paramstr(5)                     *)+ ' ' +  common_usergroup
+                  (* paramstr(6) -                   *)+ ' ' +  fNVL(Value[0] )
+                  (* paramstr(7) -                   *)+ ' ' +  fNVL(Value[1] )
+                  (* paramstr(8) -                   *)+ ' ' +  fNVL(Value[2] )
+                  (* paramstr(9) -                   *)+ ' ' +  fNVL(Value[3] )
+                  (* paramstr(10) -                  *)+ ' ' +  fNVL(Value[4] )
+                  (* paramstr(11) -                  *)+ ' ' +  fNVL(Value[5] )
+                  (* paramstr(12) -                  *)+ ' ' +  fNVL(Value[6] )
+                  (* paramstr(13) -                  *)+ ' ' +  fNVL(Value[7] )
+                  (* paramstr(14) -                  *)+ ' ' +  fNVL(Value[8] )
+    ;
+  end;
+
+  ret := WinExec(PChar(commandStr), SW_Show);
+
+  ShowWindow(Self.Handle, SW_HIDE);
+
+  if ret <= 31 then
+  begin
+
+    MessageBeep (0);
+
+		if ret = ERROR_FILE_NOT_FOUND then
+			ShowMessage (''''+ progID +'.exe' +'''' + '을 찾을 수 없습니다')
+		else
+			ShowMessage (''''+ progID +'.exe' +'''' + ' 실행시 오류 발생');
+
+    ShowWindow(Self.Handle, SW_SHOW);
+  end;
+
+end;
+
+procedure Tfm_LOSTA200Q.Link_rtn (var Msg : TMessage);
+begin
+    //'조회' 버튼 클릭
+
+    ShowWindow(Self.Handle , SW_SHOW);
+    btn_InquiryClick(self);
+end;
+
+procedure Tfm_LOSTA200Q.grd_displayClick(Sender: TObject);
+begin
+  (Sender as TStringGrid).Canvas.Brush.Color := clRed;
+end;
+
+procedure Tfm_LOSTA200Q.onkeyPress(Sender : TObject ; var key : char);
+begin
+  if key = #13 then btn_InquiryClick(Sender)
+  else if not ( key in ['0'..'9',#8,#9]) then key := #0;
+end;
+
+procedure Tfm_LOSTA200Q.btn_resetClick(Sender: TObject);
+begin
+  initComponents;
+end;
+
+procedure Tfm_LOSTA200Q.FormShow(Sender: TObject);
+begin
+  //콤포넌트 자리 재 배치
+  initComponents;
+  end;
+
+procedure Tfm_LOSTA200Q.btn_queryClick(Sender: TObject);
+var
+	cmdStr    :String;
+  filePath  :String;
+  f         :TextFile;
+begin
+	if qryStr ='' then
+    exit;
+
+  filePath:='..\Temp\' + PGM_ID + 'QRY.txt';
+  AssignFile(f, filePath);
+  Rewrite(f);
+  WriteLn(f, qryStr);
+  CloseFile(f);
+
+  cmdStr := 'C:\Program Files\Windows NT\Accessories\wordpad.exe '+ filePath;
+  WinExec(PChar(cmdStr), SW_SHOW);
+end;
+
+end.
+

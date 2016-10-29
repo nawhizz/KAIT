@@ -1,0 +1,24 @@
+netis04:/tmax41/sample/client> tmadmin
+--- Welcome to Tmax Admin (Type "quit" to leave) ---
+
+$$1 netis04 (tmadm): st -s FDLAAA
+
+CLH 0:
+   ---------------------------------------------------------------------------
+   svc_name       svr_name    count  avg  cq_count aq_count q_avg   status
+   ---------------------------------------------------------------------------
+   FDLAAA         fdltest        13  5.38        5       29  9.24    NRDY
+
+CLH 9:
+   ---------------------------------------------------------------------------
+   svc_name       svr_name    count  avg  cq_count aq_count q_avg   status
+   ---------------------------------------------------------------------------
+   FDLAAA         fdltest         0  0.00        0        0  0.00    NRDY
+
+$$2 netis04 (tmadm): q
+ADM quit for node (netis04)
+netis04:/tmax41/sample/client> ps -ef|grep clh
+  tmax41  6404     1  0 11:03:59 pts/15   0:01 clh -b 6401 -o /tmax41/log/cout -e /tmax41/log/cerr
+  tmax41  7547  2479  0 11:10:27 pts/15   0:00 grep clh
+  tmax42 28463     1  1   8¿ù 02 ?       35:46 clh -b 28460
+netis04:/tmax41/sample/client>

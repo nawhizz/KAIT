@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <ctype.h>
+
+EXEC SQL include sqlca.h;
+
+EXEC SQL BEGIN DECLARE SECTION;
+    long h_lng1;  
+    char h_str1 [15+1]; 
+    char h_str2 [15+1]; 
+    char userid[15];
+    char passwd[15];
+EXEC SQL END DECLARE SECTION;
+
+void main()
+{
+    int i, org_size;
+
+    memset(userid,0x00,sizeof(userid));
+    memset(passwd,0x00,sizeof(passwd));
+
+    strcpy(userid, "scott");
+    strcpy(passwd, "tiger");
+    EXEC SQL connect :userid identified by :passwd;
+
+    if (sqlca.sqlcode != 0){
+    	printf( "dbconnect [%d]\n",sqlca.sqlcode );
+	exit(0);
+    }
+    	printf( "dbconnect \n" );
+    
+    h_lng1 = 0;  /* 사무소코드 */
+    memset( h_str1, 0x00, sizeof(h_str1) );  /* 성명 */
+    memset( h_str2, 0x00, sizeof(h_str2) );  /* 직원번호 */
+
+    EXEC SQL DECLARE sql_cur CURSOR FOR
+    SELECT job,
+           empno, 
+           ename
+      FROM emp ;
+
+    if ( sqlca.sqlcode != 0 )
+    {
+        printf( "\n select failed sqlcode = %d\n", sqlca.sqlcode );
+	printf("\n oracle sqlerror=%s", sqlca.sqlerrm.sqlerrmc);
+    }
+
+    EXEC SQL WHENEVER SQLERROR GOTO end_of_fetch;
+
+    for (i=0; ; i++)
+    {
+	printf( "index[%d]\n", i);
+
+    EXEC SQL FETCH sql_cur INTO :h_str1 , :h_lng1 , :h_str2 ;    
+
+	printf( "h_lng1 ---> [%d]\n",h_lng1);
+	printf( "h_str1 ---> [%s]\n",h_str1);
+	printf( "h_str2 ---> [%s]\n",h_str2);
+
+        continue;
+
+    end_of_fetch:
+        EXEC SQL CLOSE sql_cur;
+        EXEC SQL WHENEVER SQLERROR CONTINUE;
+        break;
+    }
+
+    printf( "\n sqlca.sqlerrd[2] = [%d] \n\n", sqlca.sqlerrd[2] );
+    EXEC SQL rollback work release;
+    
+}
+

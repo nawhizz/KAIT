@@ -1,0 +1,195 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <usrinc/atmi.h>
+#include <usrinc/fbuf.h>
+#include "../fdl/demo_fdl.h"
+#include <usrinc/tx.h>
+
+EXEC SQL include sqlca.h;
+
+EXEC SQL begin declare section;
+	int  h_empno;
+	char h_ename[11];
+	char h_job[10];
+	int  h_mgr;
+	char h_date[11];
+	float h_sal;
+	float h_comm;
+	int  h_deptno;
+	int  h_no;
+EXEC SQL end declare section;
+
+FDLINS( TPSVCINFO *msg )
+{
+	FBUF *sndbuf;
+
+	sndbuf = (FBUF *)msg->data;
+
+	h_empno = h_mgr = h_sal = h_comm = h_deptno = 0;
+
+	memset( h_ename, 0x00, sizeof( h_ename ) );
+	memset( h_job, 0x00, sizeof( h_job ) );
+	memset( h_date, 0x00, sizeof( h_date ) );
+
+	fbget( sndbuf, EMPNO, (char *)&h_empno, 0 );
+	fbget( sndbuf, MGR,   (char *)&h_mgr, 0 );
+	fbget( sndbuf, SAL,   (char *)&h_sal, 0 );
+	fbget( sndbuf, COMM,  (char *)&h_comm, 0 );
+	fbget( sndbuf, DEPTNO,(char *)&h_deptno, 0 );
+	fbget( sndbuf, ENAME, (char *)h_ename, 0 );
+	fbget( sndbuf, JOB  , (char *)h_job, 0 );
+	fbget( sndbuf, DATE , (char *)h_date, 0 );
+
+	EXEC SQL INSERT 
+	INTO emp( empno, ename, job, mgr, hiredate,sal,comm,deptno)
+	VALUES ( :h_empno, :h_ename, :h_job, :h_mgr, to_date(:h_date,'yymmdd'), :h_sal, :h_comm, :h_deptno );
+
+	if ( sqlca.sqlcode != 0 ){
+		printf( "insert failed sqlcode = %d\n",sqlca.sqlcode );
+		tpreturn( TPFAIL, -1, NULL, 0, 0 );
+	}
+
+	tpreturn( TPSUCCESS, 0, NULL, 0, 0 );
+}
+
+FDLDEL( TPSVCINFO *msg )
+{
+	FBUF *sndbuf;
+
+	sndbuf = ( FBUF *)msg->data;
+
+	fbget(sndbuf, EMPNO, (char *)&h_empno , 0);
+
+	EXEC SQL DELETE
+	FROM emp
+	WHERE empno = :h_empno;
+
+	if ( sqlca.sqlcode != 0 ){
+		printf( "delete failed sqlcode = %d\n",sqlca.sqlcode );
+		tpreturn( TPFAIL, sqlca.sqlcode, NULL, 0, 0 );
+	}
+
+	tpreturn( TPSUCCESS, sqlca.sqlcode, (char *)sndbuf, sizeof(sndbuf), 0 );
+}
+
+FDLSEL( TPSVCINFO *msg )
+{
+	FBUF *sndbuf;
+
+	sndbuf = ( FBUF *)msg->data;
+
+	h_empno = h_mgr = h_sal = h_comm = h_deptno = 0;
+
+	memset( h_ename, 0x00, sizeof( h_ename ) );
+	memset( h_job, 0x00, sizeof( h_job ) );
+	memset( h_date, 0x00, sizeof( h_date ) );
+
+	fbget( sndbuf, EMPNO, (char *)&h_empno, 0);
+
+	EXEC SQL SELECT NVL(ename,' '), NVL(job,' '), NVL(mgr,0), NVL(to_char(hiredate,'yymmdd'), ' '),NVL(sal,0),NVL(comm,0),NVL(deptno,0)
+	INTO :h_ename, :h_job, :h_mgr, :h_date, :h_sal, :h_comm, :h_deptno 
+	FROM emp
+	WHERE empno = :h_empno;
+
+	if ( sqlca.sqlcode != 0 && sqlca.sqlcode != 1403 ){
+		printf( "select failed sqlcode = %d\n",sqlca.sqlcode );
+		tpreturn( TPFAIL, sqlca.sqlcode, NULL, 0, 0 );
+	}
+
+	fbchg_tu(sndbuf, MGR,    0,(char *)&h_mgr, 0);
+	fbchg_tu(sndbuf, SAL,    0,(char *)&h_sal, 0);
+	fbchg_tu(sndbuf, DEPTNO, 0,(char *)&h_deptno, 0);
+	fbchg_tu(sndbuf, COMM,   0,(char *)&h_comm, 0);
+	fbchg_tu(sndbuf, ENAME,  0,(char *)h_ename, 0);
+	fbchg_tu(sndbuf, JOB,    0,(char *)h_job, 0);
+	fbchg_tu(sndbuf, DATE,   0,(char *)h_date, 0);
+
+	tpreturn( TPSUCCESS, sqlca.sqlcode, (char *)sndbuf, sizeof(sndbuf), 0 );
+}
+FDLUPT( TPSVCINFO *msg )
+{
+	FBUF *sndbuf;
+
+	sndbuf = ( FBUF *)msg->data;
+
+	h_empno = h_mgr = h_sal = h_comm = h_deptno = 0;
+
+	memset( h_ename, 0x00, sizeof( h_ename ) );
+	memset( h_job, 0x00, sizeof( h_job ) );
+	memset( h_date, 0x00, sizeof( h_date ) );
+
+	fbget( sndbuf, EMPNO, (char *)&h_empno, 0);
+	fbget( sndbuf, ENAME, (char *)h_ename, 0);
+	fbget( sndbuf, JOB,   (char *)h_job, 0);
+
+	EXEC SQL UPDATE emp 
+	SET ename = :h_ename, job = :h_job
+	WHERE empno = :h_empno;
+
+	if ( sqlca.sqlcode != 0 ){
+		printf( "update failed sqlcode = %d\n",sqlca.sqlcode );
+		tpreturn( TPFAIL, sqlca.sqlcode, NULL, 0, 0 );
+	}
+
+	tpreturn( TPSUCCESS, sqlca.sqlcode, NULL, 0, 0 );
+}
+/*
+FDLAAA(TPSVCINFO *msg)
+{
+
+	h_empno = atoi(msg->data);
+
+	EXEC SQL prepare pre_16384 from "UPDATE emp set ename = 'baboo'";
+
+        EXEC SQL execute pre_16384;
+
+	tpreturn( TPSUCCESS, sqlca.sqlcode, msg->data, 0, 0);
+}
+*/
+FDLAAA(TPSVCINFO *msg)
+{
+	int ret;
+	long rlen;
+	char *sndbuf, *rcvbuf;
+
+	h_no = atoi(msg->data);
+
+printf( "tx_begin start\n");
+	ret = tx_begin();
+printf( "tx_begin [%d]\n",ret);
+
+	EXEC SQL INSERT INTO test VALUES ( :h_no,:h_no+100);
+        if (sqlca.sqlcode != 0){
+		tpreturn(TPFAIL, sqlca.sqlcode, (char *)msg->data, 0, 0);
+	}
+	sndbuf = tpalloc("STRING", NULL, 0);
+	rcvbuf = tpalloc("STRING", NULL, 0);
+
+	if (sndbuf == NULL || rcvbuf == NULL)
+		tpreturn(TPFAIL, -9999, (char *)msg->data, 0, 0);
+
+	memcpy(sndbuf, msg->data, msg->len);
+	sndbuf[msg->len] = 0x00;
+
+printf( "tpcall start\n");
+	ret = tpcall("TESTSVC2", (char *)sndbuf, 0, (char **)&rcvbuf, (long *)&rlen, 0);
+	if (ret < 0){
+		printf( "TESTSVC2 tpcall fail[%d][%d]\n",tperrno, tpurcode );
+		tx_rollback();
+		tpreturn(TPFAIL, tpurcode, (char *)msg->data, 0, 0);
+	}
+	sleep(10);
+
+printf( "tx_rollback start\n");
+	tx_rollback();
+
+	tpreturn(TPSUCCESS, 100, (char *)msg->data, 0, 0);
+
+}
+
+tpsvctimeout(TPSVCINFO *msg)
+{
+	tpreturn(TPEXIT, -444, (char *)msg->data, 0, 0);
+
+}
+

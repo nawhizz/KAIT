@@ -1,0 +1,13 @@
+-lifsql
+-lifasf
+-lifgen
+-lifos
+-lifgls
+-lnsl
+-lsocket
+-laio
+-lm
+-ldl
+-lelf
+/informix/lib/esql/checkapi.o
+-lifglx

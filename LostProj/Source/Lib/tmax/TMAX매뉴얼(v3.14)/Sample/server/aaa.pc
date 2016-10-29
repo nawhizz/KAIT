@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <usrinc/atmi.h>
+
+EXEC SQL include sqlca.h;
+
+EXEC SQL begin declare section;
+	int  h_col1;
+EXEC SQL end declare section;
+
+
+AAA( TPSVCINFO *msg )
+{
+	char *sndbuf;
+
+	sndbuf = msg->data;
+
+	h_col1 = 0;
+
+	EXEC SQL SELECT col1
+	INTO :h_col1
+	FROM ABC ;
+
+	if ( sqlca.sqlcode != 0 && sqlca.sqlcode != 1403 ){
+		printf( "select failed sqlcode = %d\n",sqlca.sqlcode );
+		tpreturn( TPFAIL, sqlca.sqlcode, NULL, 0, 0 );
+	}
+
+	printf( "sqlca.sqlcode = %d, col1 = %d\n", sqlca.sqlcode, h_col1);
+
+	tpreturn( TPSUCCESS, sqlca.sqlcode, (char *)sndbuf, sizeof(sndbuf), 0 );
+}

@@ -1,0 +1,1608 @@
+  Tmax의 tperrno로 출력되는 에러내용과 조치사항, 발생 예에 대해 알아본다. 
+
+ 
+
+ 
+
+1.      tpstrerror : TPEBADDESC (tperrno : 2)
+
+1)      에러 내용
+
+cd가 유효하지 않은 구별자입니다.
+
+즉, tpacall, tpconnect 시에 cd를 지정해 주지 않거나, 지정해준 cd가 유효하지 않은 경우에, tpgetrply, tpsend, tprecv 함수에서 발생할 수 있는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+해당 에러가 발생하면, tpacall 이나 tpconnect시에 할당받은 cd 값을 확인해보고 다시 서비스를 요청해 봅니다.
+
+특히, 어플리케이션에서 if문안에서 함수가 사용되어 에러를 체크하는 경우, 함수 전체를 괄호로 묶어 cd 로 설정하여야 합니다. 이 경우는 다음의 발생 예에서 확인해 봅니다.  
+
+ 
+
+3)      발생 예
+
+가.    어플리케이션에서 로직을 잘못 작성한 경우
+
+#-----------------------------------------------
+
+if(cd = tpacall("SORT", (char *)sndbuf, strlen(sndbuf), 0) < 0 ){ }
+
+의 경우처럼,
+
+if 문을 체크하여 에러 처리를 하는 경우에,
+
+tpacall 함수의 리턴값을 cd 가 받고 cd가 0보다 작은 경우에 에러처리를 할 수 있게 해주어야 하는데, 위의 로직은 전체 괄호가 빠짐으로 tpgetrply() 할 때 tperrno 2번 에러가 발생합니다.
+
+ 
+
+수정된 코드는 아래와 같습니다.
+
+if((cd = tpacall("SORT", (char *)sndbuf, strlen(sndbuf), 0)) < 0 ){ }
+
+#-----------------------------------------------
+
+ 
+
+나.    tpgetrply()시에 사용된 cd를 tpacall() 시에 지정해 주지 않은 경우
+
+#-----------------------------------------------
+
+ret = tpacall("SORT", (char *)sndbuf, strlen(sndbuf), 0);
+
+if(ret < 0){
+
+printf("tpacall error..[%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+tpfree((char *)sndbuf);
+
+   tpfree((char *)rcvbuf);
+
+   tpend();
+
+   exit(1);
+
+}
+
+ 
+
+printf("HAVE A NICE DAY !!!!\n");
+
+ 
+
+ret = tpgetrply(&cd, (char **)&rcvbuf, (long *)&rcvlen, 0);
+
+if(ret < 0){
+
+   printf("tpgetrply error..[%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+   tpfree((char *)sndbuf);
+
+   tpfree((char *)rcvbuf);
+
+   tpend();
+
+   exit(1);
+
+}
+
+ 
+
+에러인 경우 수행결과
+
+ 
+
+[edu01@edu09 client]$ clisort cba
+
+HAVE A NICE DAY !!!!
+
+tpgetrply error..[2][TPEBADDESC]
+
+ 
+
+즉, tpgetrply에서 tperrno 2번인 TPEBADDESC 에러 발생.
+
+#-------------------------------------------
+
+ 
+
+ 
+
+2.      tpstrerror : TPEBLOCK (tperrno : 3)
+
+1)      에러 내용
+
+서비스 요청시 또는 응답시의 플래그로 TPNOBLOCK을 사용하여, 응답이 올때까지 블록되어 기다리지 않고 바로 리턴하겠다고 설정했는데, 요청한 해당 서비스가 어떤 외부 다른 요인에 의해 블로킹되어 있어 응답을 줄 수 없는 경우에 발생합니다.
+
+ 
+
+2)      조치 사항
+
+서비스를 다시 요청하거나 , 블로킹이 된 원인을 찾아 블로킹이 해제된 후에 다시 시도해야 합니다.
+
+ 
+
+3)      발생 예
+
+ 
+
+#------------------------------------------
+
+[edu01@edu09 client]$ clisdl
+
+Have a nice day !!!
+
+tpgetrply failed..[3][TPEBLOCK], tpurcode[0]
+
+#------------------------------------------
+
+ 
+
+ 
+
+3.      tpstrerror : TPEINVAL (tperrno : 4)
+
+1)      에러 내용
+
+함수의 인수가 유효하지 않은 경우에 발생합니다.
+
+예를 들어, 사용된 FLAG가 해당 함수에서 유효하지 않은 경우입니다.
+
+ 
+
+2)      조치 사항
+
+사용 FLAG가 해당 함수에서 사용 가능한지를 매뉴얼 등을 통해 확인합니다.
+
+ 
+
+3)      발생 예
+
+가.    함수에서FLAG를 유효하지 않은 것을 사용했을 경우
+
+#-----------------------------------------
+
+ret = tpcall("TOUPPER", (char *)sndbuf, 0, (char **)&rcvbuf, (long *)&rcvlen, TPNOREPLY);
+
+if(ret < 0){
+
+printf("tpcall error..[%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+           tpfree((char *)sndbuf);
+
+           tpfree((char *)rcvbuf);
+
+           tpend();
+
+           exit(1);
+
+}
+
+#-----------------------------------------
+
+ 
+
+나.    수행 시 에러 발생
+
+#-----------------------------------------
+
+[edu01@edu09 client]$ clitoupper aaa
+
+tpcall error..[4][TPEINVAL]
+
+#-----------------------------------------
+
+ 
+
+ 
+
+4.      tpstrerror : TPELIMIT (tperrno : 5)
+
+1)      에러 내용
+
+시스템 자원 또는 Tmax에서 제공하는 자원의 부족으로 인해 발생하는 에러입니다.
+
+즉, 환경설정으로 되어있는 값의 한계에 도달하여 그 이상의 자원을 요구하는 경우에 발생합니다.
+
+예를 들어, tpgetrply 없이 tpacall 할 수 있는 횟수는 클라이언트가 16번, 서비스 는 8번으로 Tmax 환경파일에 기본값으로 설정되어 있는데,  그 수 이상으로 tpacall이 사용되는 경우에 발생합니다.
+
+ 
+
+2)      조치 사항
+
+자원을 사용할 수 있게 환경을 재설정하여 부족되지 않게 합니다.
+
+(예 : sample.m에서)
+
+#-----------------------------------------------------
+
+*DOMAIN
+
+tmax1       SHMKEY =79990, MINCLH=1, MAXCLH=3,
+
+                TPORTNO=8888, BLOCKTIME=30, LOGOUTSVC = LOGOUT,
+
+                MAXSACALL = 20, MAXCACALL = 40
+
+#-----------------------------------------------------
+
+ 
+
+3)      발생 예
+
+가.    클라이언트에서 TPELIMIT 에러 발생 예
+
+#------------------------------
+
+[edu01@edu09 client]$ macall aaa
+
+i : 0
+
+send data: aaa
+
+(중간 생략)
+
+i : 15
+
+send data: aaa
+
+tpacall fail..[5][TPELIMIT]
+
+#------------------------------
+
+ 
+
+나.    서비스에서 TPELIMIT 에러 발생 예
+
+#------------------------------
+
+j = 0
+
+(중간 생략)
+
+j = 7
+
+svc tpacall fail..[5][TPELIMIT]
+
+(E) SVR3019 tpreturn met with outstanding reply [SVR0301]
+
+#------------------------------
+
+ 
+
+ 
+
+ 
+
+5.      tpstrerror : TPENOENT (tperrno : 6)
+
+1)      에러 내용
+
+환경파일에 등록되어있지 않은 서비스명을 호출할 때 발생하는 에러입니다.
+
+ 
+
+(참고 1)
+
+tpalloc 시에 TPENOENT 에러가 발생하는 경우는,
+
+STRUCT 버퍼타입으로 버퍼를 할당할 때 발생할 수 있는데, 
+
+발생 예로는 Tmax 엔진을 패치한 후, sdlc를 새로 해주지 않고 이전에 생성한 tmax.sdl 파일을 그대로 사용하는 경우에 해당 에러가 발생할 수 있습니다.
+
+또는, tmax.sdl을 생성하지 않아 파일이 없는 경우에는 tmax.sdl 파일이 없다는 메시지와 함께 해당에러가 발생하는 것을 볼 수 있습니다.
+
+ 
+
+(참고 2)
+
+필드버퍼 사용 시에는 FBENOENT(fberror:6) 에러가 있는데, 이 에러는 필드테이블에 fbput으로 put한 필드가 존재하지 않는 경우에, fbget으로 필드를 get하는 과정에서 발생합니다. 
+
+즉, 사용하는 필드가 정의되어 있지 않거나, fdlc에 의해 생성한 이진 필드 파일을 FDLFILE 환경변수에서 찾지 못했거나, 해당 필드가 없는 다른 파일이 설정되어 있을 때 발생합니다.
+
+ 
+
+2)      조치 사항
+
+요청하고자 하는 서비스가 환경파일에 등록되어있는지 확인합니다.
+
+ 
+
+(참고 1)
+
+sdlc 컴파일을 했는지, SDLFILE 환경변수의 값 설정이 올바른지, 환경변수에 설정한 이진 바이너리 파일이 존재하는지 확인합니다.
+
+(참고2)
+
+필드버퍼 사용 시에는 fbget할 때 사용하는 필드가 이전에 fbput으로 필드테이블에 put 해주었는지 확인합니다.
+
+ 
+
+3)      발생 예
+
+가.    서비스가 환경파일에 미등록 시
+
+#-----------------------------------------------
+
+if(tpcall("TOLOWER", sndbuf, 0, &rcvbuf, &rcvlen, 0) < 0){
+
+                printf("Can't send request to service TOLOWER => [%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+                tpfree((char *)sndbuf);
+
+                tpfree((char *)rcvbuf);
+
+                tpend();
+
+                exit(1);
+
+}
+
+ 
+
+수행 시 에러발생
+
+[edu01@edu09 client]$ tolower AAA
+
+Can't send request to service TOLOWER => [6][TPENOENT]
+
+#-----------------------------------------------
+
+ 
+
+나.    STRUCT 버퍼타입 사용시, tpalloc에서 TPENOENT 에러 발생 예 (엔진 패치후 새로 sdlc 컴파일을 하지 않은 경우)
+
+#-----------------------------------------------
+
+[edu01@edu09 client]$ clisdl_many
+
+sndbuf alloc failed..[6][TPENOENT]
+
+#-----------------------------------------------
+
+ 
+
+다.    필드명(ENAME)이 필드테이블에 미등록(fbput 한 필드가 없음) 시
+
+#-----------------------------------------------
+
+ret = fbget(rcvbuf, ENAME, rdata, 0);
+
+if(ret<0){
+
+           printf("fbget failed ..[%d][%s]\n", fberror, fbstrerror(fberror));
+
+           tpfree((char *)sndbuf);
+
+           tpfree((char *)rcvbuf);
+
+           tpend();
+
+           exit(1);
+
+}
+
+ 
+
+수행 시 에러발생
+
+[edu01@edu09 client]$ clifdltoupper aaa
+
+fbget failed ..[6][FBENOENT (not found)]
+
+#-----------------------------------------------
+
+ 
+
+ 
+
+ 
+
+6.      tpstrerror : TPEOS (tperrno : 7)
+
+1)      에러 내용
+
+운용체제 오류로, 흔히 볼 수 있는 원인은 Tmax 시스템이 기동되어있지 않거나 클라이언트에서의 서버 접속 ip나 포트가 달라서 접속을 하지 못하는 경우에 발생하는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+Tmax 시스템이 기동되어있는지 확인합니다.
+
+기동되어있는 시스템의 ip와 포트번호(TPORTNO)를 확인하여 클라이언트의 환경변수 TMAX_HOST_ADDR, TMAX_HOST_PORT에 맞게 설정되어있는지 확인합니다.
+
+ 
+
+3)      발생 예
+
+가.    Tmax 시스템이 기동은 되어있으나 다른 포트번호로 접속할 때
+
+#----------------------------------------------
+
+ret = tpstart((TPSTART_T *)NULL);
+
+if(ret<0){
+
+        printf("tpstart failed.. [%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+        exit(1);
+
+}
+
+#----------------------------------------------
+
+ 
+
+나.    에러상황
+
+#----------------------------------------------
+
+[edu01@edu09 client]$ clifdltoupper aaa
+
+(E) CLI3003 can't connect to main server: 211.56.251.202 [CLI0108][Connection refused]
+
+(E) CLI3004 can't connect to backup server: 211.56.251.203 [CLI0113]
+
+tpstart failed.. [7][TPEOS]
+
+#----------------------------------------------
+
+ 
+
+다.    tpstart하지 않고 tpcall에서 접속을 하는 경우 발생
+
+#----------------------------------------------
+
+[edu01@edu09 client]$ tolower AAA
+
+(E) CLI3003 can't connect to main server: 211.56.251.202 [CLI0108][Connection refused]
+
+(E) CLI3004 can't connect to backup server: 211.56.251.203 [CLI0113]
+
+Can't send request to service TOLOWER => [7][TPEOS]
+
+#----------------------------------------------
+
+ 
+
+ 
+
+7.      tpstrerror : TPEPROTO (tperrno : 9)
+
+1)      에러 내용
+
+부적절한 상황에서 Tmax API가 호출되는 경우에 발생하는 에러입니다. 즉, tpstart가 되어있는 상황에서 또 tpstart를 한다던가, 대화형 서버로 CONV=YES라고 설정하지 않은 서비스안에서 tpconnect를 한다던가 하는 경우에 발생하는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+단계별 API 사용이 잘 되었는지, 환경설정이 맞게 되어있는지 확인합니다.
+
+ 
+
+3)      발생 예
+
+가.    tpstart에서의 발생 예
+
+#---------------------------------------------
+
+if (tpstart((TPSTART_T *)NULL) < 0){
+
+                printf("tpstart failed\n");
+
+                exit(1);
+
+}
+
+ 
+
+if (tpstart((TPSTART_T *)NULL) < 0){
+
+        printf("tpstart failed.. [%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+     tpend();
+
+        exit(1);
+
+}       
+
+#---------------------------------------------
+
+ 
+
+나.    tpstart에서의 에러 상황
+
+#---------------------------------------------
+
+[edu01@edu09 client]$ toupper aa
+
+tpstart failed.. [9][TPEPROTO]
+
+#---------------------------------------------
+
+ 
+
+다.    tpconnect에서의 에러 상황
+
+#---------------------------------------------
+
+[edu01@edu09 client]$ cliconv aaa AAA
+
+tpconnect failed..[9][TPEPROTO], tpurcode[0]
+
+#---------------------------------------------
+
+ 
+
+ 
+
+8.      tpstrerror : TPESVCERR (tperrno : 10)
+
+1)      에러 내용
+
+서비스 수행 중 서버 프로세스에서 자원이 부족한 상태에서 발생할 수 있는 TPELIMIT 에러나 서비스타임아웃에 걸리거나 하는 경우에, 해당 서비스를 호출했던 호출자에서 발생할 수 있는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+서버 프로세스를 확인해야 합니다.
+
+ 
+
+3)      발생 예
+
+가.    TPELIMIT 에러에 의해 TPESVCERR 에러가 발생하는 경우
+
+#-------------------------------------------
+
+서비스 메시지..
+
+svc tpacall fail..[5][TPELIMIT]
+
+(E) SVR3019 tpreturn met with outstanding reply [SVR0301]
+
+ 
+
+호출자 메시지..
+
+[edu01@edu09 client]$ toupper aa
+
+Can't send request to service TOUPPER..[10][TPESVCERR]
+
+#-------------------------------------------
+
+ 
+
+나.    SVCTIMEOUT에 의해 TPESVCERR 에러가 발생하는 경우
+
+#-------------------------------------------
+
+서비스 메시지..
+
+(W) SVR3032 svc (FDLSEL) timeout [SVR5516]
+
+ 
+
+호출자 메시지..
+
+Select Menu Number[0-4] : 2
+
+Employee Number : 7788
+
+tpcall FDLSEL failed..[10][TPESVCERR]
+
+ 
+
+******** Select Failed!! **********
+
+**********   tpurcode = 13   **********
+
+#-------------------------------------------
+
+ 
+
+ 
+
+9.      tpstrerror : TPESVCFAIL (tperrno : 11)
+
+1)      에러 내용
+
+서비스 수행 중 응용 프로그램 레벨에서 에러가 발생하여, 에러 체크문tpreturn(TPFAIL, …..); 로 리턴되는 경우에 발생하는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+fbput 또는 fbget 하면서 에러가 발생하여 tpreturn(TPFAIL, fberror, …..); 하는 경우에는 fberror을 전역변수인 tpurcode로 출력하여 에러상황에 맞는 조치사항을 할 수 있고,
+
+DB 관련하여 sqlca.sqlcode를 체크하여 SQL 문을 수행하다 에러가 발생하여 tpreturn(TPFAIL, sqlca.sqlcode, …..); 하는 경우에도, 전역변수인 tpurcode로 sqlca.sqlcode를 출력하여 에러상황에 대처할 수 있게 합니다.
+
+즉, 응용 프로그램의 어느 부분에서 실패했는지를 체크할 수 있습니다.
+
+ 
+
+3)      발생 예
+
+가.    SQL 문을 수행하다가 실패한 경우
+
+#------------------------------------------
+
+(서버)
+
+EXEC SQL SELECT ename, job, sal
+
+                INTO :buf->ename, :buf->job, :buf->sal
+
+                FROM emp WHERE empno = :buf->empno;
+
+ 
+
+if (sqlca.sqlcode != 0)
+
+{
+
+                fprintf(stderr, "select fail...[%d]\n", sqlca.sqlcode);
+
+                tpreturn(TPFAIL, sqlca.sqlcode, 0, 0, 0);
+
+}
+
+ 
+
+(클라이언트)
+
+ret = tpcall("SDL_SELECT2", (char *)buf, sizeof(buf), (char **)&buf, (long *)&rcvlen, 0);
+
+if ( ret < 0){
+
+                printf("SELECT tpcall fail... tperrno[%d], tpstrerror[%s], tpurcode[%d]\n", tperrno, tpstrerror(tperrno), tpurcode); 
+
+                tpfree((char *)buf);
+
+                tpend();
+
+                exit(1);
+
+}
+
+#------------------------------------------
+
+ 
+
+나.    1403 에러로 TPESVCFAIL 한 에러상황
+
+#------------------------------------------
+
+[edu01@edu09 client]$ clisdl 7777
+
+send empno = 7777
+
+SELECT tpcall fail... tperrno[11], tpstrerror[TPESVCFAIL], tpurcode[1403]
+
+#------------------------------------------
+
+ 
+
+다.    fbget 하다가 실패한 경우
+
+#------------------------------------------
+
+(서버)
+
+if( fbget(fdata, INPUT, (char *)&empno, 0) < 0){
+
+       printf("fbget failed errno = %s\n", fbstrerror(fberror) );
+
+       tpreturn( TPFAIL, fberror, NULL, 0, 0 );
+
+}
+
+ 
+
+(클라이언트)
+
+if( tpcall("NON_INS", (char *)sndbuf, 0, (char **)&rcvbuf, &rlen, 0)<0){
+
+        printf( "tpcall error, tperrno[%d], tpstrerror[%s], tpurcode[%d]\n", tperrno, tpstrerror(tperrno), tpurcode );
+
+        tpfree( (char *)rcvbuf );
+
+        tpfree( (char *)sndbuf );
+
+        tpend();
+
+        exit( 1 );
+
+}
+
+#------------------------------------------
+
+ 
+
+라.    FBENOENT 에러로 TPESVCFAIL 한 에러상황 
+
+#------------------------------------------
+
+(서버)
+
+[edu01@edu09 server]$ 
+
+fbget failed errno = FBENOENT (not found)
+
+ 
+
+(클라이언트)
+
+[edu01@edu09 client]$ clinonfdlins 7999 haha eng 100
+
+request  = empno : [7999]
+
+request  = ename : [haha]
+
+request  = job   : [eng]
+
+request  = sal   : [100]
+
+=====================
+
+tpcall error, tperrno[11], tpstrerror[TPESVCFAIL], tpurcode[6]
+
+ 
+
+#------------------------------------------
+
+ 
+
+ 
+
+10.   tpstrerror : TPETIME (tperrno : 13)
+
+1)      에러 내용
+
+서비스를 요청하고 응답 받을 때 까지의 시간이, BLOCKTIME (함수:tpset_timeout)을 초과 하였을 때 발생하는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+업무가 많이 폭주되는 시간에는 BLOCKTIME 값을 늘려주거나, 해당 프로세스를 더 기동시켜 주던가, 특정 서비스에 대해서만 발생하는 경우에는 서비스를 요청하는 요청자의 로직에서 tpset_timeout으로 값을 조절할 수 있습니다.
+
+ 
+
+3)      발생 예
+
+가.    서비스 수행 시간이 오래 걸리는 경우
+
+#----------------------------------------------
+
+if(tpcall("TOUPPER", sndbuf, 0, &rcvbuf, &rcvlen, 0) < 0){
+
+                printf("Can't send request to service TOUPPER..[%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+                tpfree((char *)sndbuf);
+
+                tpfree((char *)rcvbuf);
+
+                tpend();
+
+                exit(1);
+
+        }
+
+#----------------------------------------------
+
+ 
+
+나.    에러 상황
+
+#----------------------------------------------
+
+[edu01@edu09 client]$ toupper aaa
+
+Can't send request to service TOUPPER..[13][TPETIME]
+
+#----------------------------------------------
+
+ 
+
+ 
+
+11.   tpstrerror : TPEITYPE (tperrno : 17)
+
+1)      에러 내용
+
+입력된 버퍼의 유형을 알 수 없는 경우입니다.
+
+즉, 송신 버퍼를 할당하지 않고 송신에 사용한 경우입니다. 
+
+ 
+
+2)      조치 사항
+
+데이터 값을 검사하거나 버퍼 할당이 되어 있는지 확인합니다.
+
+ 
+
+3)      발생 예
+
+#-------------------------------------------
+
+/* rcvbuf만 할당, sndbuf 할당하지 않았음 */
+
+rcvbuf = (char *)tpalloc("STRING", NULL, 0);
+
+               
+
+if(tpcall("TOUPPER", sndbuf, 0, &rcvbuf, &rcvlen, 0) < 0){
+
+                printf("Can't send request to service TOUPPER..[%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+                tpfree((char *)sndbuf);
+
+                tpfree((char *)rcvbuf);
+
+                tpend();
+
+                exit(1);
+
+}
+
+ 
+
+에러 발생
+
+[edu01@edu09 client]$ toupper aaa
+
+Can't send request to service TOUPPER..[17][TPEITYPE]
+
+#------------------------------------------
+
+ 
+
+ 
+
+12.   tpstrerror : TPEOTYPE (tperrno : 18)
+
+1)      에러 내용
+
+송신자와 수신자 간의 서로 다른 버퍼 유형을 사용하거나, 예를 들면, 수신자는 STRUCT 버퍼타입으로 할당한 버퍼를 사용하는데, 송신자가 컴파일을 하기를 구조체 파일(ex:demo_sdl.c)과 함께 컴파일을 하지 않은 경우이거나,  수신 버퍼를 할당하지 않은 상태에서 수신하였을 때 발생합니다.
+
+ 
+
+2)      조치 사항
+
+송신 버퍼 유형과 수신 버퍼 유형이 서로 일치하는지를 확인하거나, 구조체 버퍼 타입인 경우에는 구초체 Makefile을 사용하여 실행파일을 만들었는지, 또는 사용된 수신 버퍼가 할당되어있는지 확인합니다.
+
+ 
+
+3)      발생 예
+
+가.    구조체 컴파일이 되지 않은 송신데이터를 구조체 버퍼에서 수신한 경우
+
+#------------------------------------------
+
+정상 컴파일 : compile psdl sdltest
+
+잘못된 컴파일 : compile pc sdltest
+
+ 
+
+[edu01@edu09 client]$ sdl_main
+
+…
+
+tpcall SDLSEL failed[18][TPEOTYPE]
+
+#------------------------------------------
+
+ 
+
+나.    할당되지 않은 수신 버퍼가 통신에 사용된 경우
+
+#------------------------------------------
+
+/* sndbuf만 할당, rcvbuf 할당하지 않았음 */
+
+sndbuf = (char *)tpalloc("STRING", NULL, 0);
+
+               
+
+if(tpcall("TOUPPER", sndbuf, 0, &rcvbuf, &rcvlen, 0) < 0){
+
+                            printf("Can't send request to service TOUPPER..[%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+                            tpfree((char *)sndbuf);
+
+                            tpfree((char *)rcvbuf);
+
+                            tpend();
+
+                            exit(1);
+
+}
+
+ 
+
+에러 발생
+
+edu01@edu09 client]$ toupper aaa
+
+Can't send request to service TOUPPER..[18][TPEOTYPE]
+
+#------------------------------------------
+
+ 
+
+ 
+
+13.   tpstrerror : TPEEVENT (tperrno : 22)
+
+1)      에러 내용
+
+대화형에서 이벤트가 발생했을 때 출력되는 스트링입니다. 따라서 대화형에서는 TPEV_SVCSUCC 이벤트나 TPEV_SENDONLY 이벤트 등, 대화형 함수에서 발생하는 이벤트들에 대해,  함수 에러 처리시 이벤트 처리를 함께 해주어야 합니다.
+
+ 
+
+2)      조치 사항
+
+이벤트가 발생한 것으로 long형의 revent에 이벤트 값이 리턴되므로, 이벤트 값을 체크하여 정상처리가 될 수 있도록 합니다.
+
+ 
+
+3)      발생 예
+
+가.    tpsend() 함수의 TPRECVONLY 플래그에 의한 tprecv() 함수에서의 TPEV_SENDONLY 이벤트 발생 예
+
+#-----------------------------------------------
+
+tpsend() 함수
+
+if(tpsend(msg->cd,sndbuf,strlen(sndbuf),TPRECVONLY,&revent) < 0){
+
+                printf("tpsend failed..[%d]\n", tperrno);
+
+                tpfree((char *)sndbuf);
+
+                tpfree((char *)rcvbuf);
+
+                tpreturn(TPFAIL,-1,NULL,0,0);
+
+}
+
+ 
+
+tprecv() 함수에서의 TPEV_SENDONLY(32번) 이벤트 발생
+
+[edu01@edu09 client]$ cliconv aaa
+
+send data : aaa
+
+tprecv error..[22][TPEEVENT], revent:[32]
+
+ 
+
+tprecv() 함수에서 32번 이벤트 체크 처리
+
+if(tprecv(msg->cd,&rcvbuf,&rlen,TPNOFLAGS,&revent) < 0){
+
+                if (revent != TPEV_SENDONLY) {
+
+                        printf("tprecv revent..[%d]\n", revent);
+
+                        tpfree((char *)sndbuf);
+
+                        tpfree((char *)rcvbuf);
+
+                        tpreturn(TPFAIL,-1,NULL,0,0);
+
+                }
+
+                else{
+
+                }
+
+        }
+
+ 
+
+#-----------------------------------------------
+
+ 
+
+나.    tpreturn() 함수의 TPSUCCESS return value 값에 의한 tprecv() 함수에서의 TPEV_SVCSUCC 이벤트 발생 예
+
+#-----------------------------------------------
+
+tpsend() 함수와 tpreturn()
+
+if(tpsend(msg->cd,sndbuf,strlen(sndbuf),TPNOTIME,&revent) < 0){
+
+                printf("tpsend failed..[%d]\n", tperrno);
+
+                tpfree((char *)sndbuf);
+
+                tpfree((char *)rcvbuf);
+
+                tpreturn(TPFAIL,-1,NULL,0,0);
+
+}
+
+memset(sndbuf, 0x00, strlen(sndbuf));
+
+sprintf(sndbuf, "[return data... %s]", rcvbuf);      
+
+tpfree((char *)rcvbuf);
+
+tpreturn(TPSUCCESS,0,(char *)sndbuf,0,0);
+
+ 
+
+ 
+
+tprecv() 함수에서의 TPEV_SVCSUCC(8번) 이벤트 발생
+
+ 
+
+[edu01@edu09 client]$ cliconv jaya
+
+send data : jaya
+
+i = 0
+
+recv data : [안녕하세요?... jaya]
+
+i = 1
+
+tprecv error..[22][TPEEVENT], revent:[8]
+
+ 
+
+ 
+
+tprecv() 함수에서TPEV_SVCSUCC(8번) 이벤트 체크 처리
+
+ 
+
+for(i=0; i< 2; i++){
+
+        printf("i = %d\n", i);
+
+        ret = tprecv(cd, (char **)&rcvbuf, (long *)&rcvlen, TPNOTIME, (long *)&revent);
+
+        if(ret < 0){
+
+                if(revent != TPEV_SVCSUCC){
+
+                        printf("tprecv error..[%d][%s], revent:[%d]\n", tperrno, tpstrerror(tperrno), revent);
+
+                        tpfree((char *)sndbuf);
+
+                        tpfree((char *)rcvbuf);
+
+                        tpend();
+
+                        exit(1);
+
+                }
+
+        }
+
+      printf("recv data : %s\n", rcvbuf);
+
+}
+
+#-----------------------------------------------
+
+ 
+
+ 
+
+14.   tpstrerror : TPEMATCH (tperrno : 23)
+
+1)      에러 내용
+
+RQ 에서, tpdeq 하는 서비스 이름으로 RQ에 저장된 서비스가 없을 때 발생하는 에러입니다. 즉, tpdeq 하고자 하는 서비스 이름의 데이터가 RQ에 들어있지 않을 때 발생합니다.
+
+  
+
+2)      조치 사항
+
+tpenq한 서비스 명이 무엇인지 확인한 후 tpdeq 합니다.
+
+ 
+
+3)      발생 예
+
+가.    RQ에 tpdeq 하고자 하는 서비스가 없는 경우
+
+#----------------------------------------------
+
+[edu01@edu09 client]$ clideq
+
+before tpdeq.. failQ count = 0
+
+before tpdeq.. requestQ count = 0
+
+before tpdeq.. replyQ count = 1
+
+tpdeq fail...[23][TPEMATCH]
+
+#----------------------------------------------
+
+ 
+
+ 
+
+15.   tpstrerror : TPENOREADY (tperrno : 24)
+
+1)      에러 내용
+
+서버가 Tmax 환경파일에는 등록이 되어있으나,  기동되어 있지 않아서 서비스가 준비되지 않은 경우에 호출자에게 발생하는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+해당 서비스가 속해있는 서버를 찾아 기동합니다. 
+
+tmadmin 에서 st ?s 명령어로 서비스가 활성화 되었는지 확인합니다.
+
+ 
+
+3)      발생 예
+
+#----------------------------------------------------
+
+tmadmin 에서
+
+$$1 edu09 (tmadm): st -s
+
+CLH 0: 
+
+-----------------------------------------------------------
+
+   svc_name       svr_name    count   avg  cq_count aq_count  q_avg   status
+
+-----------------------------------------------------------
+
+   TOLOWER        svr2            0     0.000        0        0  0.000    NRDY
+
+   TOUPPER         svr2            0     0.000        0        0  0.000    NRDY
+
+ 
+
+서비스 호출 시 에러 발생
+
+[edu01@edu09 client]$ toupper aaa
+
+Can't send request to service TOUPPER..[24][TPENOREADY]
+
+#----------------------------------------------------
+
+ 
+
+ 
+
+16.   tpstrerror : TPESECURITY (tperrno : 25)
+
+1)      에러 내용
+
+Tmax 보안이 설정되어 있어, 보안에 따른 인증을 받지 못한 경우에 발생하는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+시스템 보안인 경우의 인증은 접속시에 dompwd로 받고, 유저 보안인 경우의 인증은 접속시에 dompwd, usrname, usrpwd 의 정보를 입력하여 인증을 받으므로 위의 정보들이 맞게 설정이 되어있는지 확인합니다.
+
+ 
+
+3)      발생 예
+
+가.    시스템 보안인 경우
+
+#------------------------------------------------
+
+Tmax 환경파일
+
+*DOMAIN
+
+tmax1       SHMKEY =79990, TPORTNO=8888, 
+
+                SECURITY = DOMAIN_SEC, OWNER = tmax
+
+ 
+
+passwd 파일
+
+[edu01@edu09 config]$ cat passwd
+
+tmax:U4lpyTCjp1yZE:0:0:Tmax default user:x:x
+
+ 
+
+시스템 메시지
+
+(I) CAS3015 domain_sec chk failed: edu01 [CAS0301]
+
+ 
+
+클라이언트 메시지
+
+[edu01@edu09 client]$ clisdl_many
+
+tpstart failed..[25][TPESECURITY]
+
+ 
+
+클라이언트 조치사항 코드
+
+tpinfo = (TPSTART_T *)tpalloc("TPSTART", NULL, 0);
+
+if(tpinfo == NULL){
+
+                printf("tpinfo alloc failed..\n");
+
+                exit(1);
+
+}
+
+strcpy(tpinfo->dompwd, "tmax");
+
+ 
+
+ret = tpstart((TPSTART_T *)tpinfo);
+
+if(ret < 0){
+
+                printf("tpstart failed..[%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+                tpfree((char *)tpinfo);
+
+                exit(1);
+
+}
+
+tpfree((char *)tpinfo);
+
+#------------------------------------------------
+
+ 
+
+나.    유저 보안인 경우
+
+#------------------------------------------------
+
+Tmax 환경파일
+
+*DOMAIN
+
+tmax1       SHMKEY =79990, TPORTNO=8888, 
+
+                SECURITY = USER_AUTH, OWNER = tmax
+
+ 
+
+passwd 파일
+
+[edu01@edu09 config]$ cat passwd
+
+tmax:U4lpyTCjp1yZE:0:0:Tmax default user:x:x
+
+edu01:x2pduVKPUPlM.:0:0:user1:x:x
+
+edu02:oBmBLLjtUYKDw:0:0:user2:x:x
+
+ 
+
+시스템 메시지
+
+(I) CAS3015 domain_sec chk failed: edu01 [CAS0301]
+
+ 
+
+클라이언트 메시지
+
+[edu01@edu09 client]$ clisdl_many
+
+tpstart failed..[25][TPESECURITY]
+
+ 
+
+클라이언트 조치사항 코드
+
+tpinfo = (TPSTART_T *)tpalloc("TPSTART", NULL, 0);
+
+if(tpinfo == NULL){
+
+                printf("tpinfo alloc failed..\n");
+
+                exit(1);
+
+}
+
+strcpy(tpinfo->dompwd, "tmax");
+
+strcpy(tpinfo->usrname, "edu01");
+
+strcpy(tpinfo->usrpwd, "edu01");
+
+ 
+
+ret = tpstart((TPSTART_T *)tpinfo);
+
+if(ret < 0){
+
+                printf("tpstart failed..[%d][%s]\n", tperrno, tpstrerror(tperrno));
+
+                tpfree((char *)tpinfo);
+
+                exit(1);
+
+}
+
+ 
+
+tpfree((char *)tpinfo);
+
+#------------------------------------------------
+
+ 
+
+ 
+
+17.   tpstrerror : TPEQFULL (tperrno : 26)
+
+1)      에러 내용
+
+요청된 서비스가 지정한 Max Queue에 도달했을 때 요청자가 받을 수 있는 에러입니다. Queue에 무한정 리퀘스트가 쌓여 대기하는 것을 막기 위해 Tmax 환경파일에 서버마다 MAXQCOUNT 항목을 사용하여 개수를 제한할 수 있는데, TPEQFULL 에러는 리퀘스트가 MAXQCOUNT 에 도달하여 발생한 에러입니다.
+
+ 
+
+2)      조치 사항
+
+해당 서버를 MAX 값 이내에서 더 기동하거나, 환경파일의 MAXQCOUNT 값을 정적으로 또는 tmadmin ?m을 이용하여 운영중에 동적으로 늘림으로 TPEQFULL 에러에 대처할 수 있습니다.
+
+ 
+
+3)      발생 예
+
+#-------------------------------------------------
+
+환경파일
+
+*SERVER
+
+svr2            SVGNAME = svg1, MIN = 1, MAX = 5, MAXQCOUNT = 5
+
+ 
+
+에러상황
+
+[edu01@edu09 client]$ macall AAA
+
+tpgetrply fail..[26][TPEQFULL]
+
+ 
+
+조치사항
+
+[edu01@edu09 server]$ tmadmin -m
+
+--- Welcome to Tmax Admin (Type "quit" to leave) --- 
+
+$$1 edu09 (tmadm): cfg -v svr2
+
+svr_name = svr2, svr_no = 8 
+
+         maxqcount(mq) = 5,
+
+$$2 edu09 (tmadm): set -v svr2 mq 20
+
+new value (20) is set for section = SERVER, name = svr2, fld = mq
+
+ 
+
+#-------------------------------------------------
+
+ 
+
+ 
+
+18.   tpstrerror : TPEQPURGE (tperrno : 27)
+
+1)      에러 내용
+
+요청된 서비스가 큐에 대기중에, 관리자가 임의로 큐를 Purge 시켰을 때 요청자가 받을 수 있는 에러입니다.
+
+ 
+
+2)      조치 사항
+
+업무 요청이 폭주되는 시각에, 계속적으로 큐에 요청이 적재되어, 클라이언트들이 기다렸다가 타임아웃으로 결과를 받지 못하는 상황을 막기위하여, 즉 원활한 운영을 위하여 관리자가 행한 조치이므로, 클라이언트들은 출력되는 메시지에 따라 잠시후에 다시 요청을 하면 됩니다.
+
+ 
+
+3)      발생 예
+
+#-------------------------------------------------
+
+관리자 창 (Purge 이전)
+
+$$3 edu09 (tmadm): st -v
+
+-----------------------------------------------------------
+
+  clh   svrname    (svri)   status     count   qcount   qpcount  emcount
+
+-----------------------------------------------------------
+
+    0       svr2       (   8)     RDY        44         7             0          8
+
+ 
+
+관리자 창 (Purge 명령 수행과 그 이후)
+
+$$4 edu09 (tmadm): qp -v svr2
+
+Queue for svr svr2 is purged: purged_count = 5 
+
+$$5 edu09 (tmadm): st -v
+
+-----------------------------------------------------------
+
+  clh   svrname    (svri)   status     count   qcount   qpcount  emcount
+
+-----------------------------------------------------------
+
+    0       svr2       (   8)     RDY        47          0            5          8
+
+ 
+
+시스템 로그창
+
+(I) CLH2094 server queue is purged due to QPURGE request: SVRNAME[svr2], CLID[0x5] [CLH0221]
+
+(I) CLH2094 server queue is purged due to QPURGE request: SVRNAME[svr2], CLID[0x5] [CLH0221]
+
+(I) CLH2094 server queue is purged due to QPURGE request: SVRNAME[svr2], CLID[0x5] [CLH0221]
+
+(I) CLH2094 server queue is purged due to QPURGE request: SVRNAME[svr2], CLID[0x5] [CLH0221]
+
+(I) CLH2094 server queue is purged due to QPURGE request: SVRNAME[svr2], CLID[0x5] [CLH0221]
+
+ 
+
+클라이언트 창
+
+[edu01@edu09 client]$ macall AAA
+
+tpgetrply fail..[27][TPEQPURGE]
+
+ 
+
+#-------------------------------------------------
+
+ 
+
+ 
+
+19.   tpstrerror : TPESVRDOWN (tperrno : 29)
+
+1)      에러 내용
+
+업무 서버 즉 응용 서버가 요청을 받아 수행 중에 다운된 상황입니다.
+
+요청을 받아 수행 하다가 다운되는 것은 서비스 로직안에 exit가 들어가 있다던가 또는 데이터를 printf로 출력시에 스트링으로 출력하라고 했는데, int형 데이터를 출력한다던가, 등의 원인이 예가 될 수 있습니다.
+
+Tmax는 위와 같이 어플리케이션 오류로 서버가 다운되는 장애에 대비하여, 서버가 비정상적으로 다운되면 재기동을 해줍니다. 
+
+디폴트는 5번까지 재기동이 되며, 횟수는 환경파일에서 서버마다 설정을 할 수 있습니다. (항목 MAXRSTART)
+
+ 
+
+여기에서 조심해야 할 것은, tmadmin 에서 프로세스를 확인해 보면, RDY 상태로 나타나기에 별문제를 찾지 못할 수도 있다는 것입니다.
+
+이것은 재기동이 되었기 때문입니다.
+
+나타나는 현상은, 원인이 되는 해당 서비스만 결과를 못 줄것이고 재기동에 의해 다른 서비스들은 정상 처리가 되게 됩니다.
+
+관리자는 시스템 로그 파일을 자주 확인하여 서버 종료 메시지가 출력이 된 것이 있는지 확인하여야 합니다.
+
+ 
+
+서버가 다운될 때, 시스템 로그는 다음과 같습니다.
+
+시스템 로그는 콘솔창에 출력되며, 파일 로깅은 환경파일 SLOGDIR 경로에 slog.날짜 라는 이름으로 생성됩니다.
+
+한 프로세스 안에 서비스가 여러 개 있는 경우에는 다운 메시지에 서비스명이 출력되므로 어떤 서비스에 원인이 있는지 확인할 수 있습니다. 
+
+ 
+
+#-----------------------------------------------------
+
+[edu01@edu09 server]$ TOUPPER started..
+
+INPUT : aa
+
+OUTPUT : AA
+
+(E) CLH2058 server abnormally closed: toupper 32 running svc = TOUPPER [CLH0538]
+
+(E) TMM2058 server abnormally closed: SVR, pid = 14173 [TMM0116]
+
+(I) TMM3004 SVR (toupper) is restarted the 1th time [TMM0176]
+
+#-----------------------------------------------------
+
+ 
+
+2)      조치 사항
+
+요청시에 서버가 비정상 종료되는 경우에는 서비스명을 확인한 후 업무 어플리케이션이 어디까지 진행을 하다가 종료가 되었는지 위치를 파악합니다. 
+
+위치 파악을 위해 printf 또는 UserLog 를 사용하여 유저 로깅을 해 봅니다.
+
+원인이 파악되면, 수정 작업을 하고 해당 서버는 재컴파일 후 새로 기동을 해줍니다.
+
+ 
+
+3)      발생 예
+
+#---------------------------------------
+
+서비스 안에 exit(1); 로직을 추가….
+
+ 
+
+TOUPPER(TPSVCINFO *msg)
+
+{
+
+        int i;
+
+        int a;
+
+ 
+
+        printf("TOUPPER started..\n");
+
+        printf("INPUT : %s\n", msg->data);
+
+ 
+
+        for(i=0; i<msg->len; i++)
+
+                msg->data[i]=toupper(msg->data[i]);
+
+ 
+
+        printf("OUTPUT : %s\n", msg->data);
+
+ 
+
+        exit(1);
+
+        tpreturn(TPSUCCESS, 0, msg->data, msg->len, 0);
+
+}
+
+ 
+
+ 
+
+클라이언트가 서비스 콜하면….
+
+ 
+
+[edu01@edu09 client]$ clitoupper aa
+
+svc call failed ..[29][TPESVRDOWN]
+
+#-------------------------------------------
+

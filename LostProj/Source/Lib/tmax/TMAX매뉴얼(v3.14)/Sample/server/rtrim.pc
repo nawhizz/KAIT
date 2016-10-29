@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+EXEC SQL include sqlca.h;
+
+EXEC SQL begin declare section;
+	varchar tmp[31];
+	char username[20];
+	char password[20];
+EXEC SQL end declare section;
+
+main()
+{
+
+	strcpy(username, "cgongpan");
+	strcpy(password, "cgongpan");
+
+	EXEC SQL CONNECT :username IDENTIFIED BY :password;
+
+	if (sqlca.sqlcode < 0) {
+		printf("error %d occured \n ", sqlca.sqlcode);
+		exit(1);
+	}
+
+	memset( tmp, 0x00, 31);
+
+	EXEC SQL SELECT rtrim(a)
+		INTO :tmp
+		FROM lhs_test;
+
+	printf( "len:%d, [%s]\n",tmp.len, tmp.arr);
+
+
+	EXEC SQL ROLLBACK WORK RELEASE;
+
+}
