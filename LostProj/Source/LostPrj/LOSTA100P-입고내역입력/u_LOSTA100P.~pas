@@ -1133,7 +1133,7 @@ begin
    chk_bl_ynClick();
 
    // 2016.07.25 - 유영배 수정
-   md_cb1.setfocus;
+   //md_cb1.setfocus;
 end;
 
 procedure Tfrm_LOSTA100P.dte_po_dtExit(Sender: TObject);

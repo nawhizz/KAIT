@@ -143,7 +143,6 @@ type
     PO_Grid1        : TStringGrid;
     md_grid1        : TStringGrid;
     grd_Phon        : TStringGrid;
-    TMAX            : TTMAX;
     Panel1: TPanel;
     Bevel1: TBevel;
     Label2: TLabel;
