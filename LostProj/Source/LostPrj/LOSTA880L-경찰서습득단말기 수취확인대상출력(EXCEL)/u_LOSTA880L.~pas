@@ -125,23 +125,24 @@ begin
         ColCount :=18;
 
 		Cells[0,0]   :='등록시간';
-		Cells[1,0]   :='경찰서명';
-    Cells[2,0]   :='전화번호';
-    Cells[3,0]   :='관리번호';
-    Cells[4,0]   :='획득순번';
-		Cells[5,0]   :='사업자명';
-		Cells[6,0]   :='모델명';
-		Cells[7,0]   :='일련번호';
-		Cells[8,0]   :='이동전화번호';
-		Cells[9,0]   :='가입자번호';
-		Cells[10,0]  :='가입자성명';
-    Cells[11,0]  :='가입자전화번호';
-    Cells[12,0]  :='가입자주소';
-		Cells[13,0]  :='납부자번호';
-		Cells[14,0]  :='납부자성명';
-		Cells[15,0]  :='납부자전화번호';
-		Cells[16,0]  :='납부자 주소';
-		Cells[17,0]  :='보험금 상태';
+    Cells[1,0]   :='경찰서ID';
+		Cells[2,0]   :='경찰서명';
+    Cells[3,0]   :='전화번호';
+    Cells[4,0]   :='관리번호';
+    Cells[5,0]   :='획득순번';
+		Cells[6,0]   :='사업자명';
+		Cells[7,0]   :='모델명';
+		Cells[8,0]   :='일련번호';
+		Cells[9,0]   :='이동전화번호';
+		Cells[10,0]  :='가입자번호';
+		Cells[11,0]  :='가입자성명';
+    Cells[12,0]  :='가입자전화번호';
+    Cells[13,0]  :='가입자주소';
+		Cells[14,0]  :='납부자번호';
+		Cells[15,0]  :='납부자성명';
+		Cells[16,0]  :='납부자전화번호';
+		Cells[17,0]  :='납부자 주소';
+		Cells[18,0]  :='보험금 상태';
 
     end;
 end;
@@ -199,6 +200,10 @@ end;
 
 procedure Tfrm_LOSTA880L.btn_PrintClick(Sender: TObject);
 var
+    // 암호화 관련 변수
+    ECPlazaSeed: OLEVariant;
+    seed_ganm, seed_gano, seed_gatl, seed_mtno, seed_nanm, seed_nano, seed_natl : String;
+
     i:Integer;
     count1, count2, totalCount:Integer;
 
@@ -211,6 +216,16 @@ var
   Label LIQUIDATION;
   Label INQUIRY;
 begin
+   // 암호화 모듈
+   ECPlazaSeed := CreateOleObject('ECPlaza.Seed');
+
+   seed_ganm := '';
+   seed_gano := '';
+   seed_gatl := '';
+   seed_mtno := '';
+   seed_nanm := '';
+   seed_nano := '';
+   seed_natl := '';
 
    //그리드초기화
    pInitStrGrd(Self);
@@ -331,23 +346,31 @@ INQUIRY:
     	for i:=0 to count1-1 do begin
 
           Cells[0,RowPos]  := TMAX.RecvString('STR101',i);     // 등록시간
-          Cells[1,RowPos]  := TMAX.RecvString('STR102',i);     // 경찰서명
-          Cells[2,RowPos]  := TMAX.RecvString('STR103',i);     // 전화번호
-          Cells[3,RowPos]  := TMAX.RecvString('STR104',i);     // 관리번호
-          Cells[4,RowPos]  := TMAX.RecvString('STR105',i);     // 획득순번
-          Cells[5,RowPos]  := TMAX.RecvString('STR106',i);     // 사업자명
-          Cells[6,RowPos]  := TMAX.RecvString('STR107',i);     // 모델명
-          Cells[7,RowPos]  := TMAX.RecvString('STR108',i);     // 일련번호
-          Cells[8,RowPos]  := TMAX.RecvString('STR109',i);     // 이동전화번호
-          Cells[9,RowPos]  := TMAX.RecvString('STR110',i);     // 가입자번호
-          Cells[10,RowPos] := TMAX.RecvString('STR111',i);     // 가입자성명
-          Cells[11,RowPos] := TMAX.RecvString('STR112',i);     // 가입자전화번호
-          Cells[12,RowPos] := TMAX.RecvString('STR113',i);     // 가입자주소
-          Cells[13,RowPos] := TMAX.RecvString('STR114',i);     // 납부자번호
-          Cells[14,RowPos] := TMAX.RecvString('STR115',i);     // 납부자성명
-          Cells[15,RowPos] := TMAX.RecvString('STR116',i);     // 납부자전화번호
-          Cells[16,RowPos] := TMAX.RecvString('STR117',i);     // 납부자 주소
-          Cells[17,RowPos] := TMAX.RecvString('STR118',i);     // 보험금 상태
+          Cells[1,RowPos]  := TMAX.RecvString('STR119',i);     // 경찰서ID
+          Cells[2,RowPos]  := TMAX.RecvString('STR102',i);     // 경찰서명
+          Cells[3,RowPos]  := TMAX.RecvString('STR103',i);     // 전화번호
+          Cells[4,RowPos]  := TMAX.RecvString('STR104',i);     // 관리번호
+          Cells[5,RowPos]  := TMAX.RecvString('STR105',i);     // 획득순번
+          Cells[6,RowPos]  := TMAX.RecvString('STR106',i);     // 사업자명
+          Cells[7,RowPos]  := TMAX.RecvString('STR107',i);     // 모델명
+          Cells[8,RowPos]  := TMAX.RecvString('STR108',i);     // 일련번호
+          seed_mtno        := TMAX.RecvString('STR109',i);     // 이동전화번호
+          Cells[9,RowPos]  := ECPlazaSeed.Decrypt(seed_mtno, common_seedkey);
+          seed_gano        := TMAX.RecvString('STR110',i);     // 가입자번호
+          Cells[10,RowPos] := ECPlazaSeed.Decrypt(seed_gano, common_seedkey);
+          seed_ganm        := TMAX.RecvString('STR111',i);     // 가입자성명
+          Cells[11,RowPos] := ECPlazaSeed.Decrypt(seed_ganm, common_seedkey);
+          seed_gatl        := TMAX.RecvString('STR112',i);     // 가입자전화번호
+          Cells[12,RowPos] := ECPlazaSeed.Decrypt(seed_gatl, common_seedkey);
+          Cells[13,RowPos] := TMAX.RecvString('STR113',i);     // 가입자주소
+          seed_nano        := TMAX.RecvString('STR114',i);     // 납부자번호
+          Cells[14,RowPos] := ECPlazaSeed.Decrypt(seed_nano, common_seedkey);
+          seed_nanm        := TMAX.RecvString('STR115',i);     // 납부자성명
+          Cells[15,RowPos] := ECPlazaSeed.Decrypt(seed_nanm, common_seedkey);
+          seed_natl        := TMAX.RecvString('STR116',i);     // 납부자전화번호
+          Cells[16,RowPos] := ECPlazaSeed.Decrypt(seed_natl, common_seedkey);
+          Cells[17,RowPos] := TMAX.RecvString('STR117',i);     // 납부자 주소
+          Cells[18,RowPos] := TMAX.RecvString('STR118',i);     // 보험금 상태
 
           Inc(RowPos);
         end;
